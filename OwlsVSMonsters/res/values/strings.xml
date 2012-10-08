@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">OvM</string>
+    <string name="right">Right</string>
+    <string name="wrong">Wrong</string>
+    <string name="share1">Share</string>
+
+</resources>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/splash01"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout4"
+        android:layout_width="wrap_content"
+        android:layout_height="225dip" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="300dip"
+            android:layout_height="200dip"
+            android:background="@drawable/menuback"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" >
+
+                <LinearLayout
+                    android:id="@+id/linearLayout2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical"
+                    android:padding="20dip" >
+
+                    <LinearLayout
+                        android:id="@+id/LinearLayout02"
+                        android:layout_width="match_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:gravity="center" android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/TextView02"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="LEVEL 1!"
+                            android:textColor="#FF0000"
+                            android:textSize="40dip" />
+
+                        <TextView
+                            android:id="@+id/TextView01"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="FAILED!"
+                            android:textColor="#FF0000"
+                            android:textSize="40dip" />
+                    </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" >
+
+            <Button
+                android:id="@+id/Button09"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                android:layout_margin="5dip"
+                android:background="@drawable/list"
+                android:onClick="doListClick" />
+
+            <Button
+                android:id="@+id/Button10"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                android:layout_margin="5dip"
+                android:background="@drawable/restart"
+                android:onClick="doRestartClick" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

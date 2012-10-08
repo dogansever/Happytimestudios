@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/stageMenuRoot"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout4"
+        android:layout_width="wrap_content"
+        android:layout_height="185dip" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="240dip"
+            android:layout_height="160dip"
+            android:background="@drawable/menuback"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" >
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="180dip"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/paused" />
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Level 1" android:layout_alignBottom="@id/imageView1" android:layout_alignRight="@id/imageView1" android:textColor="#FF0000" android:textSize="20dip"/>
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" >
+
+            <Button
+                android:id="@+id/Button09"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                android:layout_margin="5dip"
+                android:background="@drawable/list"
+                android:onClick="doListClick" />
+
+            <Button
+                android:id="@+id/Button10"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                android:layout_margin="5dip"
+                android:background="@drawable/restart"
+                android:onClick="doRestartClick" />
+
+            <Button
+                android:id="@+id/Button11"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                android:layout_margin="5dip"
+                android:background="@drawable/play"
+                android:onClick="doPlayClick" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>
