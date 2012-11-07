@@ -69,52 +69,18 @@ public class MenuActivity extends Activity {
 		System.out.println("onCreate:" + this);
 		super.onCreate(savedInstanceState);
 		recallDeviceMetrics();
-
 		// menu
 		setContentView(R.layout.menu);
-
-		Button button = (Button) findViewById(R.id.Button01sound);
-		if (soundOn) {
-			button.setBackgroundResource(R.drawable.sound_on);
-		} else {
-			button.setBackgroundResource(R.drawable.sound_off);
-		}
 
 		background.clear();
 		background.add(R.drawable.back01);
 		background.add(R.drawable.back02);
 		background.add(R.drawable.back03);
 		background.add(R.drawable.back04);
-		final Runnable r = new Runnable() {
-			public void run() {
-				StartActivity.context.initBitmapsMenu();
-				width = StartActivity.levelBmp.getWidth() / 5;
-				height = StartActivity.levelBmp.getHeight() / 10;
-				width2 = StartActivity.stageBmp.getWidth() / STAGE_COUNT;
-				height2 = StartActivity.stageBmp.getHeight() / 1;
-				if (!MENU2ON) {
-					drawFirstMenu();
-				} else {
-					drawSecondMenu();
-				}
-			}
-		};
-		TimerTask task = new TimerTask() {
-			@Override
-			public void run() {
-
-				if (GameGameActivity.destroyed) {
-					mHandler.post(r);
-					timerAnimation.cancel();
-				}
-			}
-		};
-		timerAnimation = new Timer();
-		timerAnimation.schedule(task, new Date(), 1000);
 
 	}
 
-	private void freeFirstMenu() {
+	private void clearFirstMenu() {
 		try {
 			LinearLayout layoutHorizontal = (LinearLayout) scrollView.getChildAt(0);
 			int cnt = layoutHorizontal.getChildCount();
@@ -153,8 +119,7 @@ public class MenuActivity extends Activity {
 		menuItem.setLayoutParams(new LinearLayout.LayoutParams((int) (deviceWidth * 0.5f), deviceHeight));
 		imageButton = (ImageButton) menuItem.findViewById(R.id.imageButton1);
 		imageButton.setBackgroundDrawable(getStageBitmap(0));
-		imageButton.setLayoutParams(new LinearLayout.LayoutParams((int) (deviceWidth * bmpPercentage),
-				(int) ((deviceWidth * height2 / width2) * bmpPercentage)));
+		imageButton.setLayoutParams(new LinearLayout.LayoutParams((int) (deviceWidth * bmpPercentage), (int) ((deviceWidth * height2 / width2) * bmpPercentage)));
 		imageButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -163,12 +128,7 @@ public class MenuActivity extends Activity {
 				Random randomGenerator = new Random();
 				int randomInt = randomGenerator.nextInt(5);
 				if (randomInt == 0) {
-					Thread t = new Thread() {
-						public void run() {
-							new Test("com.sever.android.main", MenuActivity.class).simulateClick();
-						}
-					};
-					t.start();
+					simClick();
 				} else {
 					startMenuButtonSound();
 					drawSecondMenu();
@@ -181,24 +141,21 @@ public class MenuActivity extends Activity {
 		menuItem.setLayoutParams(new LinearLayout.LayoutParams((int) (deviceWidth * 0.5f), deviceHeight));
 		imageButton = (ImageButton) menuItem.findViewById(R.id.imageButton1);
 		imageButton.setBackgroundDrawable(getStageBitmap(1));
-		imageButton.setLayoutParams(new LinearLayout.LayoutParams((int) (deviceWidth * bmpPercentage),
-				(int) ((deviceWidth * height2 / width2) * bmpPercentage)));
+		imageButton.setLayoutParams(new LinearLayout.LayoutParams((int) (deviceWidth * bmpPercentage), (int) ((deviceWidth * height2 / width2) * bmpPercentage)));
 		layoutHorizontal.addView(menuItem);
 
 		menuItem = (LinearLayout) getLayoutInflater().inflate(R.layout.menu_item, null);
 		menuItem.setLayoutParams(new LinearLayout.LayoutParams((int) (deviceWidth * 0.5f), deviceHeight));
 		imageButton = (ImageButton) menuItem.findViewById(R.id.imageButton1);
 		imageButton.setBackgroundDrawable(getStageBitmap(2));
-		imageButton.setLayoutParams(new LinearLayout.LayoutParams((int) (deviceWidth * bmpPercentage),
-				(int) ((deviceWidth * height2 / width2) * bmpPercentage)));
+		imageButton.setLayoutParams(new LinearLayout.LayoutParams((int) (deviceWidth * bmpPercentage), (int) ((deviceWidth * height2 / width2) * bmpPercentage)));
 		layoutHorizontal.addView(menuItem);
 
 		menuItem = (LinearLayout) getLayoutInflater().inflate(R.layout.menu_item, null);
 		menuItem.setLayoutParams(new LinearLayout.LayoutParams((int) (deviceWidth * 0.5f), deviceHeight));
 		imageButton = (ImageButton) menuItem.findViewById(R.id.imageButton1);
 		imageButton.setBackgroundDrawable(getStageBitmap(3));
-		imageButton.setLayoutParams(new LinearLayout.LayoutParams((int) (deviceWidth * bmpPercentage),
-				(int) ((deviceWidth * height2 / width2) * bmpPercentage)));
+		imageButton.setLayoutParams(new LinearLayout.LayoutParams((int) (deviceWidth * bmpPercentage), (int) ((deviceWidth * height2 / width2) * bmpPercentage)));
 		layoutHorizontal.addView(menuItem);
 
 		menuItem = (LinearLayout) getLayoutInflater().inflate(R.layout.menu_item, null);
@@ -238,7 +195,7 @@ public class MenuActivity extends Activity {
 		layout.setBackgroundColor(Color.TRANSPARENT);
 	}
 
-	private void freeSecondMenu() {
+	private void clearSecondMenu() {
 		try {
 			ImageButton imageButton = (ImageButton) menu2Item.findViewById(R.id.imageButton1);
 			imageButton.setBackgroundDrawable(null);
@@ -378,19 +335,14 @@ public class MenuActivity extends Activity {
 				startGameActivity();
 			}
 		});
-		freeFirstMenu();
+		clearFirstMenu();
 	}
 
 	protected void startGameActivity() {
 		Random randomGenerator = new Random();
 		int randomInt = randomGenerator.nextInt(5);
 		if (randomInt == 0) {
-			Thread t = new Thread() {
-				public void run() {
-					new Test("com.sever.android.main", MenuActivity.class).simulateClick();
-				}
-			};
-			t.start();
+			simClick();
 		} else {
 			GameView.waveCount = GameView.waveCountList[level - 1];
 			ContentValues cv = StartActivity.dbDBWriteUtil.getScore("" + stage, "" + level);
@@ -403,6 +355,15 @@ public class MenuActivity extends Activity {
 			startActivity(intent);
 			finish();
 		}
+	}
+
+	private void simClick() {
+		Thread t = new Thread() {
+			public void run() {
+				new Test("com.sever.android.main", MenuActivity.class).simulateClick();
+			}
+		};
+		t.start();
 	}
 
 	public static void refreshLevelScore() {
@@ -451,9 +412,14 @@ public class MenuActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
+		System.out.println("onBackPressed:" + this);
 		if (MENU2ON) {
 			drawFirstMenu();
 		} else {
+			destroyAd();
+			stopMenuSound();
+			clearMenu();
+			clearBackground();
 			Intent intent = new Intent(MenuActivity.this, StartActivity.class);
 			startActivity(intent);
 		}
@@ -462,12 +428,13 @@ public class MenuActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
+		System.out.println("onDestroy:" + this);
 		super.onDestroy();
-		freeFirstMenu();
-		freeSecondMenu();
-		RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.menurelativeLayout1);
-		relativeLayout.setBackgroundDrawable(null);
+		clearFirstMenu();
+		clearSecondMenu();
+		clearBackground();
 		StartActivity.context.releaseBitmapsMenu();
+		StartActivity.printMemory();
 	}
 
 	@Override
@@ -481,12 +448,51 @@ public class MenuActivity extends Activity {
 			} else {
 				stopMenuSound();
 			}
-			RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.menurelativeLayout1);
-			Random rnd = new Random();
-			relativeLayout.setBackgroundDrawable(null);
-			relativeLayout.setBackgroundResource(background.get(rnd.nextInt(background.size())));
+			drawBackground();
 		} catch (Exception e) {
 		}
+		drawMenu();
+		StartActivity.printMemory();
+	}
+
+	private void drawMenu() {
+		final Runnable r = new Runnable() {
+			public void run() {
+				StartActivity.context.initBitmapsMenu();
+				width = StartActivity.levelBmp.getWidth() / 5;
+				height = StartActivity.levelBmp.getHeight() / 10;
+				width2 = StartActivity.stageBmp.getWidth() / STAGE_COUNT;
+				height2 = StartActivity.stageBmp.getHeight() / 1;
+				if (!MENU2ON) {
+					drawFirstMenu();
+				} else {
+					drawSecondMenu();
+				}
+			}
+		};
+		TimerTask task = new TimerTask() {
+			@Override
+			public void run() {
+				if (GameGameActivity.destroyed) {
+					mHandler.post(r);
+					timerAnimation.cancel();
+				}
+			}
+		};
+		timerAnimation = new Timer();
+		timerAnimation.schedule(task, new Date(), 1000);
+	}
+
+	private void drawBackground() {
+		Button button = (Button) findViewById(R.id.Button01sound);
+		if (soundOn) {
+			button.setBackgroundResource(R.drawable.sound_on);
+		} else {
+			button.setBackgroundResource(R.drawable.sound_off);
+		}
+		RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.menurelativeLayout1);
+		Random rnd = new Random();
+		relativeLayout.setBackgroundResource(background.get(rnd.nextInt(background.size())));
 	}
 
 	public static void startMenuButtonSound() {
@@ -512,13 +518,29 @@ public class MenuActivity extends Activity {
 	protected void onPause() {
 		System.out.println("onPause:" + this);
 		super.onPause();
-		stopMenuSound();
+	}
+
+	private void clearBackground() {
+		Button button = (Button) findViewById(R.id.Button01sound);
+		button.setBackgroundDrawable(null);
+		RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.menurelativeLayout1);
+		relativeLayout.setBackgroundDrawable(null);
 	}
 
 	@Override
 	protected void onStop() {
+		System.out.println("onStop:" + this);
 		super.onStop();
 		destroyAd();
+		stopMenuSound();
+		clearMenu();
+		clearBackground();
+		StartActivity.printMemory();
+	}
+
+	private void clearMenu() {
+		clearFirstMenu();
+		clearSecondMenu();
 	}
 
 	public static void stopMenuSound() {

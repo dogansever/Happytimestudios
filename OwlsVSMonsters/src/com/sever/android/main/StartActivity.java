@@ -1,5 +1,6 @@
 package com.sever.android.main;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,6 +18,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -53,17 +55,6 @@ public class StartActivity extends Activity {
 	public static int deviceDensityDpi;
 	private boolean init;
 
-	public static void recallDeviceMetrics() {
-		try {
-			DisplayMetrics metrics = new DisplayMetrics();
-			StartActivity.context.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-			StartActivity.deviceWidth = metrics.widthPixels;
-			StartActivity.deviceHeight = metrics.heightPixels;
-		} catch (Exception e) {
-			// e.printStackTrace();
-		}
-	}
-
 	public static final int FIRE_BARETTA = 1;
 	public static final int FIRE_SNIPER = 2;
 	public static final int FIRE_MACHINEGUN = 3;
@@ -81,6 +72,19 @@ public class StartActivity extends Activity {
 	private HashMap<Integer, Integer> soundPoolMap;
 	public Typeface face;
 	private static MediaPlayer mp1;
+	private Timer timerAnimation;
+	public final Handler mHandler = new Handler();
+
+	public static void recallDeviceMetrics() {
+		try {
+			DisplayMetrics metrics = new DisplayMetrics();
+			StartActivity.context.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+			StartActivity.deviceWidth = metrics.widthPixels;
+			StartActivity.deviceHeight = metrics.heightPixels;
+		} catch (Exception e) {
+			// e.printStackTrace();
+		}
+	}
 
 	private void initSounds() {
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -226,8 +230,10 @@ public class StartActivity extends Activity {
 	}
 
 	public void initBitmapsMenu() {
-		levelBmp = BitmapFactory.decodeResource(getResources(), R.drawable.menus);
-		stageBmp = BitmapFactory.decodeResource(getResources(), R.drawable.stages);
+		if (levelBmp == null)
+			levelBmp = BitmapFactory.decodeResource(getResources(), R.drawable.menus);
+		if (stageBmp == null)
+			stageBmp = BitmapFactory.decodeResource(getResources(), R.drawable.stages);
 	}
 
 	public void initBitmaps() {
@@ -277,23 +283,21 @@ public class StartActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		System.out.println("onCreate:" + this);
 		super.onCreate(savedInstanceState);
+		init = false;
 		context = this;
 		recallDeviceMetrics();
-		setContentView(R.layout.start);
-
 		dbDBWriteUtil = new DBWriteUtil(this);
 		dbDBWriteUtil.addOrUpdateScore("0", "0", "1", "1", "" + new Date().getTime());
-
-		init = false;
+		setContentView(R.layout.start);
 		startIntroSound();
-
-		Thread t = new Thread() {
-			public void run() {
-				initResources();
-				startShowTouch();
-			}
-		};
-		t.start();
+		hideTouch();
+		// Thread t = new Thread() {
+		// public void run() {
+		initResources();
+		startShowTouch();
+		// }
+		// };
+		// t.start();
 
 		RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout1);
 		relativeLayout.setOnTouchListener(new OnTouchListener() {
@@ -310,35 +314,55 @@ public class StartActivity extends Activity {
 				return false;
 			}
 		});
-		hideTouch();
-	}
-
-	public static void startIntroSound() {
-		if (mp1 == null) {
-			mp1 = MediaPlayer.create(StartActivity.context, R.raw.crickets_at_night);
-			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
-			mp1.setLooping(true);
-		}
-		if (!mp1.isPlaying())
-			mp1.start();
-	}
-
-	public static void stopIntroSound() {
-		mp1.pause();
 	}
 
 	@Override
 	protected void onResume() {
 		System.out.println("onResume:" + this);
 		super.onResume();
+		draw();
 		if (init) {
 			if (MenuActivity.soundOn) {
 				startIntroSound();
 			} else {
 				stopIntroSound();
 			}
-
 		}
+		printMemory();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		clearDrawables();
+		try {
+			timerAnimation.cancel();
+		} catch (Exception e) {
+		}
+		StartActivity.printMemory();
+	}
+
+	@Override
+	protected void onPause() {
+		System.out.println("onPause:" + this);
+		super.onPause();
+		clearDrawables();
+		stopIntroSound();
+	}
+
+	@Override
+	protected void onStop() {
+		System.out.println("onStop:" + this);
+		super.onStop();
+		clearDrawables();
+		printMemory();
+	}
+
+	private void draw() {
+		RelativeLayout relativeLayout1 = (RelativeLayout) findViewById(R.id.relativeLayout1);
+		relativeLayout1.setBackgroundResource(R.drawable.cover);
+		ImageView imageView1 = (ImageView) findViewById(R.id.imageView1);
+		imageView1.setImageResource(R.drawable.touchtocontinue);
 	}
 
 	private void startShowTouch() {
@@ -359,15 +383,9 @@ public class StartActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		// super.onBackPressed();
 	}
 
-	private Timer timerAnimation;
-	public final Handler mHandler = new Handler();
-
 	private void startBlink() {
-		// TODO Auto-generated method stub
 		final Runnable r = new Runnable() {
 			public void run() {
 				blink();
@@ -383,17 +401,6 @@ public class StartActivity extends Activity {
 		// calendar.add(Calendar.MILLISECOND, 5000);
 		timerAnimation = new Timer();
 		timerAnimation.schedule(task, calendar.getTime(), 1000);
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout1);
-		relativeLayout.setBackgroundDrawable(null);
-		try {
-			timerAnimation.cancel();
-		} catch (Exception e) {
-		}
 	}
 
 	protected void blink() {
@@ -415,12 +422,36 @@ public class StartActivity extends Activity {
 		imageView.setVisibility(View.VISIBLE);
 	}
 
-	@Override
-	protected void onPause() {
-		System.out.println("onPause:" + this);
-		super.onPause();
-		stopIntroSound();
+	private void clearDrawables() {
+		RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout1);
+		relativeLayout.setBackgroundDrawable(null);
+		ImageView imageView1 = (ImageView) findViewById(R.id.imageView1);
+		imageView1.setImageDrawable(null);
 	}
 
+	public static void startIntroSound() {
+		if (mp1 == null) {
+			mp1 = MediaPlayer.create(StartActivity.context, R.raw.crickets_at_night);
+			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
+			mp1.setLooping(true);
+		}
+		if (!mp1.isPlaying())
+			mp1.start();
+	}
 
+	public static void stopIntroSound() {
+		mp1.pause();
+	}
+
+	public static void printMemory() {
+		Double allocated = new Double(Debug.getNativeHeapAllocatedSize()) / new Double((1048576));
+		Double available = new Double(Debug.getNativeHeapSize() / 1048576.0);
+		Double free = new Double(Debug.getNativeHeapFreeSize() / 1048576.0);
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2);
+		df.setMinimumFractionDigits(2);
+
+		System.out.println("debug. =================================");
+		System.out.println("debug.heap native: allocated " + df.format(allocated) + "MB of " + df.format(available) + "MB (" + df.format(free) + "MB free) ");
+	}
 }

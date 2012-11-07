@@ -7,8 +7,7 @@
     <RelativeLayout
         android:id="@+id/relativeLayout1"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@drawable/back01" >
+        android:layout_height="fill_parent" >
     </RelativeLayout>
 
 </LinearLayout>

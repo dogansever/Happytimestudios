@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:installLocation="preferExternal"
     package="com.sever.android.main"
-    android:versionCode="6"
-    android:versionName="1.0.5" >
+    android:installLocation="preferExternal"
+    android:versionCode="7"
+    android:versionName="1.0.6" >
 
-    <uses-sdk android:minSdkVersion="8" />
+    
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="8" />
 
     <supports-screens
         android:largeScreens="true"
@@ -32,59 +35,61 @@
         <uses-library android:name="android.test.runner" />
 
         <activity
+            android:name=".StageEndActivity"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
-            android:name=".StageEndActivity"
             android:screenOrientation="landscape" >
         </activity>
         <activity
+            android:name=".GameGameActivity"
+            android:clearTaskOnLaunch="true"
             android:finishOnTaskLaunch="true"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
-            android:name=".GameGameActivity"
             android:noHistory="true"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="landscape"
+            android:stateNotNeeded="true" >
         </activity>
         <activity
-            android:label="@string/app_name"
-            android:launchMode="singleInstance"
             android:name=".MenuActivity"
-            android:screenOrientation="landscape" >
-        </activity>
-        <activity
+            android:clearTaskOnLaunch="true"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:stateNotNeeded="true" >
+        </activity>
+        <activity
             android:name=".StartActivity"
-            android:screenOrientation="landscape" >
-        </activity>
-        <activity
+            android:clearTaskOnLaunch="true"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:stateNotNeeded="true" >
+        </activity>
+        <activity
             android:name=".InfoActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleInstance"
             android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:label="@string/app_name"
-            android:launchMode="singleInstance"
-            android:name=".RestartActivity"
-            android:screenOrientation="landscape" >
-        </activity>
-        <activity
-            android:label="@string/app_name"
-            android:launchMode="singleInstance"
             android:name=".IntroActivity"
-            android:screenOrientation="landscape" >
-            <intent-filter >
+            android:clearTaskOnLaunch="true"
+            android:label="@string/app_name"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            android:stateNotNeeded="true" >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
+            android:name="com.google.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
-            android:name="com.google.ads.AdActivity"
             android:screenOrientation="portrait" >
         </activity>
     </application>

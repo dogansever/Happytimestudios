@@ -3,7 +3,6 @@ package com.sever.android.main;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -19,8 +18,47 @@ public class InfoActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		System.out.println("onCreate:" + this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.info_portrait);
+
+		Button kapat = (Button) findViewById(R.id.button1);
+		kapat.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
+	}
+
+	@Override
+	public void onBackPressed() {
+		return;
+	}
+
+	@Override
+	protected void onDestroy() {
+		System.out.println("onDestroy:" + this);
+		super.onDestroy();
+		LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayout1);
+		StickyHorizontalScrollView scrollView = (StickyHorizontalScrollView) layout.getChildAt(0);
+		LinearLayout layout2 = (LinearLayout) scrollView.getChildAt(0);
+		int cnt = layout2.getChildCount();
+		while (cnt > 0) {
+			cnt--;
+			((ImageView) layout2.getChildAt(cnt)).setImageBitmap(null);
+		}
+		layout2.removeAllViews();
+		scrollView.removeAllViews();
+		layout.removeAllViews();
+	}
+
+	@Override
+	protected void onResume() {
+		System.out.println("onResume:" + this);
+		super.onResume();
+
 		backgroundResources.clear();
 		backgroundResources.add(R.drawable.info_splash2);
 		backgroundResources.add(R.drawable.info_splash1);
@@ -61,35 +99,5 @@ public class InfoActivity extends Activity {
 			scrollView.addStickyPosition(i++ * dayViewWidth); // set sticky
 																// position
 		}
-
-		Button kapat = (Button) findViewById(R.id.button1);
-		kapat.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
-	}
-
-	@Override
-	public void onBackPressed() {
-		return;
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayout1);
-		StickyHorizontalScrollView scrollView = (StickyHorizontalScrollView) layout.getChildAt(0);
-		LinearLayout layout2 = (LinearLayout) scrollView.getChildAt(0);
-		int cnt = layout2.getChildCount();
-		while (cnt > 0) {
-			cnt--;
-			((ImageView) layout2.getChildAt(cnt)).setImageBitmap(null);
-		}
-		layout2.removeAllViews();
-		scrollView.removeAllViews();
-		layout.removeAllViews();
 	}
 }

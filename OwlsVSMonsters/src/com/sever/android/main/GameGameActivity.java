@@ -58,16 +58,14 @@ public class GameGameActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		System.out.println("onCreate:" + this);
 		super.onCreate(savedInstanceState);
-		destroyed = false;
-		context = this;
-		MenuActivity.stopMenuSound();
-		((StartActivity) StartActivity.context).playMusicSound();
-		prepared = false;
-		setContentView(R.layout.splash);
 
+	}
+
+	private void launchGame() {
 		final Runnable r = new Runnable() {
 			public void run() {
 				StartActivity.context.initBitmaps();
+				clearSplash();
 				prepareGame();
 				prepared = true;
 			}
@@ -80,6 +78,24 @@ public class GameGameActivity extends Activity {
 		};
 		timerAnimation = new Timer();
 		timerAnimation.schedule(task, 1000);
+	}
+
+	private void clearSplash() {
+		RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout1);
+		relativeLayout.setBackgroundDrawable(null);
+	}
+
+	private void prepareSplash() {
+		context = this;
+		destroyed = false;
+		prepared = false;
+//		MenuActivity.stopMenuSound();
+		((StartActivity) StartActivity.context).playMusicSound();
+
+		setContentView(R.layout.splash);
+		RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout1);
+		relativeLayout.setBackgroundResource(R.drawable.back01);
+
 	}
 
 	float tSizeEquations = 14;
@@ -271,6 +287,8 @@ public class GameGameActivity extends Activity {
 	protected void onResume() {
 		System.out.println("onResume:" + this);
 		super.onResume();
+		prepareSplash();
+		launchGame();
 	}
 
 	private void createGame() {
@@ -893,8 +911,7 @@ public class GameGameActivity extends Activity {
 		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "https://market.android.com/details?id=com.sever.android.main");
 		if (bitmap != null) {
 			Date date = new Date();
-			String fileName = "temp" + date.getYear() + date.getMonth() + date.getDay() + date.getHours() + date.getMinutes() + date.getSeconds()
-					+ ".png";
+			String fileName = "temp" + date.getYear() + date.getMonth() + date.getDay() + date.getHours() + date.getMinutes() + date.getSeconds() + ".png";
 			File file = new File(this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileName);
 			try {
 				file.createNewFile();
