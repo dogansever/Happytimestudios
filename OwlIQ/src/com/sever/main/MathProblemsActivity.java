@@ -1,5 +1,6 @@
 package com.sever.main;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,9 +13,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.TypedValue;
@@ -27,11 +26,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import com.sever.main.R;
 
 public class MathProblemsActivity extends Activity {
 	protected static int COUNT = 20;
@@ -61,6 +58,7 @@ public class MathProblemsActivity extends Activity {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		System.out.println("onCreate:" + this);
 		super.onCreate(savedInstanceState);
 		mp1 = MediaPlayer.create(getBaseContext(), R.raw.flyby);
 		mp1.setVolume(1.0f, 0.0f);
@@ -133,35 +131,41 @@ public class MathProblemsActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		// Intent intent = new Intent(MathProblemsActivity.this,
-		// IntroActivity.class);
-		// startActivity(intent);
+//		Intent intent = new Intent(MathProblemsActivity.this, MainScreenActivity.class);
+//		startActivity(intent);
 		finish();
-		// super.onBackPressed();
 	}
 
 	@Override
 	protected void onResume() {
-		System.out.println("resume");
+		System.out.println("onResume:" + this);
 		super.onResume();
+		setBackGround();
 	}
 
+	private void setBackGround() {
+		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.mainRootLinearLayout);
+		linearLayout.setBackgroundResource(R.drawable.back2);
+		LinearLayout white = (LinearLayout) findViewById(R.id.linearLayout3);
+		white.setBackgroundResource(R.drawable.white);
+	}
+	
 	@Override
 	protected void onStart() {
-		System.out.println("start");
+		System.out.println("onStart:" + this);
 		super.onStart();
 	}
 
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
-		System.out.println("onWindowFocusChanged.hasFocus" + hasFocus);
+		System.out.println("onWindowFocusChanged.hasFocus:" + hasFocus);
 		super.onWindowFocusChanged(hasFocus);
 		if (CNTDOWN != 0 && hasFocus) {
 			startCountDown();
 		} else if (CNTDOWN == 0 && !DIALOG_VISIBLE) {
-			Intent intent = new Intent(MathProblemsActivity.this, MainScreenActivity.class);
-			startActivity(intent);
-			finish();
+//			Intent intent = new Intent(MathProblemsActivity.this, MainScreenActivity.class);
+//			startActivity(intent);
+//			finish();
 		}
 
 	}
@@ -357,8 +361,7 @@ public class MathProblemsActivity extends Activity {
 					.replace("_ACC", "" + ((100 * RIGHTCOUNT) / COUNT) + "%");
 			Double best;
 			try {
-				best = Double
-						.parseDouble(((String) MainScreenActivity.dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT)).replace(",", "."));
+				best = Double.parseDouble(((String) MainScreenActivity.dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT)).replace(",", "."));
 			} catch (Exception e) {
 				best = 1000.0;
 			}
@@ -400,6 +403,10 @@ public class MathProblemsActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				EditText input = (EditText) view.findViewById(R.id.editText1);
 				String info = input.getText().toString();
+
+				SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+				String dateStr = formatter.format(new Date());
+				info = info.trim().equals("") ? "OWLY, " + dateStr : info + ", " + dateStr;
 				MainScreenActivity.dbDBWriteUtil.addScore(TIME, "" + new Date().getTime(), "" + COUNT, info);
 				// Intent intent = new Intent(MathProblemsActivity.this,
 				// IntroActivity.class);
@@ -408,5 +415,40 @@ public class MathProblemsActivity extends Activity {
 			}
 		});
 		alertDialog.show();
+	}
+
+	@Override
+	protected void onDestroy() {
+		System.out.println("onDestroy:" + this);
+		super.onDestroy();
+		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.mainRootLinearLayout);
+		linearLayout.setBackgroundDrawable(null);
+		LinearLayout white = (LinearLayout) findViewById(R.id.linearLayout3);
+		white.setBackgroundDrawable(null);
+		
+		
+		unbindDrawables(findViewById(R.id.mainRootLinearLayout));
+		System.gc();
+	}
+
+	@Override
+	protected void onStop() {
+		System.out.println("onStop:" + this);
+		super.onStop();
+//		SplashIntroActivity.lastStopped = this;
+		finish();
+	}
+
+	private void unbindDrawables(View view) {
+		if (view.getBackground() != null) {
+			view.getBackground().setCallback(null);
+			view.setBackgroundDrawable(null);
+		}
+		if (view instanceof ViewGroup) {
+			for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+				unbindDrawables(((ViewGroup) view).getChildAt(i));
+			}
+			((ViewGroup) view).removeAllViews();
+		}
 	}
 }

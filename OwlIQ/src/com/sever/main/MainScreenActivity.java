@@ -27,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -65,14 +66,15 @@ public class MainScreenActivity extends Activity {
 		Random randomGenerator = new Random();
 		int randomInt = randomGenerator.nextInt(list.size());
 		RelativeLayout relative = (RelativeLayout) findViewById(R.id.relativeLayout1);
+		relative.setBackgroundDrawable(null);
 		relative.setBackgroundResource(list.get(randomInt));
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case RESET:
-			new AlertDialog.Builder(MainScreenActivity.this).setTitle(getString(R.string.reset)).setMessage(getString(R.string.areyousure))
-					.setIcon(R.drawable.owl2).setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+			new AlertDialog.Builder(MainScreenActivity.this).setTitle(getString(R.string.reset)).setMessage(getString(R.string.areyousure)).setIcon(R.drawable.owl2)
+					.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
 							dbDBWriteUtil.emptyScores();
 							refreshScore();
@@ -163,7 +165,7 @@ public class MainScreenActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+		System.out.println("onCreate:" + this);
 		super.onCreate(savedInstanceState);
 		recallDeviceMetrics();
 		setContentView(R.layout.intro);
@@ -174,7 +176,7 @@ public class MainScreenActivity extends Activity {
 			list.add(R.drawable.back5blurpng);
 			list.add(R.drawable.back6blur);
 			list.add(R.drawable.back7blur);
-			setBackGround();
+			// setBackGround();
 			mp1 = MediaPlayer.create(getBaseContext(), R.raw.owl_hooting);
 			mp1.setLooping(true);
 			mp2 = MediaPlayer.create(getBaseContext(), R.raw.woop_woop);
@@ -216,9 +218,9 @@ public class MainScreenActivity extends Activity {
 		myOption1.setTypeface(MainScreenActivity.face);
 		myOption1.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 12);
 		myOption2.setTypeface(MainScreenActivity.face);
-		myOption2.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 12);
+		myOption2.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
 		myOption3.setTypeface(MainScreenActivity.face);
-		myOption3.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 12);
+		myOption3.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 20);
 		myOption1.setOnClickListener(myOptionOnClickListener);
 		myOption2.setOnClickListener(myOptionOnClickListener);
 		myOption3.setOnClickListener(myOptionOnClickListener);
@@ -232,6 +234,7 @@ public class MainScreenActivity extends Activity {
 		TextView tv = (TextView) findViewById(R.id.textView1);
 		tv.setTypeface(MainScreenActivity.face);
 		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 12);
+		tv.setText(tv.getText().toString().trim() + " ");
 		tv = (TextView) findViewById(R.id.textView2);
 		tv.setTypeface(MainScreenActivity.face);
 		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 12);
@@ -242,11 +245,17 @@ public class MainScreenActivity extends Activity {
 
 	@Override
 	protected void onStop() {
-		// TODO Auto-generated method stub
+		System.out.println("onStop:" + this);
 		super.onStop();
 		destroyAd();
-
 		returntoLife();
+		RelativeLayout relative = (RelativeLayout) findViewById(R.id.relativeLayout1);
+		relative.setBackgroundDrawable(null);
+		// finish();
+		// unbindDrawables(findViewById(R.id.LinearLayoutRoot));
+		// System.gc();
+
+		SplashIntroActivity.lastStopped = this;
 	}
 
 	private void returntoLife() {
@@ -289,11 +298,11 @@ public class MainScreenActivity extends Activity {
 			textView2.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
 			double score = Double.parseDouble(((String) contentValues.get(DBWriteUtil.scoreColumn)).replace(",", "."));
 			String time = String.format("%01.4f", score);
-			textView2.setText(time);
+			textView2.setText(time + " ");
 			TextView textView3 = (TextView) view.findViewById(R.id.textView3);
 			textView3.setTypeface(MainScreenActivity.face);
 			textView3.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
-			textView3.setText((String) contentValues.get(DBWriteUtil.infoColumn));
+			textView3.setText((String) contentValues.get(DBWriteUtil.infoColumn) + " ");
 			linearLayout6.addView(view);
 		}
 	}
@@ -324,7 +333,7 @@ public class MainScreenActivity extends Activity {
 		try {
 			score = Double.parseDouble(((String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT)).replace(",", "."));
 			String time = String.format("%01.4f", score);
-			textView.setText(time);
+			textView.setText(time + " ");
 		} catch (Exception e) {
 			// e.printStackTrace();
 			textView.setText("");
@@ -333,6 +342,7 @@ public class MainScreenActivity extends Activity {
 
 	@Override
 	protected void onResume() {
+		System.out.println("onResume:" + this);
 		super.onResume();
 		refreshScore();
 		prepareScoresList();
@@ -414,8 +424,7 @@ public class MainScreenActivity extends Activity {
 		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "https://market.android.com/details?id=com.sever.main");
 		if (bitmap != null) {
 			Date date = new Date();
-			String fileName = "temp" + date.getYear() + date.getMonth() + date.getDay() + date.getHours() + date.getMinutes() + date.getSeconds()
-					+ ".png";
+			String fileName = "temp" + date.getYear() + date.getMonth() + date.getDay() + date.getHours() + date.getMinutes() + date.getSeconds() + ".png";
 			File file = new File(this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileName);
 			try {
 				file.createNewFile();
@@ -433,4 +442,33 @@ public class MainScreenActivity extends Activity {
 		startActivity(emailIntent);
 	}
 
+	@Override
+	protected void onDestroy() {
+		System.out.println("onDestroy:" + this);
+		super.onDestroy();
+		RelativeLayout relative = (RelativeLayout) findViewById(R.id.relativeLayout1);
+		relative.setBackgroundDrawable(null);
+
+		// unbindDrawables(findViewById(R.id.LinearLayoutRoot));
+		// System.gc();
+	}
+
+	@Override
+	protected void onPause() {
+		System.out.println("onPause:" + this);
+		super.onPause();
+	}
+
+	// private void unbindDrawables(View view) {
+	// if (view.getBackground() != null) {
+	// view.getBackground().setCallback(null);
+	// view.setBackgroundDrawable(null);
+	// }
+	// if (view instanceof ViewGroup) {
+	// for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+	// unbindDrawables(((ViewGroup) view).getChildAt(i));
+	// }
+	// // ((ViewGroup) view).removeAllViews();
+	// }
+	// }
 }

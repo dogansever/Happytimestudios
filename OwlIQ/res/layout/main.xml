@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainRootLinearLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" android:background="@drawable/back2">
+    android:orientation="vertical" >
 
     <RelativeLayout
         android:id="@+id/relativeLayout1"
@@ -54,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@id/linearLayout2"
             android:layout_below="@id/linearLayout1"
-            android:orientation="vertical" android:background="@drawable/white">
+            android:orientation="vertical" >
 
             <RelativeLayout
                 android:id="@+id/relativeLayout2"
@@ -65,8 +66,9 @@
                     android:id="@+id/linearLayout5"
                     android:layout_width="fill_parent"
                     android:layout_height="72px"
+                    android:layout_centerInParent="true"
                     android:background="@drawable/shade"
-                    android:orientation="vertical" android:layout_centerInParent="true">
+                    android:orientation="vertical" >
                 </LinearLayout>
 
                 <ScrollView
@@ -96,10 +98,12 @@
                         android:id="@+id/textView1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:shadowColor="#000000"
                         android:text="3"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textColor="#000000"
-                        android:textSize="28pt" android:shadowColor="#000000" android:textStyle="bold"/>
+                        android:textSize="28pt"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>

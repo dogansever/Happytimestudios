@@ -15,21 +15,20 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.sever.main.R;
-
 public class SplashIntroActivity extends Activity {
 
+	static Activity lastStopped = null;
 	public final Handler mHandler = new Handler();
 	public static SoundPool soundPool;
 
 	@Override
 	public void onBackPressed() {
-		// TODO Auto-generated method stub
 		// super.onBackPressed();
 	}
 
@@ -47,11 +46,19 @@ public class SplashIntroActivity extends Activity {
 	public static int soundIDright;
 	public static int CLICK = 0;
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+		System.out.println("onCreate:" + this);
 		super.onCreate(savedInstanceState);
+		if (SplashIntroActivity.lastStopped != null) {
+			Intent intent = new Intent(this, SplashIntroActivity.lastStopped.getClass());
+			// intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			startActivity(intent);
+			finish();
+			return;
+
+		}
+
 		setContentView(R.layout.first);
 		Typeface face2 = Typeface.createFromAsset(getAssets(), "FEASFBRG.TTF");
 
@@ -62,7 +69,7 @@ public class SplashIntroActivity extends Activity {
 		int deviceWidth = metrics.widthPixels;
 		textView1.setTextSize(TypedValue.COMPLEX_UNIT_PX, deviceWidth / 18);
 		textView1.setTextColor(Color.YELLOW);
-		((RelativeLayout) findViewById(R.id.relativeLayout2)).setVisibility(View.INVISIBLE);
+		((RelativeLayout) findViewById(R.id.relativeLayout2)).setVisibility(View.GONE);
 		try {
 			list.add(R.drawable.back3);
 			list.add(R.drawable.back4);
@@ -70,21 +77,25 @@ public class SplashIntroActivity extends Activity {
 			list.add(R.drawable.back6);
 			list.add(R.drawable.back7);
 
-			setBackGround();
-
 			mp1 = MediaPlayer.create(getBaseContext(), R.raw.horned_owl);
 			mp1.start();
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		final Runnable r2 = new Runnable() {
 			public void run() {
+				LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout1);
+				linearLayout.setBackgroundDrawable(null);
+				RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout2);
+				relativeLayout.setBackgroundResource(R.drawable.cover);
+
 				((RelativeLayout) findViewById(R.id.relativeLayout2)).setVisibility(View.VISIBLE);
 				final Runnable r2 = new Runnable() {
 					public void run() {
+						RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout2);
+						relativeLayout.setBackgroundDrawable(null);
 						Intent intent = new Intent(SplashIntroActivity.this, MainScreenActivity.class);
 						startActivity(intent);
 						finish();
@@ -109,21 +120,32 @@ public class SplashIntroActivity extends Activity {
 
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
-		// TODO Auto-generated method stub
 		super.onWindowFocusChanged(hasFocus);
-		if (hasFocus) {
-		}
 	}
 
 	@Override
 	protected void onDestroy() {
-		mp1.stop();
+		System.out.println("onDestroy:" + this);
 		super.onDestroy();
+		try {
+			mp1.stop();
+			mp1.release();
+			RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout2);
+			relativeLayout.setBackgroundDrawable(null);
+			LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout1);
+			linearLayout.setBackgroundDrawable(null);
+
+			unbindDrawables(findViewById(R.id.firstLayoutRoot));
+			System.gc();
+		} catch (Exception e) {
+		}
 	}
 
 	@Override
 	protected void onResume() {
+		System.out.println("onResume:" + this);
 		super.onResume();
+		setBackGround();
 	}
 
 	public static long firstClick;
@@ -135,6 +157,7 @@ public class SplashIntroActivity extends Activity {
 		Random randomGenerator = new Random();
 		int randomInt = randomGenerator.nextInt(list.size());
 		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout1);
+		linearLayout.setBackgroundDrawable(null);
 		linearLayout.setBackgroundResource(list.get(randomInt));
 		linearLayout.setOnClickListener(new OnClickListener() {
 
@@ -157,4 +180,22 @@ public class SplashIntroActivity extends Activity {
 		});
 	}
 
+	@Override
+	protected void onStop() {
+		System.out.println("onStop:" + this);
+		super.onStop();
+	}
+
+	private void unbindDrawables(View view) {
+		if (view.getBackground() != null) {
+			view.getBackground().setCallback(null);
+			view.setBackgroundDrawable(null);
+		}
+		if (view instanceof ViewGroup) {
+			for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+				unbindDrawables(((ViewGroup) view).getChildAt(i));
+			}
+			// ((ViewGroup) view).removeAllViews();
+		}
+	}
 }

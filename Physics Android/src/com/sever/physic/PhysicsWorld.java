@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import org.jbox2d.collision.AABB;
 import org.jbox2d.collision.CircleDef;
 import org.jbox2d.collision.PolygonDef;
+import org.jbox2d.collision.PolygonShape;
+import org.jbox2d.collision.ShapeDef;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
@@ -27,7 +29,7 @@ public class PhysicsWorld {
 		// Step 1: Create Physics World Boundaries
 		worldAABB = new AABB();
 		worldAABB.lowerBound.set(new Vec2((float) 0.0, (float) 0.0));
-		worldAABB.upperBound.set(new Vec2((float) 48.0, (float) 64.0));
+		worldAABB.upperBound.set(new Vec2((float) 102.4, (float) 60.0));
 
 		// Step 2: Create Physics World with Gravity
 		Vec2 gravity = new Vec2((float) 0.0, (float) -10.0);
@@ -36,24 +38,23 @@ public class PhysicsWorld {
 
 		// Step 3: Create Ground Box
 		groundBodyDef = new BodyDef();
-		groundBodyDef.position.set(new Vec2((float) 24.0, (float) 2.0));
+		groundBodyDef.position.set(new Vec2((float) 0.0, (float) 0.0));
 		Body groundBody = world.createStaticBody(groundBodyDef);
 		groundShapeDef = new PolygonDef();
-		groundShapeDef.setAsBox((float) 24.0, (float) 1.0);
+		groundShapeDef.setAsBox((float) 102.4, (float) 1.0);
 		groundShapeDef.friction = 10.0f;
 		groundShapeDef.restitution = 0.5f;
 		groundBody.createShape(groundShapeDef);
 
-		// Step 3: Create Ground Box
 		BodyDef rightWall = new BodyDef();
-		rightWall.position.set(new Vec2((float) 48.0, (float) 32.0));
+		rightWall.position.set(new Vec2((float) 102.4, (float) 32.0));
 		Body rightWallBody = world.createStaticBody(rightWall);
 		PolygonDef rightWallDef = new PolygonDef();
 		rightWallDef.setAsBox((float) 1.0, (float) 32.0);
 		rightWallDef.friction = 1.0f;
 		rightWallDef.restitution = 0.5f;
 		rightWallBody.createShape(rightWallDef);
-		// Step 3: Create Ground Box
+
 		BodyDef leftWall = new BodyDef();
 		leftWall.position.set(new Vec2((float) 0.0, (float) 32.0));
 		Body leftWallBody = world.createStaticBody(leftWall);
@@ -62,6 +63,15 @@ public class PhysicsWorld {
 		leftWallDef.friction = 1.0f;
 		leftWallDef.restitution = 0.5f;
 		leftWallBody.createShape(leftWallDef);
+		
+		BodyDef ceiling = new BodyDef();
+		ceiling.position.set(new Vec2((float) 0.0, (float) 56.0));
+		Body ceilingBody = world.createStaticBody(ceiling);
+		PolygonDef ceilingDef = new PolygonDef();
+		ceilingDef.setAsBox((float) 102.4, (float) 1.0);
+		ceilingDef.friction = 1.0f;
+		ceilingDef.restitution = 0.5f;
+		ceilingBody.createShape(ceilingDef);
 	}
 
 	public void addBall() {
@@ -72,6 +82,7 @@ public class PhysicsWorld {
 		// Create Dynamic Body
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(x, y);
+		bodyDef.isBullet = true;
 		bodies.add(world.createDynamicBody(bodyDef));
 
 		// Create Shape with Properties
@@ -84,7 +95,30 @@ public class PhysicsWorld {
 		// Assign shape to Body
 		bodies.get(bodies.size() - 1).createShape(circle);
 		bodies.get(bodies.size() - 1).setMassFromShapes();
+		bodies.get(bodies.size() - 1).setBullet(true);
+		bodies.get(bodies.size() - 1).setLinearVelocity(new Vec2(10, 25));
 
+	}
+	
+	public void addPlayer(float x, float y) {
+		// Create Dynamic Body
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.position.set(x, y);
+		bodyDef.isBullet = true;
+		bodies.add(world.createDynamicBody(bodyDef));
+		
+
+		PolygonDef playerDef = new PolygonDef();
+		playerDef.setAsBox((float) 5, (float) 10);
+		playerDef.friction = 1.0f;
+		playerDef.restitution = 0.5f;
+		playerDef.density = (float) 10.0;
+		
+		// Assign shape to Body
+		bodies.get(bodies.size() - 1).createShape(playerDef);
+		bodies.get(bodies.size() - 1).setMassFromShapes();
+//		bodies.get(bodies.size() - 1).setLinearVelocity(new Vec2(40, 25));
+		
 	}
 
 	public void update() {

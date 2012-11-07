@@ -10,7 +10,6 @@
         android:id="@+id/relativeLayout1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/back4blur"
         android:clipToPadding="false" >
 
         <LinearLayout
@@ -40,19 +39,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="20" />
+                    android:text="20 " />
 
                 <RadioButton
                     android:id="@+id/radio1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="50" />
+                    android:text="50 " />
 
                 <RadioButton
                     android:id="@+id/radio2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="100" />
+                    android:text="100 " />
             </RadioGroup>
         </LinearLayout>
 
