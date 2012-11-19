@@ -3,14 +3,16 @@ package com.sever.physics.game;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
+import com.sever.physic.Constants;
+
 public class GameLoopThread extends Thread {
-	public static final int FPS = 6;
 	private GameView view;
 	private boolean running = false;
 	private boolean sleeping = false;
 
 	private SurfaceHolder holder;
-	public GameLoopThread(GameView view,SurfaceHolder holder) {
+
+	public GameLoopThread(GameView view, SurfaceHolder holder) {
 		this.holder = holder;
 		this.view = view;
 	}
@@ -25,7 +27,7 @@ public class GameLoopThread extends Thread {
 
 	@Override
 	public void run() {
-		long ticksPS = 1000 / FPS;
+		long ticksPS = 1000 / Constants.FPS;
 		long startTime;
 		long sleepTime;
 		while (running) {
@@ -53,8 +55,8 @@ public class GameLoopThread extends Thread {
 			try {
 				if (sleepTime > 0)
 					sleep(sleepTime);
-				else
-					sleep(10);
+				// else
+				// sleep(10);
 			} catch (Exception e) {
 			}
 		}
