@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.sever.physics.game.GameView;
+import com.sever.physics.game.PlayerSprite;
 
 public class PhysicsActivity extends Activity {
 
@@ -25,7 +26,11 @@ public class PhysicsActivity extends Activity {
 	protected long downTime;
 	public static Bitmap bmpBack;
 	public static Bitmap bmpBall;
-	public static Bitmap bmpPlayer;
+	public static Bitmap bmpBox;
+	public static Bitmap bmpBox2;
+	public static Bitmap planet1;
+	public static Bitmap barrel;
+	public static Bitmap player;
 	public static PhysicsActivity context;
 
 	@Override
@@ -33,26 +38,36 @@ public class PhysicsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		context = this;
 		recallDeviceMetrics();
-		bmpBack = BitmapFactory.decodeResource(getResources(), R.drawable.basket);
-		bmpBall = BitmapFactory.decodeResource(getResources(), R.drawable.basketball20);
-		bmpPlayer = BitmapFactory.decodeResource(getResources(), R.drawable.basketball20);
+		bmpBack = createScaledBitmap(R.drawable.space, 0, 0);
+		bmpBall = createScaledBitmap(R.drawable.basketball20, 0, 0);
+		bmpBox = createScaledBitmap(R.drawable.crate30x30dark, 0, 0);
+		bmpBox2 = createScaledBitmap(R.drawable.crate30x30light, 0, 0);
+		planet1 = createScaledBitmap(R.drawable.planet200x200, 150, 150);
+		barrel = createScaledBitmap(R.drawable.barrel, 45, 75);
+		player = createScaledBitmap(R.drawable.player, 0, 0);
 
 		createWorld();
 		setContentView(R.layout.main);
-		RelativeLayout relativeLayout1 = (RelativeLayout) findViewById(R.id.relativeLayout1);
+		RelativeLayout relativeLayout1 = (RelativeLayout) findViewById(R.id.relativeLayoutGameView);
 		relativeLayout1.addView(new GameView(this));
-
 
 		// Start Regular Update
 		mHandler = new Handler();
 	}
 
+	private Bitmap createScaledBitmap(int decodeResource, int dstWidth, int dstHeight) {
+		if (dstWidth <= 0 || dstHeight <= 0) {
+			return BitmapFactory.decodeResource(getResources(), decodeResource);
+		}
+		return Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), decodeResource), dstWidth, dstHeight, false);
+	}
+
 	private void createWorld() {
 		mWorld = new PhysicsWorld();
 		mWorld.create();
-		mWorld.addBall(25, 20);
-		mWorld.addPlayer(10, 5);
-		mWorld.addPlayer(50, 5);
+		// mWorld.addBall(40, 5);
+		// mWorld.addPlayer(10, 55);
+		// mWorld.addPlayer(70, 55);
 	}
 
 	@Override
@@ -85,12 +100,12 @@ public class PhysicsActivity extends Activity {
 	private Runnable update = new Runnable() {
 		public void run() {
 			mWorld.update();
-			mHandler.postDelayed(update, (long) (mWorld.timeStep * 1000));
+			mHandler.postDelayed(update, (long) (Constants.timeStep * 1000));
 		}
 	};
 
-	public static int deviceWidth;
-	public static int deviceHeight;
+	public static float deviceWidth;
+	public static float deviceHeight;
 
 	public void recallDeviceMetrics() {
 		try {
@@ -104,7 +119,28 @@ public class PhysicsActivity extends Activity {
 
 	public void updateScreen() {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	private GameView getGameView() {
+		RelativeLayout relativeLayout1 = (RelativeLayout) findViewById(R.id.relativeLayoutGameView);
+		return (GameView) relativeLayout1.getChildAt(0);
+	}
+
+	public void throttleUp(View view) {
+		((PlayerSprite) getGameView().playerSprite).throttleUp();
+	}
+
+	public void throttleDown(View view) {
+		((PlayerSprite) getGameView().playerSprite).throttleDown();
+	}
+
+	public void throttleLeft(View view) {
+		((PlayerSprite) getGameView().playerSprite).throttleLeft();
+	}
+
+	public void throttleRight(View view) {
+		((PlayerSprite) getGameView().playerSprite).throttleRight();
 	}
 
 }
