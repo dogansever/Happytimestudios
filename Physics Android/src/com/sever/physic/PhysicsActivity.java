@@ -8,7 +8,10 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.sever.physics.game.GameView;
@@ -44,7 +47,7 @@ public class PhysicsActivity extends Activity {
 		bmpBox2 = createScaledBitmap(R.drawable.crate30x30light, 0, 0);
 		planet1 = createScaledBitmap(R.drawable.planet200x200, 150, 150);
 		barrel = createScaledBitmap(R.drawable.barrel, 45, 75);
-		player = createScaledBitmap(R.drawable.player, 0, 0);
+		player = createScaledBitmap(R.drawable.playerx2x2, 0, 0);
 
 		createWorld();
 		setContentView(R.layout.main);
@@ -53,6 +56,112 @@ public class PhysicsActivity extends Activity {
 
 		// Start Regular Update
 		mHandler = new Handler();
+		setButtonHandlers();
+	}
+
+	private void setButtonHandlers() {
+
+		Button up = (Button) findViewById(R.id.button1);
+		Button down = (Button) findViewById(R.id.button2);
+		Button left = (Button) findViewById(R.id.button3);
+		Button right = (Button) findViewById(R.id.button4);
+		Button power = (Button) findViewById(R.id.button5);
+		up.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					throttleUp(v);
+					break;
+				case MotionEvent.ACTION_MOVE:
+					throttleUp(v);
+					break;
+				case MotionEvent.ACTION_UP:
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		});
+		down.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					throttleDown(v);
+					break;
+				case MotionEvent.ACTION_MOVE:
+					throttleDown(v);
+					break;
+				case MotionEvent.ACTION_UP:
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		});
+		left.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					throttleLeft(v);
+					break;
+				case MotionEvent.ACTION_MOVE:
+					throttleLeft(v);
+					break;
+				case MotionEvent.ACTION_UP:
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		});
+		right.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					throttleRight(v);
+					break;
+				case MotionEvent.ACTION_MOVE:
+					throttleRight(v);
+					break;
+				case MotionEvent.ACTION_UP:
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		});
+		power.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					((PlayerSprite) getGameView().playerSprite).powerUp();
+					break;
+				case MotionEvent.ACTION_MOVE:
+					break;
+				case MotionEvent.ACTION_UP:
+					((PlayerSprite) getGameView().playerSprite).powerDown();
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		});
+
 	}
 
 	private Bitmap createScaledBitmap(int decodeResource, int dstWidth, int dstHeight) {

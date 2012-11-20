@@ -86,37 +86,29 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	private void addPlayer(float x, float y) {
-		playerSprite = new PlayerSprite(this, PhysicsActivity.player, x, y);
+		playerSprite = new PlayerSprite(this, PhysicsActivity.player, x, y, 2, 2);
 	}
 
 	protected void createSprites() {
 		// ground
-		addGroundBox(Constants.upperBoundx * 0.5f, Constants.lowerBoundy - Constants.setAsBoxhy, Constants.upperBoundx, Constants.setAsBoxhy);
+		addGroundBox(Constants.upperBoundxScreen * 0.5f, Constants.lowerBoundyScreen - Constants.setAsBoxhyScreen, Constants.upperBoundxScreen, Constants.setAsBoxhyScreen);
 		// ceiling
-		addGroundBox(Constants.upperBoundx * 0.5f, Constants.upperBoundy + Constants.setAsBoxhy, Constants.upperBoundx, Constants.setAsBoxhy);
+		addGroundBox(Constants.upperBoundxScreen * 0.5f, Constants.upperBoundyScreen + Constants.setAsBoxhyScreen, Constants.upperBoundxScreen, Constants.setAsBoxhyScreen);
 		// leftwall
-		addGroundBox(Constants.lowerBoundx - Constants.setAsBoxhx, Constants.upperBoundy * 0.5f, Constants.setAsBoxhx, Constants.upperBoundy * 0.5f);
+		addGroundBox(Constants.lowerBoundxScreen - Constants.setAsBoxhxScreen, Constants.upperBoundyScreen * 0.5f, Constants.setAsBoxhxScreen, Constants.upperBoundyScreen * 0.5f);
 		// rightwall
-		addGroundBox(Constants.upperBoundx + Constants.setAsBoxhx, Constants.upperBoundy * 0.5f, Constants.setAsBoxhx, Constants.upperBoundy * 0.5f);
+		addGroundBox(Constants.upperBoundxScreen + Constants.setAsBoxhxScreen, Constants.upperBoundyScreen * 0.5f, Constants.setAsBoxhxScreen, Constants.upperBoundyScreen * 0.5f);
 
-		// addPlanet(this.getWidth() * 0.0f / Constants.pixelpermeter,
-		// this.getHeight() * 0.5f / Constants.pixelpermeter);
-		// addPlanet(this.getWidth() * 0.25f / Constants.pixelpermeter,
-		// this.getHeight() * 0.75f / Constants.pixelpermeter);
-		addPlanet(this.getWidth() * 0.5f / Constants.pixelpermeter, this.getHeight() * 0.5f / Constants.pixelpermeter);
-		// addPlanet(this.getWidth() * 0.75f / Constants.pixelpermeter,
-		// this.getHeight() * 0.75f / Constants.pixelpermeter);
-		// addPlanet(this.getWidth() * 1.0f / Constants.pixelpermeter,
-		// this.getHeight() * 0.5f / Constants.pixelpermeter);
-		addBall(400 / Constants.pixelpermeter, 50 / Constants.pixelpermeter);
-		addBall(50 / Constants.pixelpermeter, 400 / Constants.pixelpermeter);
-		addBox(50 / Constants.pixelpermeter, 50 / Constants.pixelpermeter);
-		addBox(50 / Constants.pixelpermeter, 500 / Constants.pixelpermeter);
-		addBox2(500 / Constants.pixelpermeter, 500 / Constants.pixelpermeter);
-		addBox2(500 / Constants.pixelpermeter, 50 / Constants.pixelpermeter);
-		addBarrel(500 / Constants.pixelpermeter, 50 / Constants.pixelpermeter);
-		addBarrel(500 / Constants.pixelpermeter, 50 / Constants.pixelpermeter);
-		addPlayer(500 / Constants.pixelpermeter, 500 / Constants.pixelpermeter);
+		addPlanet(this.getWidth() * 0.5f, this.getHeight() * 0.75f);
+		addBall(400, 50);
+		addBall(50, 400);
+		addBox(50, 50);
+		addBox(50, 500);
+		addBox2(500, 500);
+		addBox2(500, 50);
+		addBarrel(500, 50);
+		addBarrel(500, 50);
+		addPlayer(800, 100);
 
 	}
 
@@ -184,10 +176,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				Paint paint = new Paint();
 				paint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
 				canvas.drawPaint(paint);
-				
-//				Rect dst = new Rect(0, 0, getWidth(), getHeight());
-//				canvas.drawBitmap(PhysicsActivity.bmpBack, null, dst, null);
-				playerSprite.onDraw(canvas);
+
+				// Rect dst = new Rect(0, 0, getWidth(), getHeight());
+				// canvas.drawBitmap(PhysicsActivity.bmpBack, null, dst, null);
 
 				for (Iterator<FreeSprite> it = staticSprites.iterator(); it.hasNext();) {
 					FreeSprite spriteStatic = it.next();
@@ -201,6 +192,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					}
 				}
 
+				playerSprite.onDraw(canvas);
 				for (Iterator<FreeSprite> it2 = freeSprites.iterator(); it2.hasNext();) {
 					FreeSprite spritefree = it2.next();
 					try {
@@ -228,14 +220,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		float x2 = event.getX();
 		float y2 = event.getY();
 		if (event.getAction() == MotionEvent.ACTION_MOVE) {
-			// addBall(x2 / 10, (PhysicsActivity.deviceHeight - y2) / 10);
+//			addBarrel(x2, (PhysicsActivity.deviceHeight - y2));
 		} else if (event.getAction() == MotionEvent.ACTION_UP) {
-			((PlayerSprite) playerSprite).powerDown();
 			// pointUp = new Vec2(x2, y2);
 			// if (victim != null)
 			// victim.kickout(pointUp);
 		} else if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			((PlayerSprite) playerSprite).powerUp();
 			// pointDown = new Vec2(x2, y2);
 			// victim = null;
 			// for (Iterator<FreeSprite> it = freeSprites.iterator();

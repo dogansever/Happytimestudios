@@ -1,12 +1,10 @@
 package com.sever.physics.game;
 
 import org.jbox2d.collision.PolygonDef;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.BodyDef;
+
+import com.sever.physic.Constants;
 
 import android.graphics.Bitmap;
-
-import com.sever.physic.PhysicsActivity;
 
 public class GroundBoxSprite extends FreeSprite {
 
@@ -21,18 +19,22 @@ public class GroundBoxSprite extends FreeSprite {
 	}
 
 	void addGroundBox(float x, float y, float hx, float hy) {
-		BodyDef wall = new BodyDef();
-		wall.position.set(new Vec2(x, y));
-		PhysicsActivity.mWorld.bodies.add(PhysicsActivity.mWorld.world.createStaticBody(wall));
-		this.index = PhysicsActivity.mWorld.bodies.size() - 1;
+		createStaticBody(x, y);
+		createShape(hx, hy);
+		// BodyDef wall = new BodyDef();
+		// wall.position.set(new Vec2(x, y));
+		// PhysicsActivity.mWorld.bodies.add(PhysicsActivity.mWorld.world.createStaticBody(wall));
+		// this.index = PhysicsActivity.mWorld.bodies.size() - 1;
 
+	}
+
+	public void createShape(float hx, float hy) {
 		PolygonDef wallDef = new PolygonDef();
-		wallDef.setAsBox(hx, hy);
+		wallDef.setAsBox(hx / Constants.pixelpermeter, hy / Constants.pixelpermeter);
 		wallDef.friction = 1.0f;
 		wallDef.restitution = 0.2f;
 
 		getBody().createShape(wallDef);
 		getBody().computeMass();
 	}
-
 }

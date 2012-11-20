@@ -2,19 +2,26 @@ package com.sever.physics.game;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Rect;
 
 import com.sever.physic.Constants;
 import com.sever.physic.PhysicsActivity;
 
 public class FreeSprite {
 
-	public static final int BMP_COLUMNS = 1;
+	public int BMP_COLUMNS = 1;
+	public int BMP_ROWS = 1;
+	public int BMP_FPS = 6;
+	public int BMP_FPS_CURRENT = 0;
 	public GameView gameView;
 	public Bitmap bmp;
+	public Bitmap bmpFrame;
 
 	public float x = 0;
 	public float y = 0;
@@ -22,9 +29,14 @@ public class FreeSprite {
 	public float height;
 	public int index;
 	public float angle;
-	public boolean noRotation;
+	public boolean noRotation = false;
+	public boolean invisible = false;
+	public int currentFrame = 0;
+	public int currentRow = 0;
 
 	public void freeBitmaps() {
+		bmp = null;
+		bmpFrame = null;
 	}
 
 	public void pull(FreeSprite sprite) {
@@ -35,33 +47,53 @@ public class FreeSprite {
 
 	}
 
+	void addSprite(float x, float y) {
+
+	}
+
+	public void createShape() {
+
+	}
+
+	public void createStaticBody(float x, float y) {
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.position.set(x / Constants.pixelpermeter, y / Constants.pixelpermeter);
+		PhysicsActivity.mWorld.bodies.add(PhysicsActivity.mWorld.world.createStaticBody(bodyDef));
+		this.index = PhysicsActivity.mWorld.bodies.size() - 1;
+	}
+
+	public void createDynamicBody(float x, float y) {
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.position.set(x / Constants.pixelpermeter, y / Constants.pixelpermeter);
+		PhysicsActivity.mWorld.bodies.add(PhysicsActivity.mWorld.world.createDynamicBody(bodyDef));
+		this.index = PhysicsActivity.mWorld.bodies.size() - 1;
+	}
+
+	public void destroyShape() {
+		if (getBody().getShapeList() != null)
+			getBody().destroyShape(getBody().getShapeList());
+	}
+
 	protected Body getBody() {
 		return PhysicsActivity.mWorld.bodies.get(index);
 	}
 
 	protected void update() {
 		updatePosition();
+		updateBitmap();
 	}
 
-	protected void kickout(Vec2 positionSrc) {
-		Body body = getBody();
-		Vec2 positionTarget = body.getPosition();
-		Vec2 force = new Vec2(positionSrc.x / Constants.pixelpermeter - positionTarget.x, positionTarget.y - positionSrc.y / Constants.pixelpermeter);
-		force.normalize(); // force direction always point to source
-		force.set(force.mul((float) (body.getMass() * -10.0 * Constants.gravityy)));
-		body.applyImpulse(force, body.getWorldCenter());
-		// System.out.println("!!!Kicked it!!!:" + index + ", force:x:" +
-		// force.x + ", y:" + force.y);
-	}
+	private void updateBitmap() {
+		if (++BMP_FPS_CURRENT % BMP_FPS == 1)
+			currentFrame = ++currentFrame % BMP_COLUMNS;
 
-	protected void doScatter() {
-		Body body = getBody();
-		Vec2 positionTarget = body.getPosition();
-		Vec2 force = new Vec2(1.0f, 0.0f);
-		force.normalize(); // force direction always point to source
-		force.set(force.mul((float) (body.getMass() * Constants.gravityPush)));
-		body.applyImpulse(force, body.getWorldCenter());
-		System.out.println("!!!Scattered!!!:" + index + ", force:x:" + force.x + ", y:" + force.y);
+		int srcX = (int) (currentFrame * width);
+		int srcY = (int) (currentRow * height);
+		Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height));
+		Rect dst = new Rect((int) (x), (int) (y), (int) (x + width), (int) (y + height));
+		Paint p = new Paint();
+		bmpFrame = Bitmap.createBitmap(bmp, src.left, src.top, (int) width, (int) height);
+		// bmpFrame = bmp;
 	}
 
 	private void updatePosition() {
@@ -75,15 +107,27 @@ public class FreeSprite {
 		// ",width:" + width + ",height:" + height);
 	}
 
+	protected void kickout(Vec2 positionSrc) {
+		Body body = getBody();
+		Vec2 positionTarget = body.getPosition();
+		Vec2 force = new Vec2(positionSrc.x / Constants.pixelpermeter - positionTarget.x, positionTarget.y - positionSrc.y / Constants.pixelpermeter);
+		force.normalize(); // force direction always point to source
+		force.set(force.mul((float) (body.getMass() * -10.0 * Constants.gravityy)));
+		body.applyImpulse(force, body.getWorldCenter());
+		// System.out.println("!!!Kicked it!!!:" + index + ", force:x:" +
+		// force.x + ", y:" + force.y);
+	}
+
 	public void onDraw(Canvas canvas) {
 		update();
-		if (bmp != null) {
+		if (bmp != null && isVisible()) {
 			Matrix m = new Matrix();
 			if (!noRotation)
 				m.postRotate((float) Math.toDegrees(angle), width * 0.5f, height * 0.5f);
 			Vec2 translate = getBitmapDrawingXY();
 			m.postTranslate(translate.x, translate.y);
-			canvas.drawBitmap(bmp, m, null);
+			// canvas.drawColor(Color.TRANSPARENT);
+			canvas.drawBitmap(bmpFrame, m, null);
 		}
 	}
 
@@ -110,4 +154,49 @@ public class FreeSprite {
 	public float spacing(float x, float y) {
 		return (float) Math.sqrt(x * x + y * y);
 	}
+
+	public void applyForce(FreeSprite sprite, Vec2 positionSrc, float FIELD_RADIUS, float pullG, Vec2 force) {
+		Body body = sprite.getBody();
+		Vec2 positionTarget = body.getPosition();
+		float range = spacing(positionSrc.x - positionTarget.x, positionSrc.y - positionTarget.y);
+		if (range <= FIELD_RADIUS) {
+			force.normalize(); // force direction always point to source
+			force.set(force.mul(body.getMass() * pullG));
+			body.applyForce(force, body.getWorldCenter());
+			System.out.println("applyForce:" + force);
+		}
+	}
+
+	public void applyForce(FreeSprite sprite, Vec2 positionSrc, float FIELD_RADIUS, float pullG) {
+		Body body = sprite.getBody();
+		Vec2 positionTarget = body.getPosition();
+		float range = spacing(positionSrc.x - positionTarget.x, positionSrc.y - positionTarget.y);
+		if (range <= FIELD_RADIUS) {
+			Vec2 force = new Vec2(positionSrc.x - positionTarget.x, positionSrc.y - positionTarget.y);
+			force.normalize(); // force direction always point to source
+			force.set(force.mul(body.getMass() * pullG * (FIELD_RADIUS - range) / FIELD_RADIUS));
+			body.applyForce(force, body.getWorldCenter());
+		}
+	}
+
+	public boolean isVisible() {
+		return !invisible;
+	}
+
+	public void makeInvisible() {
+		invisible = true;
+	}
+
+	public void makeVisible() {
+		invisible = false;
+	}
+
+	public float getWidthPhysical() {
+		return width / Constants.pixelpermeter;
+	}
+
+	public float getHeightPhysical() {
+		return height / Constants.pixelpermeter;
+	}
+
 }

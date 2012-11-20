@@ -3,48 +3,39 @@ package com.sever.physics.game;
 import org.jbox2d.collision.CircleDef;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.BodyDef;
 
 import android.graphics.Bitmap;
 
 import com.sever.physic.Constants;
-import com.sever.physic.PhysicsActivity;
 
 public class PlayerSprite extends FreeSprite {
 
 	public boolean powerOn;
 	public boolean scatter;
 
-	public PlayerSprite(GameView gameView, Bitmap bmp, float x, float y) {
+	public PlayerSprite(GameView gameView, Bitmap bmp, float x, float y, int bmpColumns, int bmpRows) {
+		BMP_COLUMNS = bmpColumns;
+		BMP_ROWS = bmpRows;
 		this.width = bmp.getWidth() / BMP_COLUMNS;
-		this.height = bmp.getHeight();
+		this.height = bmp.getHeight() / BMP_ROWS;
 		this.bmp = bmp;
 		this.gameView = gameView;
 		this.x = x;
 		this.y = y;
 		this.noRotation = true;
-		addPlayer(x, y);
+		addSprite(x, y);
 	}
 
-	// public void onDraw(Canvas canvas) {
-	// update();
-	// Matrix m = new Matrix();
-	// m.postRotate(angle, width / 2, height / 2);
-	// m.postTranslate(x, gameView.getHeight() - y);
-	// canvas.drawBitmap(bmp, m, null);
-	//
-	// }
+	void addSprite(float x, float y) {
+		createDynamicBody(x, y);
+		createShape();
+	}
 
-	void addPlayer(float x, float y) {
-		// Create Dynamic Body
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.position.set(x, y);
-		PhysicsActivity.mWorld.bodies.add(PhysicsActivity.mWorld.world.createDynamicBody(bodyDef));
-
+	public void createShape() {
 		CircleDef circle = new CircleDef();
-		circle.radius = width * 0.5f / Constants.pixelpermeter;
-		circle.friction = 1.0f;
-		circle.restitution = 0.2f;
+		circle.radius = getWidthPhysical() * 0.5f;
+		circle.friction = 1.0f;// zero being completely frictionless
+		circle.restitution = 0.2f;// zero being not bounce at all
 		circle.density = 10.0f;
 
 		// PolygonDef playerDef = new PolygonDef();
@@ -55,8 +46,8 @@ public class PlayerSprite extends FreeSprite {
 		// playerDef.density = 10.0f;
 
 		// Assign shape to Body
-		this.index = PhysicsActivity.mWorld.bodies.size() - 1;
 		// getBody().createShape(playerDef);
+
 		getBody().createShape(circle);
 		getBody().setMassFromShapes();
 		getBody().setBullet(true);
@@ -64,27 +55,52 @@ public class PlayerSprite extends FreeSprite {
 	}
 
 	public void push(FreeSprite sprite) {
-		float FIELD_RADIUS = width / Constants.pixelpermeter;
+		sprite.makeVisible();
+		currentRow = 0;
+		currentFrame = 0;
+		float FIELD_RADIUS = getWidthPhysical();
 		Vec2 positionTarget = sprite.getBody().getPosition();
 		Vec2 positionSrc = this.getBody().getPosition();
 		float range = spacing(positionSrc.x - positionTarget.x, positionSrc.y - positionTarget.y);
 		if (range <= FIELD_RADIUS) {
-			sprite.doScatter();
+			Body body = sprite.getBody();
+			body.setAngularVelocity(0);
+			body.setLinearVelocity(new Vec2(0, 0));
+			Vec2 force = new Vec2(1.0f, 0.0f);
+			force.normalize(); // force direction always point to source
+			force.set(force.mul((float) (body.getMass() * Constants.gravityPushPlayer)));
+			body.applyImpulse(force, body.getWorldCenter());
+			System.out.println("!!!Scattered!!!:" + index + ", force:x:" + force.x + ", y:" + force.y);
 		}
+
+		// applyForce(sprite.getBody(), positionSrc, FIELD_RADIUS,
+		// Constants.gravityPushPlayer, force);
 	}
 
 	public void pull(FreeSprite sprite) {
-		float CLOSE_FIELD_RADIUS = width / Constants.pixelpermeter;
+		float FIELD_RADIUS = Constants.gravityPullFieldRadiusPlayer;
+		float CLOSE_FIELD_RADIUS = getWidthPhysical();
 		Body body = sprite.getBody();
 		Vec2 positionTarget = body.getPosition();
 		Vec2 positionSrc = this.getBody().getPosition();
 		float range = spacing(positionSrc.x - positionTarget.x, positionSrc.y - positionTarget.y);
-		if (CLOSE_FIELD_RADIUS <= range && range <= Constants.gravityPullFieldRadius) {
-			// System.out.println("!!!Pulled it!!!:" + index);
-			Vec2 force = new Vec2(positionSrc.x - positionTarget.x, positionSrc.y - positionTarget.y + height / Constants.pixelpermeter);
-			force.normalize(); // force direction always point to source
-			force.set(force.mul(body.getMass() * Constants.gravityPull * (Constants.gravityPullFieldRadius - range) / Constants.gravityPullFieldRadius));
-			body.applyForce(force, body.getWorldCenter());
+		// if (CLOSE_FIELD_RADIUS <= range && range <= FIELD_RADIUS) {
+		// // System.out.println("!!!Pulled it!!!:" + index);
+		// Vec2 force = new Vec2(positionSrc.x - positionTarget.x, positionSrc.y
+		// - positionTarget.y + height / Constants.pixelpermeter);
+		// force.normalize(); // force direction always point to source
+		// force.set(force.mul(body.getMass() * Constants.gravityPullPlayer *
+		// (FIELD_RADIUS - range) / FIELD_RADIUS));
+		// body.applyForce(force, body.getWorldCenter());
+		// }
+		currentRow = 1;
+		currentFrame = 0;
+		if (range <= CLOSE_FIELD_RADIUS) {
+			// sprite.makeInvisible();
+			body.setAngularVelocity(0);
+			body.setLinearVelocity(new Vec2(0, 0));
+		} else if (sprite.isVisible()) {
+			applyForce(sprite, positionSrc, FIELD_RADIUS, Constants.gravityPullPlayer);
 		}
 	}
 
@@ -140,6 +156,7 @@ public class PlayerSprite extends FreeSprite {
 		force.normalize(); // force direction always point to source
 		force.set(force.mul((float) (body.getMass() * Constants.gravityThrottle)));
 		body.applyImpulse(force, body.getWorldCenter());
+
 		// System.out.println("!!!Kicked it!!!:" + index + ", force:x:" +
 		// force.x + ", y:" + force.y);
 	}
