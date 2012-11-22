@@ -40,7 +40,7 @@ public class PlanetSprite extends FreeSprite {
 	}
 
 	public void pull(FreeSprite sprite, Vec2 positionSrc) {
-		float FIELD_RADIUS = getWidthPhysical() * 10;
+		float FIELD_RADIUS = getWidthPhysical() * 5;
 		applyForce(sprite, positionSrc, FIELD_RADIUS, Constants.gravityPlanetPull);
 	}
 

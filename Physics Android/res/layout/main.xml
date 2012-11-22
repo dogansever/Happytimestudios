@@ -57,7 +57,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="150px"
+            android:layout_width="300px"
             android:layout_height="160px"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true" >
@@ -69,6 +69,11 @@
 
                 <Button
                     android:id="@+id/button5"
+                    android:layout_width="150px"
+                    android:layout_height="150px"
+                    android:background="@drawable/buttonred" />
+                <Button
+                    android:id="@+id/button6"
                     android:layout_width="150px"
                     android:layout_height="150px"
                     android:background="@drawable/buttonred" />

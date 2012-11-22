@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.jbox2d.common.Vec2;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
@@ -21,9 +22,11 @@ import com.sever.physic.PhysicsActivity;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public GameLoopThread gameLoopThread;
+	public ConcurrentLinkedQueue<FreeSprite> explosiveSprites = new ConcurrentLinkedQueue<FreeSprite>();
 	public ConcurrentLinkedQueue<FreeSprite> freeSprites = new ConcurrentLinkedQueue<FreeSprite>();
 	public ConcurrentLinkedQueue<FreeSprite> staticSprites = new ConcurrentLinkedQueue<FreeSprite>();
 	public ConcurrentLinkedQueue<FreeSprite> groundSprites = new ConcurrentLinkedQueue<FreeSprite>();
+	public ConcurrentLinkedQueue<FreeSprite> enemySprites = new ConcurrentLinkedQueue<FreeSprite>();
 	public PlayerSprite playerSprite;
 	public int score = 0;
 	public int point = 0;
@@ -62,23 +65,42 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	protected void addBall(float x, float y) {
-		freeSprites.add(new BallSprite(this, PhysicsActivity.bmpBall, x, y));
+		freeSprites.add(new BallSprite(freeSprites, this, PhysicsActivity.bmpBall, x, y));
 	}
 
-	protected void addBox(float x, float y) {
-		freeSprites.add(new BoxSprite(this, PhysicsActivity.bmpBox, x, y));
+	protected FreeSprite addBox(float x, float y) {
+		FreeSprite sprite = new BoxSprite(freeSprites, this, PhysicsActivity.bmpBox, x, y);
+		freeSprites.add(sprite);
+		return sprite;
+	}
+
+	protected FreeSprite addGrenade(float x, float y) {
+		FreeSprite sprite = new GrenadeSprite(explosiveSprites, this, PhysicsActivity.bomb, x, y, 2, 2);
+		explosiveSprites.add(sprite);
+		return sprite;
+	}
+
+	protected FreeSprite addGrenadeImploding(float x, float y) {
+		FreeSprite sprite = new GrenadeImplodeSprite(explosiveSprites, this, PhysicsActivity.bomb2, x, y, 4, 1);
+		explosiveSprites.add(sprite);
+		return sprite;
 	}
 
 	protected void addBox2(float x, float y) {
-		freeSprites.add(new BoxSprite(this, PhysicsActivity.bmpBox2, x, y));
+		freeSprites.add(new BoxSprite(freeSprites, this, PhysicsActivity.bmpBox2, x, y));
 	}
 
 	protected void addBarrel(float x, float y) {
-		freeSprites.add(new BoxSprite(this, PhysicsActivity.barrel, x, y));
+		freeSprites.add(new BoxSprite(freeSprites, this, PhysicsActivity.barrel, x, y));
 	}
 
 	protected void addPlanet(float x, float y) {
 		staticSprites.add(new PlanetSprite(this, PhysicsActivity.planet1, x, y));
+	}
+
+	protected void addGround(float x, float y, int w, int h) {
+		Bitmap bmp = PhysicsActivity.context.createScaledBitmap(PhysicsActivity.ground, w, h);
+		staticSprites.add(new StaticBoxSprite(this, bmp, x, y));
 	}
 
 	protected void addGroundBox(float x, float y, float hx, float hy) {
@@ -87,6 +109,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	private void addPlayer(float x, float y) {
 		playerSprite = new PlayerSprite(this, PhysicsActivity.player, x, y, 2, 2);
+	}
+
+	private void addEnemy(float x, float y) {
+		enemySprites.add(new EnemySprite(this, PhysicsActivity.enemy, x, y, 2, 1));
 	}
 
 	protected void createSprites() {
@@ -99,16 +125,33 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		// rightwall
 		addGroundBox(Constants.upperBoundxScreen + Constants.setAsBoxhxScreen, Constants.upperBoundyScreen * 0.5f, Constants.setAsBoxhxScreen, Constants.upperBoundyScreen * 0.5f);
 
-		addPlanet(this.getWidth() * 0.5f, this.getHeight() * 0.75f);
-		addBall(400, 50);
-		addBall(50, 400);
-		addBox(50, 50);
-		addBox(50, 500);
-		addBox2(500, 500);
-		addBox2(500, 50);
-		addBarrel(500, 50);
-		addBarrel(500, 50);
-		addPlayer(800, 100);
+		addGround(this.getWidth() * 0.5f, 25.0f, (int) (this.getWidth() * 0.9), 50);
+		addGround(900, 400, 50, 50);
+		addGround(950, 300, 50, 50);
+
+		 addPlanet(this.getWidth() * 0.5f, this.getHeight() * 0.75f);
+		// addBall(400, 150);
+		// addBall(150, 400);
+		// addBox(150, 150);
+		// addBox2(500, 500);
+		// addBox2(500, 150);
+		addBox2(250, 300);
+		addBox2(250, 250);
+		addBox2(250, 200);
+		addBox2(300, 250);
+		addBox2(300, 200);
+		addBox(350, 200);
+		addBox(400, 200);
+		addBarrel(450, 150);
+		addBarrel(400, 150);
+		addBarrel(350, 150);
+		addBarrel(300, 150);
+		addBarrel(250, 150);
+		addBarrel(200, 150);
+		addBarrel(150, 150);
+
+		addPlayer(700, 500);
+		addEnemy(150, 250);
 
 	}
 
@@ -180,6 +223,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				// Rect dst = new Rect(0, 0, getWidth(), getHeight());
 				// canvas.drawBitmap(PhysicsActivity.bmpBack, null, dst, null);
 
+				// draw statics, pull frees
 				for (Iterator<FreeSprite> it = staticSprites.iterator(); it.hasNext();) {
 					FreeSprite spriteStatic = it.next();
 					spriteStatic.onDraw(canvas);
@@ -190,9 +234,52 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 						} catch (Exception e) {
 						}
 					}
+					for (Iterator<FreeSprite> it2 = explosiveSprites.iterator(); it2.hasNext();) {
+						FreeSprite spritefree = it2.next();
+						try {
+							spriteStatic.pull(spritefree, spriteStatic.getBody().getPosition());
+						} catch (Exception e) {
+						}
+					}
 				}
 
+				// draw explosives, push enemies
+				for (Iterator<FreeSprite> it = explosiveSprites.iterator(); it.hasNext();) {
+					FreeSprite spriteExplosive = it.next();
+					spriteExplosive.onDraw(canvas);
+
+					// if (!spriteExplosive.readyToExplode()) {
+					// continue;
+					// }
+
+					for (Iterator<FreeSprite> it2 = freeSprites.iterator(); it2.hasNext();) {
+						FreeSprite spritefree = it2.next();
+						try {
+							if (!spriteExplosive.readyToExplode()) {
+								spriteExplosive.pull(spritefree);
+							} else {
+								spriteExplosive.push(spritefree);
+							}
+						} catch (Exception e) {
+						}
+					}
+
+					for (Iterator<FreeSprite> it2 = enemySprites.iterator(); it2.hasNext();) {
+						FreeSprite spritefree = it2.next();
+						try {
+							if (!spriteExplosive.readyToExplode()) {
+								spriteExplosive.pull(spritefree);
+							} else {
+								spriteExplosive.push(spritefree);
+							}
+						} catch (Exception e) {
+						}
+					}
+				}
+
+				// draw player
 				playerSprite.onDraw(canvas);
+				// draw frees, push pull frees
 				for (Iterator<FreeSprite> it2 = freeSprites.iterator(); it2.hasNext();) {
 					FreeSprite spritefree = it2.next();
 					try {
@@ -202,6 +289,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 							playerSprite.push(spritefree);
 						}
 						spritefree.onDraw(canvas);
+					} catch (Exception e) {
+					}
+				}
+				// draw enemies
+				for (Iterator<FreeSprite> it2 = enemySprites.iterator(); it2.hasNext();) {
+					FreeSprite spriteEnemy = it2.next();
+					try {
+						spriteEnemy.onDraw(canvas);
 					} catch (Exception e) {
 					}
 				}
@@ -220,8 +315,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		float x2 = event.getX();
 		float y2 = event.getY();
 		if (event.getAction() == MotionEvent.ACTION_MOVE) {
-//			addBarrel(x2, (PhysicsActivity.deviceHeight - y2));
+			// addBarrel(x2, (PhysicsActivity.deviceHeight - y2));
 		} else if (event.getAction() == MotionEvent.ACTION_UP) {
+			addEnemy(x2, PhysicsActivity.deviceHeight - y2);
 			// pointUp = new Vec2(x2, y2);
 			// if (victim != null)
 			// victim.kickout(pointUp);

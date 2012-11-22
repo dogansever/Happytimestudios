@@ -8,12 +8,12 @@ import android.graphics.Bitmap;
 
 import com.sever.physic.Constants;
 
-public class PlayerSprite extends FreeSprite {
+public class EnemySprite extends FreeSprite {
 
 	public boolean powerOn;
 	public boolean scatter;
 
-	public PlayerSprite(GameView gameView, Bitmap bmp, float x, float y, int bmpColumns, int bmpRows) {
+	public EnemySprite(GameView gameView, Bitmap bmp, float x, float y, int bmpColumns, int bmpRows) {
 		BMP_COLUMNS = bmpColumns;
 		BMP_ROWS = bmpRows;
 		this.width = bmp.getWidth() / BMP_COLUMNS;
@@ -35,8 +35,8 @@ public class PlayerSprite extends FreeSprite {
 		CircleDef circle = new CircleDef();
 		circle.radius = getWidthPhysical() * 0.5f;
 		circle.friction = 1.0f;// zero being completely frictionless
-		circle.restitution = 0.0f;// zero being not bounce at all
-		circle.density = 100.0f;
+		circle.restitution = 0.2f;// zero being not bounce at all
+		circle.density = 10.0f;
 
 		// PolygonDef playerDef = new PolygonDef();
 		// playerDef.setAsBox(width * 0.5f / Constants.pixelpermeter, height *
@@ -54,14 +54,10 @@ public class PlayerSprite extends FreeSprite {
 
 	}
 
-	public void fireBullet() {
-		// FreeSprite bullet = gameView.addGrenade(x, y);
-		FreeSprite bullet = gameView.addGrenadeImploding(x, y);
-		push(bullet);
-	}
-
 	public void push(FreeSprite sprite) {
 		sprite.makeVisible();
+		currentRow = 0;
+		currentFrame = 0;
 		float FIELD_RADIUS = getWidthPhysical();
 		Vec2 positionTarget = sprite.getBody().getPosition();
 		Vec2 positionSrc = this.getBody().getPosition();
@@ -70,9 +66,9 @@ public class PlayerSprite extends FreeSprite {
 			Body body = sprite.getBody();
 			body.setAngularVelocity(0);
 			body.setLinearVelocity(new Vec2(0, 0));
-			Vec2 force = new Vec2(-1.0f, 0.2f);
+			Vec2 force = new Vec2(1.0f, 0.0f);
 			force.normalize(); // force direction always point to source
-			force.set(force.mul((float) (body.getMass() * Constants.gravityPushPlayer)));
+			force.set(force.mul((float) (body.getMass() * Constants.gravityPushEnemy)));
 			body.applyImpulse(force, body.getWorldCenter());
 		}
 
@@ -81,7 +77,7 @@ public class PlayerSprite extends FreeSprite {
 	}
 
 	public void pull(FreeSprite sprite) {
-		float FIELD_RADIUS = Constants.gravityPullFieldRadiusPlayer;
+		float FIELD_RADIUS = Constants.gravityPullFieldRadiusEnemy;
 		float CLOSE_FIELD_RADIUS = getWidthPhysical();
 		Body body = sprite.getBody();
 		Vec2 positionTarget = body.getPosition();
@@ -96,12 +92,14 @@ public class PlayerSprite extends FreeSprite {
 		// (FIELD_RADIUS - range) / FIELD_RADIUS));
 		// body.applyForce(force, body.getWorldCenter());
 		// }
+		currentRow = 1;
+		currentFrame = 0;
 		if (range <= CLOSE_FIELD_RADIUS) {
 			// sprite.makeInvisible();
 			body.setAngularVelocity(0);
 			body.setLinearVelocity(new Vec2(0, 0));
 		} else if (sprite.isVisible()) {
-			applyForce(sprite, positionSrc, FIELD_RADIUS, Constants.gravityPullPlayer);
+			applyForce(sprite, positionSrc, FIELD_RADIUS, Constants.gravityPullEnemy);
 		}
 	}
 
@@ -122,15 +120,11 @@ public class PlayerSprite extends FreeSprite {
 	}
 
 	public void powerUp() {
-		currentRow = 1;
-		currentFrame = 0;
 		powerOn = true;
 		scatter = true;
 	}
 
 	public void powerDown() {
-		currentRow = 0;
-		currentFrame = 0;
 		powerOn = false;
 	}
 

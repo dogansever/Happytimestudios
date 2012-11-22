@@ -28,12 +28,18 @@ public class Constants {
 	public static final float setAsBoxhyScreen = 500.0f;
 	public static final float setAsBoxhy = setAsBoxhyScreen / pixelpermeter;
 
-	public static final float gravityx = 0.0f / pixelpermeter;
-	public static final float gravityy = -1.0f * pixelpermeter;
-	public static final float gravityPushPlayer = 10.0f * pixelpermeter;
+	public static final float gravityx = 0.0f * pixelpermeter;
+	public static final float gravityy = -5.0f * pixelpermeter;
+	public static final float gravityPushPlayer = 5.0f * pixelpermeter;
+	public static final float gravityPushEnemy = 5.0f * pixelpermeter;
+	public static final float gravityPushExplosive = -1000.0f * pixelpermeter;
 	public static final float gravityPullPlayer = 2.0f * pixelpermeter;
+	public static final float gravityPullEnemy = 2.0f * pixelpermeter;
+	public static final float gravityPullExplosive = 10.0f * pixelpermeter;
 	public static final float gravityThrottle = 0.1f * pixelpermeter;
-	public static final float gravityPullFieldRadiusPlayer = 300 / Constants.pixelpermeter;
-	public static final float gravityPlanetPull = 1.5f * pixelpermeter;
+	public static final float gravityPullFieldRadiusPlayer = 500 / Constants.pixelpermeter;
+	public static final float gravityPullFieldRadiusEnemy = 100 / Constants.pixelpermeter;
+	public static final float gravityPullFieldRadiusExplosive = 500 / Constants.pixelpermeter;
+	public static final float gravityPlanetPull = 10.0f * pixelpermeter;
 	public static final float gravityPlanetPush = -15.0f * pixelpermeter;
 }

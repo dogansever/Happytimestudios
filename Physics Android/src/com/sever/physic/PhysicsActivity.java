@@ -34,6 +34,10 @@ public class PhysicsActivity extends Activity {
 	public static Bitmap planet1;
 	public static Bitmap barrel;
 	public static Bitmap player;
+	public static Bitmap enemy;
+	public static Bitmap ground;
+	public static Bitmap bomb;
+	public static Bitmap bomb2;
 	public static PhysicsActivity context;
 
 	@Override
@@ -45,9 +49,13 @@ public class PhysicsActivity extends Activity {
 		bmpBall = createScaledBitmap(R.drawable.basketball20, 0, 0);
 		bmpBox = createScaledBitmap(R.drawable.crate30x30dark, 0, 0);
 		bmpBox2 = createScaledBitmap(R.drawable.crate30x30light, 0, 0);
-		planet1 = createScaledBitmap(R.drawable.planet200x200, 150, 150);
-		barrel = createScaledBitmap(R.drawable.barrel, 45, 75);
-		player = createScaledBitmap(R.drawable.playerx2x2, 0, 0);
+		planet1 = createScaledBitmap(R.drawable.planet200x200, 50, 50);
+		barrel = createScaledBitmap(R.drawable.barrel, 30, 50);
+		player = createScaledBitmap(R.drawable.playerx2x2, 150, 148);
+		enemy = createScaledBitmap(R.drawable.enemy2x1, 60, 30);
+		ground = createScaledBitmap(R.drawable.crate50x50dark, 800, 50);
+		bomb = createScaledBitmap(R.drawable.bombx2x2, 50, 45);
+		bomb2 = createScaledBitmap(R.drawable.bombx4x1, 100, 25);
 
 		createWorld();
 		setContentView(R.layout.main);
@@ -66,6 +74,7 @@ public class PhysicsActivity extends Activity {
 		Button left = (Button) findViewById(R.id.button3);
 		Button right = (Button) findViewById(R.id.button4);
 		Button power = (Button) findViewById(R.id.button5);
+		Button fire = (Button) findViewById(R.id.button6);
 		up.setOnTouchListener(new OnTouchListener() {
 
 			@Override
@@ -161,10 +170,35 @@ public class PhysicsActivity extends Activity {
 				return true;
 			}
 		});
+		fire.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					break;
+				case MotionEvent.ACTION_MOVE:
+					break;
+				case MotionEvent.ACTION_UP:
+					((PlayerSprite) getGameView().playerSprite).fireBullet();
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		});
 
 	}
 
-	private Bitmap createScaledBitmap(int decodeResource, int dstWidth, int dstHeight) {
+	public Bitmap createScaledBitmap(Bitmap bmp, int dstWidth, int dstHeight) {
+		if (dstWidth <= 0 || dstHeight <= 0) {
+			return bmp;
+		}
+		return Bitmap.createScaledBitmap(bmp, dstWidth, dstHeight, false);
+	}
+
+	public Bitmap createScaledBitmap(int decodeResource, int dstWidth, int dstHeight) {
 		if (dstWidth <= 0 || dstHeight <= 0) {
 			return BitmapFactory.decodeResource(getResources(), decodeResource);
 		}

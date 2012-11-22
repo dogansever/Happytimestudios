@@ -1,5 +1,7 @@
 package com.sever.physics.game;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
@@ -19,6 +21,7 @@ public class FreeSprite {
 	public int BMP_ROWS = 1;
 	public int BMP_FPS = 6;
 	public int BMP_FPS_CURRENT = 0;
+	public int FADE_LIFE = 100;
 	public GameView gameView;
 	public Bitmap bmp;
 	public Bitmap bmpFrame;
@@ -27,16 +30,26 @@ public class FreeSprite {
 	public float y = 0;
 	public float width;
 	public float height;
-	public int index;
+	// public int index;
 	public float angle;
 	public boolean noRotation = false;
 	public boolean invisible = false;
+	public boolean noupdate = false;
+	public boolean fades = false;
+	public boolean explodes = false;
+	public boolean implodes = false;
 	public int currentFrame = 0;
 	public int currentRow = 0;
+
+	protected ConcurrentLinkedQueue<FreeSprite> spriteList;
+	protected Body body;
 
 	public void freeBitmaps() {
 		bmp = null;
 		bmpFrame = null;
+	}
+
+	public void push(FreeSprite sprite) {
 	}
 
 	public void pull(FreeSprite sprite) {
@@ -58,15 +71,21 @@ public class FreeSprite {
 	public void createStaticBody(float x, float y) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(x / Constants.pixelpermeter, y / Constants.pixelpermeter);
-		PhysicsActivity.mWorld.bodies.add(PhysicsActivity.mWorld.world.createStaticBody(bodyDef));
-		this.index = PhysicsActivity.mWorld.bodies.size() - 1;
+		this.body = PhysicsActivity.mWorld.world.createStaticBody(bodyDef);
+		PhysicsActivity.mWorld.bodies.add(body);
+	}
+
+	public void killSprite() {
+		spriteList.remove(this);
+		destroyShape();
+		PhysicsActivity.mWorld.bodies.remove(body);
 	}
 
 	public void createDynamicBody(float x, float y) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(x / Constants.pixelpermeter, y / Constants.pixelpermeter);
-		PhysicsActivity.mWorld.bodies.add(PhysicsActivity.mWorld.world.createDynamicBody(bodyDef));
-		this.index = PhysicsActivity.mWorld.bodies.size() - 1;
+		this.body = PhysicsActivity.mWorld.world.createDynamicBody(bodyDef);
+		PhysicsActivity.mWorld.bodies.add(body);
 	}
 
 	public void destroyShape() {
@@ -75,6 +94,7 @@ public class FreeSprite {
 	}
 
 	protected Body getBody() {
+		int index = PhysicsActivity.mWorld.bodies.indexOf(body);
 		return PhysicsActivity.mWorld.bodies.get(index);
 	}
 
@@ -84,7 +104,7 @@ public class FreeSprite {
 	}
 
 	private void updateBitmap() {
-		if (++BMP_FPS_CURRENT % BMP_FPS == 1)
+		if (++BMP_FPS_CURRENT % BMP_FPS == 0)
 			currentFrame = ++currentFrame % BMP_COLUMNS;
 
 		int srcX = (int) (currentFrame * width);
@@ -120,6 +140,12 @@ public class FreeSprite {
 
 	public void onDraw(Canvas canvas) {
 		update();
+		if (fades && FADE_LIFE >= 0) {
+			if (FADE_LIFE-- == 0) {
+				killSprite();
+				return;
+			}
+		}
 		if (bmp != null && isVisible()) {
 			Matrix m = new Matrix();
 			if (!noRotation)
@@ -133,7 +159,6 @@ public class FreeSprite {
 
 	public boolean isCollision(float x2, float y2) {
 		Vec2 click = fromScreen(x2, y2);
-		System.out.println("isCollision?index" + index + ",x:" + x + ",y:" + y + ",click.x:" + click.x + ",click.y:" + click.y + ",width:" + width + ",height:" + height);
 		return click.x > x - width * 0.5f && click.x < x + width * 0.5f && click.y > y - height * 0.5f && click.y < y + height * 0.5f;
 	}
 
@@ -191,12 +216,32 @@ public class FreeSprite {
 		invisible = false;
 	}
 
+	public void makeFades() {
+		fades = true;
+	}
+
+	public boolean readyToExplode() {
+		return FADE_LIFE == 0;
+	}
+
 	public float getWidthPhysical() {
 		return width / Constants.pixelpermeter;
 	}
 
 	public float getHeightPhysical() {
 		return height / Constants.pixelpermeter;
+	}
+
+	public void setDensity(float d) {
+		getBody().getShapeList().m_density = d;
+	}
+
+	public void setFriction(float f) {
+		getBody().getShapeList().m_friction = f;
+	}
+
+	public void setRestitution(float r) {
+		getBody().getShapeList().m_restitution = r;
 	}
 
 }
