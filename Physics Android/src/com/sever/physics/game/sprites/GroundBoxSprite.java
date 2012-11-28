@@ -1,8 +1,9 @@
-package com.sever.physics.game;
+package com.sever.physics.game.sprites;
 
 import org.jbox2d.collision.PolygonDef;
 
-import com.sever.physic.Constants;
+import com.sever.physics.game.GameView;
+import com.sever.physics.game.utils.Constants;
 
 import android.graphics.Bitmap;
 

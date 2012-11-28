@@ -1,8 +1,10 @@
-package com.sever.physics.game;
+package com.sever.physics.game.sprites;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jbox2d.collision.PolygonDef;
+
+import com.sever.physics.game.GameView;
 
 import android.graphics.Bitmap;
 

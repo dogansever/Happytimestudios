@@ -1,4 +1,4 @@
-package com.sever.physics.game;
+package com.sever.physics.game.sprites;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -7,7 +7,8 @@ import org.jbox2d.common.Vec2;
 
 import android.graphics.Bitmap;
 
-import com.sever.physic.Constants;
+import com.sever.physics.game.GameView;
+import com.sever.physics.game.utils.Constants;
 
 public class GrenadeSprite extends FreeSprite {
 
@@ -24,8 +25,10 @@ public class GrenadeSprite extends FreeSprite {
 		this.x = x;
 		this.y = y;
 		this.spriteList = spriteList;
-		this.fades = true;
-		this.explodes = true;
+		
+		FADE_LIFE = 150;
+		makeExplodes();
+		makeFades();
 		addSprite(x, y);
 	}
 

@@ -15,7 +15,9 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.sever.physics.game.GameView;
-import com.sever.physics.game.PlayerSprite;
+import com.sever.physics.game.sprites.PlayerSprite;
+import com.sever.physics.game.utils.Constants;
+import com.sever.physics.game.utils.Weapons;
 
 public class PhysicsActivity extends Activity {
 
@@ -27,6 +29,7 @@ public class PhysicsActivity extends Activity {
 	protected int downx;
 	protected int downy;
 	protected long downTime;
+	private GameView gameView;
 	public static Bitmap bmpBack;
 	public static Bitmap bmpBall;
 	public static Bitmap bmpBox;
@@ -42,10 +45,10 @@ public class PhysicsActivity extends Activity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		System.out.println("onCreate:" + this);
 		super.onCreate(savedInstanceState);
 		context = this;
-		recallDeviceMetrics();
-		bmpBack = createScaledBitmap(R.drawable.space, 0, 0);
+		bmpBack = createScaledBitmap(R.drawable.space, (int) IntroActivity.deviceWidth, (int) IntroActivity.deviceHeight);
 		bmpBall = createScaledBitmap(R.drawable.basketball20, 0, 0);
 		bmpBox = createScaledBitmap(R.drawable.crate30x30dark, 0, 0);
 		bmpBox2 = createScaledBitmap(R.drawable.crate30x30light, 0, 0);
@@ -60,7 +63,8 @@ public class PhysicsActivity extends Activity {
 		createWorld();
 		setContentView(R.layout.main);
 		RelativeLayout relativeLayout1 = (RelativeLayout) findViewById(R.id.relativeLayoutGameView);
-		relativeLayout1.addView(new GameView(this));
+		gameView = new GameView(this);
+		relativeLayout1.addView(gameView);
 
 		// Start Regular Update
 		mHandler = new Handler();
@@ -75,6 +79,10 @@ public class PhysicsActivity extends Activity {
 		Button right = (Button) findViewById(R.id.button4);
 		Button power = (Button) findViewById(R.id.button5);
 		Button fire = (Button) findViewById(R.id.button6);
+		Button bomb = (Button) findViewById(R.id.Button05);
+		Button bombImploding = (Button) findViewById(R.id.Button06);
+		Button bullet = (Button) findViewById(R.id.Button07);
+
 		up.setOnTouchListener(new OnTouchListener() {
 
 			@Override
@@ -157,12 +165,12 @@ public class PhysicsActivity extends Activity {
 			public boolean onTouch(View v, MotionEvent event) {
 				switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
-					((PlayerSprite) getGameView().playerSprite).powerUp();
+					((PlayerSprite) getGameView().playerSprite.element()).powerUp();
 					break;
 				case MotionEvent.ACTION_MOVE:
 					break;
 				case MotionEvent.ACTION_UP:
-					((PlayerSprite) getGameView().playerSprite).powerDown();
+					((PlayerSprite) getGameView().playerSprite.element()).powerDown();
 					break;
 				default:
 					break;
@@ -180,7 +188,64 @@ public class PhysicsActivity extends Activity {
 				case MotionEvent.ACTION_MOVE:
 					break;
 				case MotionEvent.ACTION_UP:
-					((PlayerSprite) getGameView().playerSprite).fireBullet();
+					((PlayerSprite) getGameView().playerSprite.element()).fire();
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		});
+
+		bullet.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					break;
+				case MotionEvent.ACTION_MOVE:
+					break;
+				case MotionEvent.ACTION_UP:
+					((PlayerSprite) getGameView().playerSprite.element()).weapon = Weapons.BULLET;
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		});
+
+		bomb.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					break;
+				case MotionEvent.ACTION_MOVE:
+					break;
+				case MotionEvent.ACTION_UP:
+					((PlayerSprite) getGameView().playerSprite.element()).weapon = Weapons.BOMB;
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		});
+
+		bombImploding.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					break;
+				case MotionEvent.ACTION_MOVE:
+					break;
+				case MotionEvent.ACTION_UP:
+					((PlayerSprite) getGameView().playerSprite.element()).weapon = Weapons.BOMB_IMPLODING;
 					break;
 				default:
 					break;
@@ -208,31 +273,13 @@ public class PhysicsActivity extends Activity {
 	private void createWorld() {
 		mWorld = new PhysicsWorld();
 		mWorld.create();
-		// mWorld.addBall(40, 5);
-		// mWorld.addPlayer(10, 55);
-		// mWorld.addPlayer(70, 55);
 	}
 
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		mHandler.post(update);
 	}
-
-	// downx = ((AbsoluteLayout.LayoutParams) imageView.getLayoutParams()).x;
-	// downy = ((AbsoluteLayout.LayoutParams) imageView.getLayoutParams()).y;
-	// downTime = arg1.getEventTime();
-	// Vec2 position = new Vec2(downx + arg1.getX(), downy + arg1.getY());
-	// long downTime2 = arg1.getEventTime();
-	// long diffTime = (downTime2 - downTime) / 100;
-	// float speedx = arg1.getX() / diffTime;
-	// float speedy = -arg1.getY() / diffTime;
-	// int i = absoluteLayout1.indexOfChild(imageView);
-	// float angle = mWorld.bodies.get(i).getAngle();
-	// position = mWorld.fromScreen(position);
-	// mWorld.bodies.get(i).setXForm(position, angle);
-	// mWorld.bodies.get(i).setLinearVelocity(new Vec2(speedx, speedy));
 
 	@Override
 	protected void onPause() {
@@ -247,43 +294,36 @@ public class PhysicsActivity extends Activity {
 		}
 	};
 
-	public static float deviceWidth;
-	public static float deviceHeight;
-
-	public void recallDeviceMetrics() {
-		try {
-			DisplayMetrics metrics = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(metrics);
-			deviceWidth = metrics.widthPixels;
-			deviceHeight = metrics.heightPixels;
-		} catch (Exception e) {
-		}
-	}
-
 	public void updateScreen() {
-		// TODO Auto-generated method stub
-
 	}
 
 	private GameView getGameView() {
-		RelativeLayout relativeLayout1 = (RelativeLayout) findViewById(R.id.relativeLayoutGameView);
-		return (GameView) relativeLayout1.getChildAt(0);
+		// RelativeLayout relativeLayout1 = (RelativeLayout)
+		// findViewById(R.id.relativeLayoutGameView);
+		// return (GameView) relativeLayout1.getChildAt(0);
+		return gameView;
 	}
 
 	public void throttleUp(View view) {
-		((PlayerSprite) getGameView().playerSprite).throttleUp();
+		((PlayerSprite) getGameView().playerSprite.element()).throttleUp();
 	}
 
 	public void throttleDown(View view) {
-		((PlayerSprite) getGameView().playerSprite).throttleDown();
+		((PlayerSprite) getGameView().playerSprite.element()).throttleDown();
 	}
 
 	public void throttleLeft(View view) {
-		((PlayerSprite) getGameView().playerSprite).throttleLeft();
+		((PlayerSprite) getGameView().playerSprite.element()).throttleLeft();
 	}
 
 	public void throttleRight(View view) {
-		((PlayerSprite) getGameView().playerSprite).throttleRight();
+		((PlayerSprite) getGameView().playerSprite.element()).throttleRight();
+	}
+
+	@Override
+	protected void onDestroy() {
+		System.out.println("onDestroy:" + this);
+		super.onDestroy();
 	}
 
 }

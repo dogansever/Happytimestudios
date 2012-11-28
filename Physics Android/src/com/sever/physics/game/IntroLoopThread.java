@@ -5,14 +5,14 @@ import android.view.SurfaceHolder;
 
 import com.sever.physics.game.utils.Constants;
 
-public class GameLoopThread extends Thread {
-	private GameView view;
+public class IntroLoopThread extends Thread {
+	private IntroView view;
 	private boolean running = false;
 	private boolean sleeping = false;
 
 	private SurfaceHolder holder;
 
-	public GameLoopThread(GameView view, SurfaceHolder holder) {
+	public IntroLoopThread(IntroView view, SurfaceHolder holder) {
 		this.holder = holder;
 		this.view = view;
 	}
@@ -27,7 +27,7 @@ public class GameLoopThread extends Thread {
 
 	@Override
 	public void run() {
-		long ticksPS = 1000 / Constants.FPS;
+		long ticksPS = 1000 / Constants.FPS_Intro;
 		long startTime;
 		long sleepTime;
 		while (running) {

@@ -1,4 +1,4 @@
-package com.sever.physics.game;
+package com.sever.physics.game.sprites;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -12,8 +12,10 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-import com.sever.physic.Constants;
+import com.sever.physic.IntroActivity;
 import com.sever.physic.PhysicsActivity;
+import com.sever.physics.game.GameView;
+import com.sever.physics.game.utils.Constants;
 
 public class FreeSprite {
 
@@ -22,6 +24,7 @@ public class FreeSprite {
 	public int BMP_FPS = 6;
 	public int BMP_FPS_CURRENT = 0;
 	public int FADE_LIFE = 100;
+	public int BULLET_FIRE_WAIT_TIME = 100;
 	public GameView gameView;
 	public Bitmap bmp;
 	public Bitmap bmpFrame;
@@ -38,6 +41,7 @@ public class FreeSprite {
 	public boolean fades = false;
 	public boolean explodes = false;
 	public boolean implodes = false;
+	public boolean facingRigth = false;
 	public int currentFrame = 0;
 	public int currentRow = 0;
 
@@ -47,6 +51,23 @@ public class FreeSprite {
 	public void freeBitmaps() {
 		bmp = null;
 		bmpFrame = null;
+	}
+
+	public void fireGrenadeImploding() {
+		FreeSprite bullet = gameView.addGrenadeImploding(x, y + height * 0.5f);
+		bullet.getBody().setLinearVelocity(new Vec2((facingRigth ? 1 : -1) * 30, 30));
+	}
+
+	public void fireGrenade() {
+		FreeSprite bullet = gameView.addGrenade(x, y + height * 0.5f);
+		bullet.getBody().setLinearVelocity(new Vec2((facingRigth ? 1 : -1) * 30, 30));
+		// bullet.setDensity(100);
+		// push(bullet);
+	}
+
+	public void fireBullet() {
+		FreeSprite bullet = gameView.addBullet(x + (facingRigth ? 1 : -1) * width * 0.5f, y);
+		bullet.getBody().setLinearVelocity(new Vec2((facingRigth ? 1 : -1) * 200, 0));
 	}
 
 	public void push(FreeSprite sprite) {
@@ -76,9 +97,12 @@ public class FreeSprite {
 	}
 
 	public void killSprite() {
+		System.out.println("Killing:" + this);
 		spriteList.remove(this);
-		destroyShape();
 		PhysicsActivity.mWorld.bodies.remove(body);
+		PhysicsActivity.mWorld.world.destroyBody(body);
+		destroyShape();
+		freeBitmaps();
 	}
 
 	public void createDynamicBody(float x, float y) {
@@ -93,14 +117,10 @@ public class FreeSprite {
 			getBody().destroyShape(getBody().getShapeList());
 	}
 
-	protected Body getBody() {
-		int index = PhysicsActivity.mWorld.bodies.indexOf(body);
-		return PhysicsActivity.mWorld.bodies.get(index);
-	}
-
-	protected void update() {
-		updatePosition();
-		updateBitmap();
+	public Body getBody() {
+		return body;
+		// int index = PhysicsActivity.mWorld.bodies.indexOf(body);
+		// return PhysicsActivity.mWorld.bodies.get(index);
 	}
 
 	private void updateBitmap() {
@@ -139,7 +159,13 @@ public class FreeSprite {
 	}
 
 	public void onDraw(Canvas canvas) {
-		update();
+		updatePosition();
+		if (checkOutOfBounds()) {
+			killSprite();
+			return;
+		}
+		updateBitmap();
+
 		if (fades && FADE_LIFE >= 0) {
 			if (FADE_LIFE-- == 0) {
 				killSprite();
@@ -157,6 +183,10 @@ public class FreeSprite {
 		}
 	}
 
+	public boolean checkOutOfBounds() {
+		return this.x < 0 || this.x > Constants.upperBoundxScreen || this.y > Constants.upperBoundyScreen;
+	}
+
 	public boolean isCollision(float x2, float y2) {
 		Vec2 click = fromScreen(x2, y2);
 		return click.x > x - width * 0.5f && click.x < x + width * 0.5f && click.y > y - height * 0.5f && click.y < y + height * 0.5f;
@@ -165,14 +195,14 @@ public class FreeSprite {
 	public Vec2 fromScreen(float x2, float y2) {
 		Vec2 pos = new Vec2();
 		pos.x = x2;
-		pos.y = PhysicsActivity.deviceHeight - y2;
+		pos.y = IntroActivity.deviceHeight - y2;
 		return pos;
 	}
 
 	public Vec2 getBitmapDrawingXY() {
 		Vec2 pos = new Vec2();
 		pos.x = x - width * 0.5f;
-		pos.y = PhysicsActivity.deviceHeight - y - height * 0.5f;
+		pos.y = IntroActivity.deviceHeight - y - height * 0.5f;
 		return pos;
 	}
 
@@ -218,6 +248,10 @@ public class FreeSprite {
 
 	public void makeFades() {
 		fades = true;
+	}
+
+	public void makeExplodes() {
+		explodes = true;
 	}
 
 	public boolean readyToExplode() {

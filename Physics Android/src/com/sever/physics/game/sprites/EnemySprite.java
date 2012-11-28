@@ -1,19 +1,25 @@
-package com.sever.physics.game;
+package com.sever.physics.game.sprites;
+
+import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jbox2d.collision.CircleDef;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 
-import com.sever.physic.Constants;
+import com.sever.physics.game.GameView;
+import com.sever.physics.game.utils.Constants;
 
 public class EnemySprite extends FreeSprite {
 
+	private static final int BULLET_FIRE_WAIT_TIME_MAX = 50;
 	public boolean powerOn;
 	public boolean scatter;
 
-	public EnemySprite(GameView gameView, Bitmap bmp, float x, float y, int bmpColumns, int bmpRows) {
+	public EnemySprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, Bitmap bmp, float x, float y, int bmpColumns, int bmpRows) {
 		BMP_COLUMNS = bmpColumns;
 		BMP_ROWS = bmpRows;
 		this.width = bmp.getWidth() / BMP_COLUMNS;
@@ -23,12 +29,24 @@ public class EnemySprite extends FreeSprite {
 		this.x = x;
 		this.y = y;
 		this.noRotation = true;
+		this.facingRigth = true;
+		this.BULLET_FIRE_WAIT_TIME = BULLET_FIRE_WAIT_TIME_MAX;
+		this.spriteList = spriteList;
 		addSprite(x, y);
 	}
 
 	void addSprite(float x, float y) {
 		createDynamicBody(x, y);
 		createShape();
+	}
+
+	public void onDraw(Canvas canvas) {
+		BULLET_FIRE_WAIT_TIME--;
+		if (BULLET_FIRE_WAIT_TIME == 0) {
+			BULLET_FIRE_WAIT_TIME = new Random().nextInt(BULLET_FIRE_WAIT_TIME_MAX);
+			fireGrenade();
+		}
+		super.onDraw(canvas);
 	}
 
 	public void createShape() {

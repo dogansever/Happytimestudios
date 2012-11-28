@@ -1,4 +1,6 @@
-package com.sever.physics.game;
+package com.sever.physics.game.sprites;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jbox2d.collision.CircleDef;
 import org.jbox2d.common.Vec2;
@@ -6,14 +8,17 @@ import org.jbox2d.dynamics.Body;
 
 import android.graphics.Bitmap;
 
-import com.sever.physic.Constants;
+import com.sever.physics.game.GameView;
+import com.sever.physics.game.utils.Constants;
+import com.sever.physics.game.utils.Weapons;
 
 public class PlayerSprite extends FreeSprite {
 
+	public Weapons weapon = Weapons.BULLET;
 	public boolean powerOn;
 	public boolean scatter;
 
-	public PlayerSprite(GameView gameView, Bitmap bmp, float x, float y, int bmpColumns, int bmpRows) {
+	public PlayerSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, Bitmap bmp, float x, float y, int bmpColumns, int bmpRows) {
 		BMP_COLUMNS = bmpColumns;
 		BMP_ROWS = bmpRows;
 		this.width = bmp.getWidth() / BMP_COLUMNS;
@@ -23,7 +28,18 @@ public class PlayerSprite extends FreeSprite {
 		this.x = x;
 		this.y = y;
 		this.noRotation = true;
+		this.spriteList = spriteList;
 		addSprite(x, y);
+	}
+
+	public void fire() {
+		if (weapon == Weapons.BULLET) {
+			fireBullet();
+		} else if (weapon == Weapons.BOMB) {
+			fireGrenade();
+		} else if (weapon == Weapons.BOMB_IMPLODING) {
+			fireGrenadeImploding();
+		}
 	}
 
 	void addSprite(float x, float y) {
@@ -36,7 +52,7 @@ public class PlayerSprite extends FreeSprite {
 		circle.radius = getWidthPhysical() * 0.5f;
 		circle.friction = 1.0f;// zero being completely frictionless
 		circle.restitution = 0.0f;// zero being not bounce at all
-		circle.density = 100.0f;
+		circle.density = 10.0f;
 
 		// PolygonDef playerDef = new PolygonDef();
 		// playerDef.setAsBox(width * 0.5f / Constants.pixelpermeter, height *
@@ -54,12 +70,6 @@ public class PlayerSprite extends FreeSprite {
 
 	}
 
-	public void fireBullet() {
-		// FreeSprite bullet = gameView.addGrenade(x, y);
-		FreeSprite bullet = gameView.addGrenadeImploding(x, y);
-		push(bullet);
-	}
-
 	public void push(FreeSprite sprite) {
 		sprite.makeVisible();
 		float FIELD_RADIUS = getWidthPhysical();
@@ -70,7 +80,7 @@ public class PlayerSprite extends FreeSprite {
 			Body body = sprite.getBody();
 			body.setAngularVelocity(0);
 			body.setLinearVelocity(new Vec2(0, 0));
-			Vec2 force = new Vec2(-1.0f, 0.2f);
+			Vec2 force = new Vec2(-1.0f, 0.0f);
 			force.normalize(); // force direction always point to source
 			force.set(force.mul((float) (body.getMass() * Constants.gravityPushPlayer)));
 			body.applyImpulse(force, body.getWorldCenter());

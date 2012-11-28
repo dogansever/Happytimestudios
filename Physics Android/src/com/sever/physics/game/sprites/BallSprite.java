@@ -1,14 +1,16 @@
-package com.sever.physics.game;
+package com.sever.physics.game.sprites;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jbox2d.collision.CircleDef;
 
+import com.sever.physics.game.GameView;
+
 import android.graphics.Bitmap;
 
 public class BallSprite extends FreeSprite {
 
-	public BallSprite(ConcurrentLinkedQueue<FreeSprite> freeSprites, GameView gameView, Bitmap bmp, float x, float y) {
+	public BallSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, Bitmap bmp, float x, float y) {
 		this.width = bmp.getWidth() / BMP_COLUMNS;
 		this.height = bmp.getHeight();
 		this.bmp = bmp;

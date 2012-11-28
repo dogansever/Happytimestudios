@@ -1,6 +1,9 @@
-package com.sever.physic;
+package com.sever.physics.game.utils;
+
+import com.sever.physic.IntroActivity;
 
 public class Constants {
+	public static final int FPS_Intro = 24;
 	public static final int FPS = 30;
 	public static float timeStep = 1.0f / (1000 / Constants.FPS);
 	public static int iterations = 10;
@@ -16,10 +19,10 @@ public class Constants {
 	public static final float lowerBoundxScreen = 0f;
 	public static final float lowerBoundx = lowerBoundxScreen / pixelpermeter;
 
-	public static final float upperBoundxScreen = PhysicsActivity.deviceWidth;
+	public static final float upperBoundxScreen = IntroActivity.deviceWidth;
 	public static final float upperBoundx = upperBoundxScreen / pixelpermeter;
 
-	public static final float upperBoundyScreen = PhysicsActivity.deviceHeight;
+	public static final float upperBoundyScreen = IntroActivity.deviceHeight;
 	public static final float upperBoundy = upperBoundyScreen / pixelpermeter;
 
 	public static final float setAsBoxhxScreen = 500.0f;
@@ -29,8 +32,8 @@ public class Constants {
 	public static final float setAsBoxhy = setAsBoxhyScreen / pixelpermeter;
 
 	public static final float gravityx = 0.0f * pixelpermeter;
-	public static final float gravityy = -5.0f * pixelpermeter;
-	public static final float gravityPushPlayer = 5.0f * pixelpermeter;
+	public static final float gravityy = -2.0f * pixelpermeter;
+	public static final float gravityPushPlayer = 10.0f * pixelpermeter;
 	public static final float gravityPushEnemy = 5.0f * pixelpermeter;
 	public static final float gravityPushExplosive = -1000.0f * pixelpermeter;
 	public static final float gravityPullPlayer = 2.0f * pixelpermeter;

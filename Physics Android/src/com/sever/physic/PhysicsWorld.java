@@ -7,6 +7,8 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 
+import com.sever.physics.game.utils.Constants;
+
 public class PhysicsWorld {
 	public ArrayList<Body> bodies = new ArrayList<Body>();
 	public AABB worldAABB;
@@ -26,7 +28,10 @@ public class PhysicsWorld {
 
 	public void update() {
 		// Update Physics World
-		world.step(Constants.timeStep, Constants.iterations);
+		try {
+			world.step(Constants.timeStep, Constants.iterations);
+		} catch (Exception e) {
+		}
 
 		// Print info of latest body
 		if (bodies.size() > 0) {
