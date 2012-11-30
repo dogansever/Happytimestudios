@@ -11,7 +11,6 @@ import java.util.TimerTask;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -31,12 +30,15 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class MathProblemsActivity extends Activity {
+	protected static boolean ONLINE = false;
+	protected static boolean REFRESH = false;
+	protected static boolean REFRESHING = false;
 	protected static int COUNT = 20;
 	private static final int MAXNUM = 11;
 	private static int SCROLLSTEP = 0;
 	protected static int CNTDOWN = 3;
 	private static int INDEX = 0;
-	private static String TIME;
+	static String TIME;
 	private long STARTDATE;
 	private long ENDDATE;
 	private boolean finished;
@@ -131,8 +133,9 @@ public class MathProblemsActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-//		Intent intent = new Intent(MathProblemsActivity.this, MainScreenActivity.class);
-//		startActivity(intent);
+		// Intent intent = new Intent(MathProblemsActivity.this,
+		// MainScreenActivity.class);
+		// startActivity(intent);
 		finish();
 	}
 
@@ -149,7 +152,7 @@ public class MathProblemsActivity extends Activity {
 		LinearLayout white = (LinearLayout) findViewById(R.id.linearLayout3);
 		white.setBackgroundResource(R.drawable.white);
 	}
-	
+
 	@Override
 	protected void onStart() {
 		System.out.println("onStart:" + this);
@@ -163,9 +166,10 @@ public class MathProblemsActivity extends Activity {
 		if (CNTDOWN != 0 && hasFocus) {
 			startCountDown();
 		} else if (CNTDOWN == 0 && !DIALOG_VISIBLE) {
-//			Intent intent = new Intent(MathProblemsActivity.this, MainScreenActivity.class);
-//			startActivity(intent);
-//			finish();
+			// Intent intent = new Intent(MathProblemsActivity.this,
+			// MainScreenActivity.class);
+			// startActivity(intent);
+			// finish();
 		}
 
 	}
@@ -361,13 +365,13 @@ public class MathProblemsActivity extends Activity {
 					.replace("_ACC", "" + ((100 * RIGHTCOUNT) / COUNT) + "%");
 			Double best;
 			try {
-				best = Double.parseDouble(((String) MainScreenActivity.dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT)).replace(",", "."));
+				best = Double.parseDouble(((String) MainScreenActivity.dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 0)).replace(",", "."));
 			} catch (Exception e) {
 				best = 1000.0;
 			}
 			String title = best > time + penalty ? getString(R.string.new_record) : getString(R.string.try_again);
 			int icon = best > time + penalty ? R.drawable.owl3 : R.drawable.owl2;
-			showTime(title, message, icon);
+			showTime(title, message, icon, best > time + penalty);
 			finished = true;
 		} else if (INDEX + 1 < MathProblemsActivity.COUNT) {
 			// if (INDEX < MathProblemsActivity.COUNT - 2)
@@ -390,8 +394,7 @@ public class MathProblemsActivity extends Activity {
 		// });
 	}
 
-	private void showTime(String title, String message, int icon) {
-		// TODO Auto-generated method stub
+	private void showTime(String title, String message, int icon, boolean highscore) {
 		DIALOG_VISIBLE = true;
 		AlertDialog alertDialog = new AlertDialog.Builder(this).setIcon(icon).create();
 		alertDialog.setTitle(title);
@@ -408,13 +411,25 @@ public class MathProblemsActivity extends Activity {
 				String dateStr = formatter.format(new Date());
 				info = info.trim().equals("") ? "OWLY, " + dateStr : info + ", " + dateStr;
 				MainScreenActivity.dbDBWriteUtil.addScore(TIME, "" + new Date().getTime(), "" + COUNT, info);
-				// Intent intent = new Intent(MathProblemsActivity.this,
-				// IntroActivity.class);
-				// startActivity(intent);
+
+				info = input.getText().toString();
+				info = info.trim().equals("") ? "OWLY" : info;
+				String playerName = info;
+				int points = getPoints();
+				new LeaderBoardUtil().leaderboardSave(playerName, points, COUNT);
 				finish();
 			}
 		});
 		alertDialog.show();
+	}
+
+	public static String getTimeFromPoints(int points) {
+		float time = COUNT * 100000.0f / points;
+		return String.format("%01.4f", time).replace(".", ",");
+	}
+
+	public static int getPoints() {
+		return (int) (COUNT * 100000.0f / (Double.parseDouble(TIME.replace(",", "."))));
 	}
 
 	@Override
@@ -425,8 +440,7 @@ public class MathProblemsActivity extends Activity {
 		linearLayout.setBackgroundDrawable(null);
 		LinearLayout white = (LinearLayout) findViewById(R.id.linearLayout3);
 		white.setBackgroundDrawable(null);
-		
-		
+
 		unbindDrawables(findViewById(R.id.mainRootLinearLayout));
 		System.gc();
 	}
@@ -435,7 +449,7 @@ public class MathProblemsActivity extends Activity {
 	protected void onStop() {
 		System.out.println("onStop:" + this);
 		super.onStop();
-//		SplashIntroActivity.lastStopped = this;
+		// SplashIntroActivity.lastStopped = this;
 		finish();
 	}
 

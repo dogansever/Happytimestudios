@@ -1,0 +1,140 @@
+package com.sever.main;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import com.playtomic.android.api.PlaytomicLeaderboards;
+import com.playtomic.android.api.PlaytomicRequestListener;
+import com.playtomic.android.api.PlaytomicResponse;
+import com.playtomic.android.api.PlaytomicScore;
+
+public class LeaderBoardUtil {
+	private static final Logger log = Logger.getLogger(LeaderBoardUtil.class.getName());
+	private static final String HIGHSCORES = "HIGHSCORES";
+	public static ArrayList<PlaytomicScore> scoreList;
+	public static String INFO = "INFO";
+	public static String SCORE = "SCORE";
+
+	public void leaderboardSave(Object... args) {
+		log.info("\nLeaderboard Save");
+		PlaytomicLeaderboards leaderboards = new PlaytomicLeaderboards();
+
+		// we need to set a listener
+		leaderboards.setRequestListener(new PlaytomicRequestListener<PlaytomicScore>() {
+			@Override
+			public void onRequestFinished(PlaytomicResponse playtomicResponse) {
+				if (playtomicResponse.getSuccess()) {
+					// we call a function for successed cases
+					requestLeaderBoardSaveFinished();
+				} else {
+					// we call a function for failed cases
+					requestLeaderBoardSaveFailed(playtomicResponse.getErrorCode(), playtomicResponse.getErrorMessage());
+				}
+			}
+
+		});
+
+		String playerName = (String) args[0];
+		int points = (Integer) args[1];
+		String table = HIGHSCORES + args[2];
+
+		PlaytomicScore score = new PlaytomicScore(playerName, points);
+
+		leaderboards.save(table, score, true, false);
+	}
+
+	private void requestLeaderBoardSaveFinished() {
+		log.info("\nSave score success");
+	}
+
+	private void requestLeaderBoardSaveFailed(int errorCode, String message) {
+		log.info("\nLeaderboard save failed to save because of errorcode #" + errorCode + " - Message:" + message);
+	}
+
+	public void leaderBoardSaveAndList(Object... args) {
+		log.info("\nLeaderboard List");
+		PlaytomicLeaderboards leaderboards = new PlaytomicLeaderboards();
+
+		// we need to set a listener
+		leaderboards.setRequestListener(new PlaytomicRequestListener<PlaytomicScore>() {
+
+			@Override
+			public void onRequestFinished(PlaytomicResponse playtomicResponse) {
+				if (playtomicResponse.getSuccess()) {
+					// we call a function for successed cases
+					requestLeaderBoardListFinished(playtomicResponse.getData());
+				} else {
+					// we call a function for failed cases
+					requestLeaderBoardListFailed(playtomicResponse.getErrorCode(), playtomicResponse.getErrorMessage());
+				}
+			}
+		});
+
+		String playerName = (String) args[0];
+		int points = (Integer) args[1];
+		String table = HIGHSCORES + args[2];
+
+		PlaytomicScore score = new PlaytomicScore(playerName, points);
+		leaderboards.saveAndList(table, score, true, false, "alltime", 20, null, true, null);
+		MathProblemsActivity.REFRESHING = true;
+	}
+
+	public void leaderBoardList(Object... args) {
+		log.info("\nLeaderboard List");
+		PlaytomicLeaderboards leaderboards = new PlaytomicLeaderboards();
+
+		// we need to set a listener
+		leaderboards.setRequestListener(new PlaytomicRequestListener<PlaytomicScore>() {
+
+			@Override
+			public void onRequestFinished(PlaytomicResponse playtomicResponse) {
+				if (playtomicResponse.getSuccess()) {
+					// we call a function for successed cases
+					requestLeaderBoardListFinished(playtomicResponse.getData());
+				} else {
+					// we call a function for failed cases
+					requestLeaderBoardListFailed(playtomicResponse.getErrorCode(), playtomicResponse.getErrorMessage());
+				}
+			}
+		});
+
+		String table = HIGHSCORES + args[0];
+		leaderboards.list(table, true, "alltime", 1, 20, null);
+		MathProblemsActivity.REFRESHING = true;
+		MainScreenActivity.startLoadingDialog(MainScreenActivity.context, "", false);
+	}
+
+	private void requestLeaderBoardListFinished(ArrayList<PlaytomicScore> data) {
+		scoreList = data;
+		MathProblemsActivity.REFRESHING = false;
+		log.info("Leaderboard {");
+		Iterator<PlaytomicScore> itr = data.iterator();
+		while (itr.hasNext()) {
+			PlaytomicScore score = itr.next();
+			log.info("----------------------------------\nScore:\nName=\"" + score.getName() + "\"");
+			log.info("Points=\"" + score.getPoints() + "\"");
+			log.info("Date=\"" + score.getDate() + "\"");
+			log.info("Relative Date=\"" + score.getRelativeDate() + "\"");
+			log.info("Rank=\"" + score.getRank() + "\"");
+			log.info("Custom Data {");
+			for (Map.Entry<String, String> entry : score.getCustomData().entrySet()) {
+				log.info("Var: Name=\"" + entry.getKey() + "\" Value=\"" + entry.getValue() + "\"");
+			}
+			log.info("}");
+		}
+		log.info("}");
+		MainScreenActivity.stopLoadingDialog();
+		MathProblemsActivity.REFRESH = false;
+		MainScreenActivity.context.prepareScoresList();
+	}
+
+	private void requestLeaderBoardListFailed(int errorCode, String message) {
+		scoreList = new ArrayList<PlaytomicScore>();
+		MathProblemsActivity.REFRESHING = false;
+		MainScreenActivity.stopLoadingDialog();
+		log.info("Leaderboard list failed to list because of errorcode #" + errorCode + " - Message:" + message);
+	}
+
+}

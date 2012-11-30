@@ -40,8 +40,7 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 		try {
 			if (db == null)
 				db = this.getWritableDatabase();
-			db.execSQL("CREATE TABLE if not exists " + gameTable + " (" + scoreColumn + " String , " + countColumn + " String , " + infoColumn
-					+ " String , " + dateColumn + " String)");
+			db.execSQL("CREATE TABLE if not exists " + gameTable + " (" + scoreColumn + " String , " + countColumn + " String , " + infoColumn + " String , " + dateColumn + " String)");
 		} catch (SQLException e) {
 		} finally {
 			try {
@@ -96,16 +95,15 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 		}
 	}
 
-	public Object getBestScore(String countColumnArg) {
+	public Object getBestScore(String countColumnArg, int index) {
 		Cursor cur = null;
 		SQLiteDatabase db = null;
 		try {
 			db = this.getReadableDatabase();
-			cur = db.rawQuery("SELECT * from " + gameTable + " where " + countColumn + " = ? " + " order by " + scoreColumn + " asc",
-					new String[] { countColumnArg });
+			cur = db.rawQuery("SELECT * from " + gameTable + " where " + countColumn + " = ? " + " order by " + scoreColumn + " asc", new String[] { countColumnArg });
 			if (cur.getCount() > 0) {
 				cur.moveToFirst();
-				return cur.getString(0);
+				return cur.getString(index);
 			}
 
 			return null;
@@ -134,8 +132,7 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 		ArrayList<ContentValues> list = new ArrayList<ContentValues>();
 		try {
 			db = this.getReadableDatabase();
-			cur = db.rawQuery("SELECT * from " + gameTable + " where " + countColumn + " = ? " + " order by " + scoreColumn + " asc limit "
-					+ BESTSCORECOUNT, new String[] { countColumnArg });
+			cur = db.rawQuery("SELECT * from " + gameTable + " where " + countColumn + " = ? " + " order by " + scoreColumn + " asc limit " + BESTSCORECOUNT, new String[] { countColumnArg });
 			if (cur.getCount() > 0) {
 				while (cur.moveToNext()) {
 					ContentValues cv = new ContentValues();

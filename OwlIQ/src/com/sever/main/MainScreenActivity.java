@@ -10,7 +10,9 @@ import java.util.TimerTask;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,6 +22,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -27,8 +30,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
@@ -38,9 +41,11 @@ import android.widget.Toast;
 import com.google.ads.AdRequest;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
+import com.playtomic.android.api.PlaytomicScore;
 
 public class MainScreenActivity extends Activity {
 
+	public static MainScreenActivity context;
 	private static final int RESET = 0;
 	private static final int SHARE = 1;
 	public static DBWriteUtil dbDBWriteUtil;
@@ -167,6 +172,7 @@ public class MainScreenActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		System.out.println("onCreate:" + this);
 		super.onCreate(savedInstanceState);
+		context = this;
 		recallDeviceMetrics();
 		setContentView(R.layout.intro);
 		face = Typeface.createFromAsset(getAssets(), "BADABB__.TTF");
@@ -210,7 +216,50 @@ public class MainScreenActivity extends Activity {
 				}
 			}
 		});
+
+		Button buttonRelist = (Button) findViewById(R.id.Button01);
+		buttonRelist.setTypeface(MainScreenActivity.face);
+		buttonRelist.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 20);
+		buttonRelist.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				MathProblemsActivity.REFRESH = true;
+				prepareScoresList();
+			}
+		});
+
+		Button buttonSend = (Button) findViewById(R.id.button2);
+		buttonSend.setTypeface(MainScreenActivity.face);
+		buttonSend.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 20);
+		buttonSend.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				String title = "Send your Record";
+				String message = "Hey I am fast!";
+				int icon = R.drawable.owl3;
+				double score = Double.parseDouble(((String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 0)).replace(",", "."));
+				String time = String.format("%01.4f", score);
+				MathProblemsActivity.TIME = time;
+				String name = (String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 2);
+				name = (String) name.subSequence(0, name.indexOf(","));
+				showTime(title, message, name, icon, true);
+
+			}
+		});
+
 		dbDBWriteUtil = new DBWriteUtil(this);
+
+		RadioButton myOption1Leader = (RadioButton) findViewById(R.id.radio0Leader);
+		RadioButton myOption2Leader = (RadioButton) findViewById(R.id.radio1Leader);
+		myOption1Leader.setTypeface(MainScreenActivity.face);
+		myOption1Leader.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
+		myOption2Leader.setTypeface(MainScreenActivity.face);
+		myOption2Leader.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
+		myOption1Leader.setOnClickListener(myOptionLeaderBoardOnClickListener);
+		myOption2Leader.setOnClickListener(myOptionLeaderBoardOnClickListener);
 
 		RadioButton myOption1 = (RadioButton) findViewById(R.id.radio0);
 		RadioButton myOption2 = (RadioButton) findViewById(R.id.radio1);
@@ -239,6 +288,9 @@ public class MainScreenActivity extends Activity {
 		tv.setTypeface(MainScreenActivity.face);
 		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 12);
 		tv = (TextView) findViewById(R.id.textView3);
+		tv.setTypeface(MainScreenActivity.face);
+		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 12);
+		tv = (TextView) findViewById(R.id.textViewLeader);
 		tv.setTypeface(MainScreenActivity.face);
 		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 12);
 	}
@@ -283,7 +335,49 @@ public class MainScreenActivity extends Activity {
 		adView.destroy();
 	}
 
-	private void prepareScoresList() {
+	private void prepareScoresListOnline() {
+
+		if (!MathProblemsActivity.REFRESHING && (LeaderBoardUtil.scoreList == null || MathProblemsActivity.REFRESH)) {
+			new LeaderBoardUtil().leaderBoardList(MathProblemsActivity.COUNT);
+		}
+
+		LinearLayout linearLayout6 = (LinearLayout) findViewById(R.id.linearLayout6);
+		linearLayout6.removeAllViews();
+		if (LeaderBoardUtil.scoreList == null)
+			return;
+
+		for (PlaytomicScore ps : LeaderBoardUtil.scoreList) {
+			ps.getName();
+			ps.getRank();
+			ps.getPoints();
+			ps.getRelativeDate();
+			LinearLayout view = (LinearLayout) this.getLayoutInflater().inflate(R.layout.list_item2, null);
+			TextView textView1 = (TextView) view.findViewById(R.id.textView1);
+			textView1.setTypeface(MainScreenActivity.face);
+			textView1.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
+			textView1.setText("" + ps.getRank() + ".");
+			TextView textView2 = (TextView) view.findViewById(R.id.textView2);
+			textView2.setTypeface(MainScreenActivity.face);
+			textView2.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
+			// double score =
+			// Double.parseDouble((ps.getCustomValue(LeaderBoardUtil.SCORE)).replace(",",
+			// "."));
+			String time = MathProblemsActivity.getTimeFromPoints(ps.getPoints());
+			textView2.setText(time + " ");
+			TextView textView3 = (TextView) view.findViewById(R.id.textView3);
+			textView3.setTypeface(MainScreenActivity.face);
+			textView3.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
+			textView3.setText(ps.getName() + ", " + ps.getRelativeDate() + " ");
+			linearLayout6.addView(view);
+		}
+	}
+
+	public void prepareScoresList() {
+		if (MathProblemsActivity.ONLINE) {
+			prepareScoresListOnline();
+			return;
+		}
+
 		LinearLayout linearLayout6 = (LinearLayout) findViewById(R.id.linearLayout6);
 		linearLayout6.removeAllViews();
 		ArrayList<ContentValues> list = dbDBWriteUtil.getBestScores("" + MathProblemsActivity.COUNT);
@@ -322,6 +416,24 @@ public class MainScreenActivity extends Activity {
 				MathProblemsActivity.COUNT = 100;
 			}
 			refreshScore();
+			LeaderBoardUtil.scoreList = null;
+			prepareScoresList();
+		}
+
+	};
+	RadioButton.OnClickListener myOptionLeaderBoardOnClickListener = new RadioButton.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			RadioButton myOption1 = (RadioButton) findViewById(R.id.radio0Leader);
+			RadioButton myOption2 = (RadioButton) findViewById(R.id.radio1Leader);
+			if (myOption1.isChecked()) {
+				MathProblemsActivity.ONLINE = false;
+			} else if (myOption2.isChecked()) {
+				MathProblemsActivity.ONLINE = true;
+			}
+			refreshScore();
+			MathProblemsActivity.REFRESH = false;
 			prepareScoresList();
 		}
 
@@ -331,7 +443,7 @@ public class MainScreenActivity extends Activity {
 		TextView textView = (TextView) findViewById(R.id.textView2);
 		double score;
 		try {
-			score = Double.parseDouble(((String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT)).replace(",", "."));
+			score = Double.parseDouble(((String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 0)).replace(",", "."));
 			String time = String.format("%01.4f", score);
 			textView.setText(time + " ");
 		} catch (Exception e) {
@@ -471,4 +583,58 @@ public class MainScreenActivity extends Activity {
 	// // ((ViewGroup) view).removeAllViews();
 	// }
 	// }
+
+	private void showTime(String title, String message, String name, int icon, boolean highscore) {
+		AlertDialog alertDialog = new AlertDialog.Builder(this).setIcon(icon).create();
+		alertDialog.setTitle(title);
+		alertDialog.setCancelable(false);
+		alertDialog.setMessage(message);
+		final LinearLayout view = (LinearLayout) MainScreenActivity.this.getLayoutInflater().inflate(R.layout.input, null);
+		EditText input = (EditText) view.findViewById(R.id.editText1);
+		input.setText(name);
+		alertDialog.setView(view);
+		alertDialog.setButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				EditText input = (EditText) view.findViewById(R.id.editText1);
+				String info = input.getText().toString();
+
+				info = input.getText().toString();
+				info = info.trim().equals("") ? "OWLY" : info;
+				String playerName = info;
+				int points = MathProblemsActivity.getPoints();
+				new LeaderBoardUtil().leaderboardSave(playerName, points, MathProblemsActivity.COUNT);
+			}
+		});
+		alertDialog.show();
+	}
+
+	protected static ProgressDialog pd;
+
+	public static void startLoadingDialog(final Context c, final String text, final boolean cancel) {
+		stopLoadingDialog();
+		Thread t2 = new Thread() {
+			public void run() {
+				try {
+					Looper.prepare();
+					if (text == null || text.trim().equals("")) {
+						pd = new ProgressDialog(c);
+						pd.setCancelable(cancel);
+						pd.setMessage("LOADING...");
+						pd.show();
+					} else {
+						pd = ProgressDialog.show(c, "LOADING...", text, true, cancel);
+					}
+					Looper.loop();
+				} catch (Exception e) {
+				}
+			}
+		};
+		t2.start();
+	}
+
+	public static void stopLoadingDialog() {
+		if (pd != null)
+			pd.dismiss();
+		pd = null;
+	}
 }
