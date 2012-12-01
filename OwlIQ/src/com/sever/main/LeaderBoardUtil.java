@@ -5,6 +5,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.widget.Toast;
+
 import com.playtomic.android.api.PlaytomicLeaderboards;
 import com.playtomic.android.api.PlaytomicRequestListener;
 import com.playtomic.android.api.PlaytomicResponse;
@@ -19,6 +24,8 @@ public class LeaderBoardUtil {
 
 	public void leaderboardSave(Object... args) {
 		log.info("\nLeaderboard Save");
+		if (!hasConnection(MainScreenActivity.context))
+			return;
 		PlaytomicLeaderboards leaderboards = new PlaytomicLeaderboards();
 
 		// we need to set a listener
@@ -42,19 +49,24 @@ public class LeaderBoardUtil {
 
 		PlaytomicScore score = new PlaytomicScore(playerName, points);
 
+		MainScreenActivity.startLoadingDialog(MainScreenActivity.context, "", false);
 		leaderboards.save(table, score, true, false);
 	}
 
 	private void requestLeaderBoardSaveFinished() {
 		log.info("\nSave score success");
+		MainScreenActivity.stopLoadingDialog();
 	}
 
 	private void requestLeaderBoardSaveFailed(int errorCode, String message) {
 		log.info("\nLeaderboard save failed to save because of errorcode #" + errorCode + " - Message:" + message);
+		MainScreenActivity.stopLoadingDialog();
 	}
 
 	public void leaderBoardSaveAndList(Object... args) {
 		log.info("\nLeaderboard List");
+		if (!hasConnection(MainScreenActivity.context))
+			return;
 		PlaytomicLeaderboards leaderboards = new PlaytomicLeaderboards();
 
 		// we need to set a listener
@@ -83,6 +95,9 @@ public class LeaderBoardUtil {
 
 	public void leaderBoardList(Object... args) {
 		log.info("\nLeaderboard List");
+		if (!hasConnection(MainScreenActivity.context))
+			return;
+		MainScreenActivity.startLoadingDialog(MainScreenActivity.context, "", false);
 		PlaytomicLeaderboards leaderboards = new PlaytomicLeaderboards();
 
 		// we need to set a listener
@@ -103,28 +118,43 @@ public class LeaderBoardUtil {
 		String table = HIGHSCORES + args[0];
 		leaderboards.list(table, true, "alltime", 1, 20, null);
 		MathProblemsActivity.REFRESHING = true;
-		MainScreenActivity.startLoadingDialog(MainScreenActivity.context, "", false);
+	}
+
+	private boolean hasConnection(Context ctx) {
+		ConnectivityManager conMgr = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo i = conMgr.getActiveNetworkInfo();
+		boolean res = true;
+		if (i == null)
+			res = false;
+		else if (!i.isConnected())
+			res = false;
+		else if (!i.isAvailable())
+			res = false;
+		System.out.println("hasConnection:" + res);
+		if (!res)
+			Toast.makeText(ctx, "You are not ONLINE!!!", Toast.LENGTH_SHORT).show();
+		return res;
 	}
 
 	private void requestLeaderBoardListFinished(ArrayList<PlaytomicScore> data) {
 		scoreList = data;
 		MathProblemsActivity.REFRESHING = false;
-		log.info("Leaderboard {");
-		Iterator<PlaytomicScore> itr = data.iterator();
-		while (itr.hasNext()) {
-			PlaytomicScore score = itr.next();
-			log.info("----------------------------------\nScore:\nName=\"" + score.getName() + "\"");
-			log.info("Points=\"" + score.getPoints() + "\"");
-			log.info("Date=\"" + score.getDate() + "\"");
-			log.info("Relative Date=\"" + score.getRelativeDate() + "\"");
-			log.info("Rank=\"" + score.getRank() + "\"");
-			log.info("Custom Data {");
-			for (Map.Entry<String, String> entry : score.getCustomData().entrySet()) {
-				log.info("Var: Name=\"" + entry.getKey() + "\" Value=\"" + entry.getValue() + "\"");
-			}
-			log.info("}");
-		}
-		log.info("}");
+//		log.info("Leaderboard {");
+//		Iterator<PlaytomicScore> itr = data.iterator();
+//		while (itr.hasNext()) {
+//			PlaytomicScore score = itr.next();
+//			log.info("----------------------------------\nScore:\nName=\"" + score.getName() + "\"");
+//			log.info("Points=\"" + score.getPoints() + "\"");
+//			log.info("Date=\"" + score.getDate() + "\"");
+//			log.info("Relative Date=\"" + score.getRelativeDate() + "\"");
+//			log.info("Rank=\"" + score.getRank() + "\"");
+//			log.info("Custom Data {");
+//			for (Map.Entry<String, String> entry : score.getCustomData().entrySet()) {
+//				log.info("Var: Name=\"" + entry.getKey() + "\" Value=\"" + entry.getValue() + "\"");
+//			}
+//			log.info("}");
+//		}
+//		log.info("}");
 		MainScreenActivity.stopLoadingDialog();
 		MathProblemsActivity.REFRESH = false;
 		MainScreenActivity.context.prepareScoresList();
@@ -133,8 +163,8 @@ public class LeaderBoardUtil {
 	private void requestLeaderBoardListFailed(int errorCode, String message) {
 		scoreList = new ArrayList<PlaytomicScore>();
 		MathProblemsActivity.REFRESHING = false;
-		MainScreenActivity.stopLoadingDialog();
 		log.info("Leaderboard list failed to list because of errorcode #" + errorCode + " - Message:" + message);
+		MainScreenActivity.stopLoadingDialog();
 	}
 
 }

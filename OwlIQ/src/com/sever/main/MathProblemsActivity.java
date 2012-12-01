@@ -413,7 +413,7 @@ public class MathProblemsActivity extends Activity {
 				MainScreenActivity.dbDBWriteUtil.addScore(TIME, "" + new Date().getTime(), "" + COUNT, info);
 
 				info = input.getText().toString();
-				info = info.trim().equals("") ? "OWLY" : info;
+				info = info.trim().equals("") ? "OWLY" : info.trim();
 				String playerName = info;
 				int points = getPoints();
 				new LeaderBoardUtil().leaderboardSave(playerName, points, COUNT);
@@ -424,12 +424,12 @@ public class MathProblemsActivity extends Activity {
 	}
 
 	public static String getTimeFromPoints(int points) {
-		float time = COUNT * 100000.0f / points;
-		return String.format("%01.4f", time).replace(".", ",");
+		float time = COUNT * 10000000.0f / points;
+		return String.format("%01.4f", time).replace(",", ".");
 	}
 
 	public static int getPoints() {
-		return (int) (COUNT * 100000.0f / (Double.parseDouble(TIME.replace(",", "."))));
+		return (int) (COUNT * 10000000.0f / (Double.parseDouble(TIME.replace(",", "."))));
 	}
 
 	@Override

@@ -237,8 +237,8 @@ public class MainScreenActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 
-				String title = "Send your Record";
-				String message = "Hey I am fast!";
+				String title = "Send your best!";
+				String message = "Hey, I am fast!";
 				int icon = R.drawable.owl3;
 				double score = Double.parseDouble(((String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 0)).replace(",", "."));
 				String time = String.format("%01.4f", score);
@@ -440,15 +440,18 @@ public class MainScreenActivity extends Activity {
 	};
 
 	private void refreshScore() {
+		Button buttonSend = (Button) findViewById(R.id.button2);
 		TextView textView = (TextView) findViewById(R.id.textView2);
 		double score;
 		try {
 			score = Double.parseDouble(((String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 0)).replace(",", "."));
 			String time = String.format("%01.4f", score);
 			textView.setText(time + " ");
+			buttonSend.setVisibility(View.VISIBLE);
 		} catch (Exception e) {
 			// e.printStackTrace();
 			textView.setText("");
+			buttonSend.setVisibility(View.GONE);
 		}
 	}
 
@@ -592,6 +595,7 @@ public class MainScreenActivity extends Activity {
 		final LinearLayout view = (LinearLayout) MainScreenActivity.this.getLayoutInflater().inflate(R.layout.input, null);
 		EditText input = (EditText) view.findViewById(R.id.editText1);
 		input.setText(name);
+		input.setEnabled(false);
 		alertDialog.setView(view);
 		alertDialog.setButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
@@ -599,7 +603,7 @@ public class MainScreenActivity extends Activity {
 				String info = input.getText().toString();
 
 				info = input.getText().toString();
-				info = info.trim().equals("") ? "OWLY" : info;
+				info = info.trim().equals("") ? "OWLY" : info.trim();
 				String playerName = info;
 				int points = MathProblemsActivity.getPoints();
 				new LeaderBoardUtil().leaderboardSave(playerName, points, MathProblemsActivity.COUNT);
@@ -611,6 +615,7 @@ public class MainScreenActivity extends Activity {
 	protected static ProgressDialog pd;
 
 	public static void startLoadingDialog(final Context c, final String text, final boolean cancel) {
+		System.out.println("startLoadingDialog");
 		stopLoadingDialog();
 		Thread t2 = new Thread() {
 			public void run() {
@@ -633,8 +638,9 @@ public class MainScreenActivity extends Activity {
 	}
 
 	public static void stopLoadingDialog() {
+		System.out.println("stopLoadingDialog");
 		if (pd != null)
-			pd.dismiss();
+			pd.cancel();
 		pd = null;
 	}
 }

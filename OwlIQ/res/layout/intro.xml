@@ -166,14 +166,25 @@
                     android:id="@+id/button2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Send" />
+                    android:layout_margin="5px"
+                    android:layout_weight="1"
+                    android:background="@drawable/start_xml"
+                    android:text="Send"
+                    android:textColor="#000011"
+                    android:textColorHighlight="#777777"
+                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/Button01"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Relist" />
-
+                    android:layout_margin="5px"
+                    android:layout_weight="1"
+                    android:background="@drawable/start_xml"
+                    android:text="Relist"
+                    android:textColor="#000011"
+                    android:textColorHighlight="#777777"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout

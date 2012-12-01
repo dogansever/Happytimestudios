@@ -106,7 +106,7 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 				return cur.getString(index);
 			}
 
-			return null;
+			return "";
 		} catch (Exception e) {
 			// e.printStackTrace();
 		} finally {
