@@ -35,6 +35,11 @@ public class EnemySprite extends FreeSprite {
 		addSprite(x, y);
 	}
 
+	public void fireGrenade() {
+		FreeSprite bullet = gameView.addGrenade(x, y + height * 0.5f);
+		bullet.getBody().setLinearVelocity(new Vec2((facingRigth ? 1 : -1) * 30, 30));
+	}
+
 	void addSprite(float x, float y) {
 		createDynamicBody(x, y);
 		createShape();
@@ -46,7 +51,11 @@ public class EnemySprite extends FreeSprite {
 			BULLET_FIRE_WAIT_TIME = new Random().nextInt(BULLET_FIRE_WAIT_TIME_MAX);
 			fireGrenade();
 		}
+		moveToPlayer();
 		super.onDraw(canvas);
+	}
+
+	private void moveToPlayer() {
 	}
 
 	public void createShape() {

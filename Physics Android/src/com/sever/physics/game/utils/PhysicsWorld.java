@@ -1,4 +1,4 @@
-package com.sever.physic;
+package com.sever.physics.game.utils;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 
-import com.sever.physics.game.utils.Constants;
+import com.sever.physic.PhysicsActivity;
 
 public class PhysicsWorld {
 	public ArrayList<Body> bodies = new ArrayList<Body>();

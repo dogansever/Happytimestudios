@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -17,6 +16,7 @@ import android.widget.RelativeLayout;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.sprites.PlayerSprite;
 import com.sever.physics.game.utils.Constants;
+import com.sever.physics.game.utils.PhysicsWorld;
 import com.sever.physics.game.utils.Weapons;
 
 public class PhysicsActivity extends Activity {
@@ -41,6 +41,9 @@ public class PhysicsActivity extends Activity {
 	public static Bitmap ground;
 	public static Bitmap bomb;
 	public static Bitmap bomb2;
+	public static Bitmap powerBar;
+	public static Bitmap fuelBar;
+	public static Bitmap joystick;
 	public static PhysicsActivity context;
 
 	@Override
@@ -59,6 +62,9 @@ public class PhysicsActivity extends Activity {
 		ground = createScaledBitmap(R.drawable.crate50x50dark, 800, 50);
 		bomb = createScaledBitmap(R.drawable.bombx2x2, 50, 45);
 		bomb2 = createScaledBitmap(R.drawable.bombx4x1, 100, 25);
+		powerBar = createScaledBitmap(R.drawable.powerbar, 0, 0);
+		fuelBar = createScaledBitmap(R.drawable.fuelbar, 0, 0);
+		joystick = createScaledBitmap(R.drawable.joystick, 0, 0);
 
 		createWorld();
 		setContentView(R.layout.main);
@@ -73,104 +79,24 @@ public class PhysicsActivity extends Activity {
 
 	private void setButtonHandlers() {
 
-		Button up = (Button) findViewById(R.id.button1);
-		Button down = (Button) findViewById(R.id.button2);
-		Button left = (Button) findViewById(R.id.button3);
-		Button right = (Button) findViewById(R.id.button4);
 		Button power = (Button) findViewById(R.id.button5);
 		Button fire = (Button) findViewById(R.id.button6);
 		Button bomb = (Button) findViewById(R.id.Button05);
 		Button bombImploding = (Button) findViewById(R.id.Button06);
 		Button bullet = (Button) findViewById(R.id.Button07);
 
-		up.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					throttleUp(v);
-					break;
-				case MotionEvent.ACTION_MOVE:
-					throttleUp(v);
-					break;
-				case MotionEvent.ACTION_UP:
-					break;
-				default:
-					break;
-				}
-				return true;
-			}
-		});
-		down.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					throttleDown(v);
-					break;
-				case MotionEvent.ACTION_MOVE:
-					throttleDown(v);
-					break;
-				case MotionEvent.ACTION_UP:
-					break;
-				default:
-					break;
-				}
-				return true;
-			}
-		});
-		left.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					throttleLeft(v);
-					break;
-				case MotionEvent.ACTION_MOVE:
-					throttleLeft(v);
-					break;
-				case MotionEvent.ACTION_UP:
-					break;
-				default:
-					break;
-				}
-				return true;
-			}
-		});
-		right.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					throttleRight(v);
-					break;
-				case MotionEvent.ACTION_MOVE:
-					throttleRight(v);
-					break;
-				case MotionEvent.ACTION_UP:
-					break;
-				default:
-					break;
-				}
-				return true;
-			}
-		});
 		power.setOnTouchListener(new OnTouchListener() {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
-					((PlayerSprite) getGameView().playerSprite.element()).powerUp();
+					((PlayerSprite) getGameView().getPlayerSprite()).powerUp();
 					break;
 				case MotionEvent.ACTION_MOVE:
 					break;
 				case MotionEvent.ACTION_UP:
-					((PlayerSprite) getGameView().playerSprite.element()).powerDown();
+					((PlayerSprite) getGameView().getPlayerSprite()).powerDown();
 					break;
 				default:
 					break;
@@ -184,11 +110,13 @@ public class PhysicsActivity extends Activity {
 			public boolean onTouch(View v, MotionEvent event) {
 				switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
+					((PlayerSprite) getGameView().getPlayerSprite()).fireHold();
 					break;
 				case MotionEvent.ACTION_MOVE:
+					((PlayerSprite) getGameView().getPlayerSprite()).fireHold();
 					break;
 				case MotionEvent.ACTION_UP:
-					((PlayerSprite) getGameView().playerSprite.element()).fire();
+					((PlayerSprite) getGameView().getPlayerSprite()).fire();
 					break;
 				default:
 					break;
@@ -207,7 +135,7 @@ public class PhysicsActivity extends Activity {
 				case MotionEvent.ACTION_MOVE:
 					break;
 				case MotionEvent.ACTION_UP:
-					((PlayerSprite) getGameView().playerSprite.element()).weapon = Weapons.BULLET;
+					((PlayerSprite) getGameView().getPlayerSprite()).weapon = Weapons.BULLET;
 					break;
 				default:
 					break;
@@ -226,7 +154,7 @@ public class PhysicsActivity extends Activity {
 				case MotionEvent.ACTION_MOVE:
 					break;
 				case MotionEvent.ACTION_UP:
-					((PlayerSprite) getGameView().playerSprite.element()).weapon = Weapons.BOMB;
+					((PlayerSprite) getGameView().getPlayerSprite()).weapon = Weapons.BOMB;
 					break;
 				default:
 					break;
@@ -245,7 +173,7 @@ public class PhysicsActivity extends Activity {
 				case MotionEvent.ACTION_MOVE:
 					break;
 				case MotionEvent.ACTION_UP:
-					((PlayerSprite) getGameView().playerSprite.element()).weapon = Weapons.BOMB_IMPLODING;
+					((PlayerSprite) getGameView().getPlayerSprite()).weapon = Weapons.BOMB_IMPLODING;
 					break;
 				default:
 					break;
@@ -302,22 +230,6 @@ public class PhysicsActivity extends Activity {
 		// findViewById(R.id.relativeLayoutGameView);
 		// return (GameView) relativeLayout1.getChildAt(0);
 		return gameView;
-	}
-
-	public void throttleUp(View view) {
-		((PlayerSprite) getGameView().playerSprite.element()).throttleUp();
-	}
-
-	public void throttleDown(View view) {
-		((PlayerSprite) getGameView().playerSprite.element()).throttleDown();
-	}
-
-	public void throttleLeft(View view) {
-		((PlayerSprite) getGameView().playerSprite.element()).throttleLeft();
-	}
-
-	public void throttleRight(View view) {
-		((PlayerSprite) getGameView().playerSprite.element()).throttleRight();
 	}
 
 	@Override

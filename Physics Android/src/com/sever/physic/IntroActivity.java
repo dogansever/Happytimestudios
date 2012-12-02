@@ -37,7 +37,7 @@ public class IntroActivity extends Activity {
 		recallDeviceMetrics();
 
 		bmpIntro = createScaledBitmap(R.drawable.space, (int) deviceWidth, (int) deviceHeight);
-		bmpIntro2 = createScaledBitmap(R.drawable.background, (int) deviceWidth, 50);
+		bmpIntro2 = createScaledBitmap(R.drawable.introsub1, (int) deviceWidth, (int) (deviceHeight * 0.125f));
 
 		setContentView(R.layout.intro);
 		RelativeLayout root = (RelativeLayout) findViewById(R.id.introViewRelativeLayout);

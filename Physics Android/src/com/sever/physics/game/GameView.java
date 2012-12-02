@@ -2,10 +2,7 @@ package com.sever.physics.game;
 
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Timer;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import org.jbox2d.common.Vec2;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,11 +24,14 @@ import com.sever.physics.game.sprites.BoxSprite;
 import com.sever.physics.game.sprites.BulletSprite;
 import com.sever.physics.game.sprites.EnemySprite;
 import com.sever.physics.game.sprites.FreeSprite;
+import com.sever.physics.game.sprites.FuelBarSprite;
 import com.sever.physics.game.sprites.GrenadeImplodeSprite;
 import com.sever.physics.game.sprites.GrenadeSprite;
 import com.sever.physics.game.sprites.GroundBoxSprite;
+import com.sever.physics.game.sprites.JoystickSprite;
 import com.sever.physics.game.sprites.PlanetSprite;
 import com.sever.physics.game.sprites.PlayerSprite;
+import com.sever.physics.game.sprites.PowerBarSprite;
 import com.sever.physics.game.sprites.StaticBoxSprite;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.Joint;
@@ -44,6 +44,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public ConcurrentLinkedQueue<FreeSprite> groundSprites = new ConcurrentLinkedQueue<FreeSprite>();
 	public ConcurrentLinkedQueue<FreeSprite> enemySprites = new ConcurrentLinkedQueue<FreeSprite>();
 	public ConcurrentLinkedQueue<FreeSprite> playerSprite = new ConcurrentLinkedQueue<FreeSprite>();
+	public ConcurrentLinkedQueue<FreeSprite> nophysicsSprite = new ConcurrentLinkedQueue<FreeSprite>();
 	public int score = 0;
 	public int point = 0;
 	private int scoreHigh = 0;
@@ -52,21 +53,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	private static int shiftWidth = 1;
 	private Context context;
 	public boolean threadStarted = false;
-	public Timer timerAnimation;
 	private Runnable r;
-	private boolean justcametolife = false;
 	public long timePause;
 	public long timeResumed;
 	public long delayInSeconds;
-	private long timeFired;
 	public SurfaceHolder holder;
 	private FreeSprite victim;
-	private Vec2 pointUp;
-	private Vec2 pointDown;
 	public static boolean success;
 
-	public void cancelTimer() {
-		timerAnimation.cancel();
+	public FreeSprite getJoystickSprite() {
+		return (FreeSprite) this.nophysicsSprite.toArray()[2];
+	}
+
+	public FreeSprite getPowerBarSprite() {
+		return (FreeSprite) this.nophysicsSprite.toArray()[0];
+	}
+
+	public FreeSprite getPlayerSprite() {
+		return this.playerSprite.element();
 	}
 
 	public int getPoint() {
@@ -79,6 +83,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	public void setScore(int score) {
 		this.score = score;
+	}
+
+	public FreeSprite addJoystick(float x, float y) {
+		FreeSprite sprite = new JoystickSprite(nophysicsSprite, this, PhysicsActivity.joystick, x, y, 2, 1);
+		nophysicsSprite.add(sprite);
+		return sprite;
+	}
+
+	public FreeSprite addFuelBar(float x, float y) {
+		FreeSprite sprite = new FuelBarSprite(nophysicsSprite, this, PhysicsActivity.fuelBar, x, y, 10, 1);
+		nophysicsSprite.add(sprite);
+		return sprite;
+	}
+
+	public FreeSprite addPowerBar(float x, float y) {
+		FreeSprite sprite = new PowerBarSprite(nophysicsSprite, this, PhysicsActivity.powerBar, x, y, 1, 10);
+		nophysicsSprite.add(sprite);
+		return sprite;
 	}
 
 	public FreeSprite addBullet(float x, float y) {
@@ -199,6 +221,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		//
 		// new Joint().createRevolute(w1, c1);
 		// new Joint().createRevolute(w2, c1);
+
+		createNophysicSprites();
+	}
+
+	private void createNophysicSprites() {
+		addPowerBar(950, 150);
+		addFuelBar(250, 50);
+		addJoystick(120, 60);
 	}
 
 	@Override
@@ -287,20 +317,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					applyPullPushOn(spriteExplosive, playerSprite);
 				}
 
-				// draw player
-				playerSprite.element().onDraw(canvas);
-
 				if (playerSprite.size() == 0)
 					return;
-				
+
+				// draw player
+				getPlayerSprite().onDraw(canvas);
+
 				// draw frees, push pull frees
 				for (Iterator<FreeSprite> it2 = freeSprites.iterator(); it2.hasNext();) {
 					FreeSprite spritefree = it2.next();
 					try {
-						if (((PlayerSprite) playerSprite.element()).powerOn) {
-							playerSprite.element().pull(spritefree);
-						} else if (!((PlayerSprite) playerSprite.element()).powerOn && ((PlayerSprite) playerSprite.element()).scatter) {
-							playerSprite.element().push(spritefree);
+						if (((PlayerSprite) getPlayerSprite()).powerOn) {
+							getPlayerSprite().pull(spritefree);
+						} else if (!((PlayerSprite) getPlayerSprite()).powerOn && ((PlayerSprite) getPlayerSprite()).scatter) {
+							getPlayerSprite().push(spritefree);
 						}
 						spritefree.onDraw(canvas);
 					} catch (Exception e) {
@@ -315,8 +345,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					}
 				}
 
-				if (!((PlayerSprite) playerSprite.element()).powerOn && ((PlayerSprite) playerSprite.element()).scatter) {
-					((PlayerSprite) playerSprite.element()).scatter = false;
+				for (Iterator<FreeSprite> it = nophysicsSprite.iterator(); it.hasNext();) {
+					FreeSprite spriteStatic = it.next();
+					spriteStatic.onDraw(canvas);
+				}
+
+				if (!((PlayerSprite) getPlayerSprite()).powerOn && ((PlayerSprite) getPlayerSprite()).scatter) {
+					((PlayerSprite) getPlayerSprite()).scatter = false;
 				}
 			}
 		} catch (Exception e) {
@@ -372,26 +407,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		float x2 = event.getX();
 		float y2 = event.getY();
 		if (event.getAction() == MotionEvent.ACTION_MOVE) {
-			// addBarrel(x2, (PhysicsActivity.deviceHeight - y2));
+			((JoystickSprite) getJoystickSprite()).onMove(x2, IntroActivity.deviceHeight - y2);
 		} else if (event.getAction() == MotionEvent.ACTION_UP) {
-			addEnemy(x2, IntroActivity.deviceHeight - y2);
-			// pointUp = new Vec2(x2, y2);
-			// if (victim != null)
-			// victim.kickout(pointUp);
+			((JoystickSprite) getJoystickSprite()).onUp(x2, IntroActivity.deviceHeight - y2);
 		} else if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			// pointDown = new Vec2(x2, y2);
-			// victim = null;
-			// for (Iterator<FreeSprite> it = freeSprites.iterator();
-			// it.hasNext();) {
-			// FreeSprite sprite = it.next();
-			// if (sprite.isCollision(x2, y2)) {
-			// victim = sprite;
-			// System.out.println("!!!Its a hit!!!:" + victim.index);
-			// return true;
-			// }
-			// }
-			// System.out.println("!!!Its a miss!!!");
-
+			((JoystickSprite) getJoystickSprite()).onDown(x2, IntroActivity.deviceHeight - y2);
 		} else {
 		}
 		return true;
@@ -467,7 +487,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		if (r != null) {
 			synchronized (r) {
-				justcametolife = true;
 				r.notify();
 			}
 		}

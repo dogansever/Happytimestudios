@@ -7,6 +7,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
@@ -17,6 +18,14 @@ public class PlayerSprite extends FreeSprite {
 	public Weapons weapon = Weapons.BULLET;
 	public boolean powerOn;
 	public boolean scatter;
+	public int fuel;
+	public int fuel_AGG = +1;
+	public final int fuel_MAX = 100;
+	public int firePower;
+	public int firePower_AGG = +1;
+	public final int firePower_MAX = 50;
+	public final int fireMultiplierBullet = 150;
+	public final int fireMultiplierBomb = 30;
 
 	public PlayerSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, Bitmap bmp, float x, float y, int bmpColumns, int bmpRows) {
 		BMP_COLUMNS = bmpColumns;
@@ -32,6 +41,38 @@ public class PlayerSprite extends FreeSprite {
 		addSprite(x, y);
 	}
 
+	public void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+		throttleLeave();
+	}
+
+	public boolean throttleHold() {
+		if (fuel == 0) {
+			return false;
+		}
+		fuel_AGG = -1;
+		fuel = fuel + fuel_AGG;
+		return true;
+	}
+
+	public void throttleLeave() {
+		if (fuel == fuel_MAX) {
+			return;
+		}
+		fuel_AGG = 1;
+		fuel = fuel + fuel_AGG;
+	}
+
+	public void fireHold() {
+		gameView.getPowerBarSprite().makeVisible();
+		firePower = firePower + firePower_AGG % firePower_MAX;
+		if (firePower == firePower_MAX) {
+			firePower_AGG = -1;
+		} else if (firePower == 0) {
+			firePower_AGG = 1;
+		}
+	}
+
 	public void fire() {
 		if (weapon == Weapons.BULLET) {
 			fireBullet();
@@ -40,6 +81,24 @@ public class PlayerSprite extends FreeSprite {
 		} else if (weapon == Weapons.BOMB_IMPLODING) {
 			fireGrenadeImploding();
 		}
+		firePower = 0;
+		firePower_AGG = 1;
+		gameView.getPowerBarSprite().makeInvisible();
+	}
+
+	public void fireGrenadeImploding() {
+		FreeSprite bullet = gameView.addGrenadeImploding(x, y + height * 0.5f);
+		bullet.getBody().setLinearVelocity(new Vec2((facingRigth ? 1 : -1) * (firePower * fireMultiplierBomb / firePower_MAX), 30));
+	}
+
+	public void fireGrenade() {
+		FreeSprite bullet = gameView.addGrenade(x, y + height * 0.5f);
+		bullet.getBody().setLinearVelocity(new Vec2((facingRigth ? 1 : -1) * (firePower * fireMultiplierBomb / firePower_MAX), 30));
+	}
+
+	public void fireBullet() {
+		FreeSprite bullet = gameView.addBullet(x + (facingRigth ? 1 : -1) * width * 0.5f, y);
+		bullet.getBody().setLinearVelocity(new Vec2((facingRigth ? 1 : -1) * (firePower * fireMultiplierBullet / firePower_MAX), 0));
 	}
 
 	void addSprite(float x, float y) {
@@ -124,10 +183,12 @@ public class PlayerSprite extends FreeSprite {
 	}
 
 	public void throttleLeft() {
+		facingRigth = false;
 		throttle(2);
 	}
 
 	public void throttleRight() {
+		facingRigth = true;
 		throttle(3);
 	}
 
@@ -145,6 +206,9 @@ public class PlayerSprite extends FreeSprite {
 	}
 
 	public void throttle(int direction) {
+		if (!throttleHold()) {
+			return;
+		}
 		Vec2 force = null;
 		switch (direction) {
 		case 0:

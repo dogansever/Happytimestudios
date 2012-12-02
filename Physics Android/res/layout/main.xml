@@ -16,51 +16,10 @@
         android:layout_alignParentBottom="true" >
 
         <RelativeLayout
-            android:layout_width="160px"
-            android:layout_height="160px"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="false"
-            android:layout_centerInParent="true" >
-
-            <Button
-                android:id="@+id/button1"
-                android:layout_width="60px"
-                android:layout_height="60px"
-                android:layout_alignParentRight="false"
-                android:layout_alignParentTop="true"
-                android:layout_centerInParent="true"
-                android:background="@drawable/arrowup" />
-
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="60px"
-                android:layout_height="60px"
-                android:layout_alignParentBottom="true"
-                android:layout_centerInParent="true"
-                android:background="@drawable/arrowdown" />
-
-            <Button
-                android:id="@+id/button3"
-                android:layout_width="60px"
-                android:layout_height="60px"
-                android:layout_alignParentLeft="true"
-                android:layout_centerInParent="true"
-                android:background="@drawable/arrowleft" />
-
-            <Button
-                android:id="@+id/button4"
-                android:layout_width="60px"
-                android:layout_height="60px"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:background="@drawable/arrowright" />
-        </RelativeLayout>
-
-        <RelativeLayout
             android:layout_width="300px"
             android:layout_height="160px"
-            android:layout_alignParentRight="true"
-            android:layout_centerInParent="true" >
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true" >
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -92,7 +51,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
             android:layout_centerInParent="false" >
 
             <LinearLayout

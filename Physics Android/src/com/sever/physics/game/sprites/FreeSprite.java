@@ -42,6 +42,7 @@ public class FreeSprite {
 	public boolean explodes = false;
 	public boolean implodes = false;
 	public boolean facingRigth = false;
+	public boolean manualFrameSet = false;
 	public int currentFrame = 0;
 	public int currentRow = 0;
 
@@ -54,20 +55,12 @@ public class FreeSprite {
 	}
 
 	public void fireGrenadeImploding() {
-		FreeSprite bullet = gameView.addGrenadeImploding(x, y + height * 0.5f);
-		bullet.getBody().setLinearVelocity(new Vec2((facingRigth ? 1 : -1) * 30, 30));
 	}
 
 	public void fireGrenade() {
-		FreeSprite bullet = gameView.addGrenade(x, y + height * 0.5f);
-		bullet.getBody().setLinearVelocity(new Vec2((facingRigth ? 1 : -1) * 30, 30));
-		// bullet.setDensity(100);
-		// push(bullet);
 	}
 
 	public void fireBullet() {
-		FreeSprite bullet = gameView.addBullet(x + (facingRigth ? 1 : -1) * width * 0.5f, y);
-		bullet.getBody().setLinearVelocity(new Vec2((facingRigth ? 1 : -1) * 200, 0));
 	}
 
 	public void push(FreeSprite sprite) {
@@ -118,13 +111,15 @@ public class FreeSprite {
 	}
 
 	public Body getBody() {
+		if (body == null)
+			System.out.println("getBody():" + body + " " + this.getClass().getName());
 		return body;
 		// int index = PhysicsActivity.mWorld.bodies.indexOf(body);
 		// return PhysicsActivity.mWorld.bodies.get(index);
 	}
 
 	private void updateBitmap() {
-		if (++BMP_FPS_CURRENT % BMP_FPS == 0)
+		if (!manualFrameSet && ++BMP_FPS_CURRENT % BMP_FPS == 0)
 			currentFrame = ++currentFrame % BMP_COLUMNS;
 
 		int srcX = (int) (currentFrame * width);
@@ -138,13 +133,11 @@ public class FreeSprite {
 
 	private void updatePosition() {
 		Body body = getBody();
-		this.x = body.getPosition().x * Constants.pixelpermeter;
-		this.y = body.getPosition().y * Constants.pixelpermeter;
-		this.angle = body.getAngle();
-		Vec2 linVel = body.getLinearVelocity();
-		// System.out.println("index:" + index + ",x:" + x + ",y:" + y +
-		// ",linVel:x:" + linVel.x + ",y:" + linVel.y + ",angle:" + angle +
-		// ",width:" + width + ",height:" + height);
+		if (body != null) {
+			this.x = body.getPosition().x * Constants.pixelpermeter;
+			this.y = body.getPosition().y * Constants.pixelpermeter;
+			this.angle = body.getAngle();
+		}
 	}
 
 	protected void kickout(Vec2 positionSrc) {
@@ -179,6 +172,12 @@ public class FreeSprite {
 			Vec2 translate = getBitmapDrawingXY();
 			m.postTranslate(translate.x, translate.y);
 			// canvas.drawColor(Color.TRANSPARENT);
+			if (facingRigth) {
+				Matrix mirrorMatrix = new Matrix();
+				mirrorMatrix.preScale(-1.0f, 1.0f);
+				bmpFrame = Bitmap.createBitmap(bmpFrame, 0, 0, bmpFrame.getWidth(), bmpFrame.getHeight(), mirrorMatrix, false);
+			}
+
 			canvas.drawBitmap(bmpFrame, m, null);
 		}
 	}
