@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -346,17 +347,28 @@ public class MainScreenActivity extends Activity {
 		if (LeaderBoardUtil.scoreList == null)
 			return;
 
+		boolean best = false;
+		boolean bestDone = false;
 		for (PlaytomicScore ps : LeaderBoardUtil.scoreList) {
-			ps.getName();
-			ps.getRank();
-			ps.getPoints();
-			ps.getRelativeDate();
+			if (!bestDone) {
+				best = checkForBestTime(ps.getName(), ps.getPoints());
+			} else {
+				best = false;
+			}
 			LinearLayout view = (LinearLayout) this.getLayoutInflater().inflate(R.layout.list_item2, null);
 			TextView textView1 = (TextView) view.findViewById(R.id.textView1);
+			if (best) {
+				bestDone = true;
+				textView1.setTextColor(Color.RED);
+			}
 			textView1.setTypeface(MainScreenActivity.face);
 			textView1.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
 			textView1.setText("" + ps.getRank() + ".");
 			TextView textView2 = (TextView) view.findViewById(R.id.textView2);
+			if (best) {
+				bestDone = true;
+				textView2.setTextColor(Color.RED);
+			}
 			textView2.setTypeface(MainScreenActivity.face);
 			textView2.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
 			// double score =
@@ -365,6 +377,10 @@ public class MainScreenActivity extends Activity {
 			String time = MathProblemsActivity.getTimeFromPoints(ps.getPoints());
 			textView2.setText(time + " ");
 			TextView textView3 = (TextView) view.findViewById(R.id.textView3);
+			if (best) {
+				bestDone = true;
+				textView3.setTextColor(Color.RED);
+			}
 			textView3.setTypeface(MainScreenActivity.face);
 			textView3.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
 			textView3.setText(ps.getName() + ", " + ps.getRelativeDate() + " ");
@@ -399,6 +415,15 @@ public class MainScreenActivity extends Activity {
 			textView3.setText((String) contentValues.get(DBWriteUtil.infoColumn) + " ");
 			linearLayout6.addView(view);
 		}
+	}
+
+	private boolean checkForBestTime(String nameOn, int pointOn) {
+		double score = Double.parseDouble(((String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 0)).replace(",", "."));
+		String time = String.format("%01.4f", score);
+		MathProblemsActivity.TIME = time;
+		String name = (String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 2);
+		name = (String) name.subSequence(0, name.indexOf(","));
+		return pointOn == MathProblemsActivity.getPoints() && name.trim().equals(nameOn.trim());
 	}
 
 	RadioButton.OnClickListener myOptionOnClickListener = new RadioButton.OnClickListener() {

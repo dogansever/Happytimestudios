@@ -56,11 +56,13 @@ public class LeaderBoardUtil {
 	private void requestLeaderBoardSaveFinished() {
 		log.info("\nSave score success");
 		MainScreenActivity.stopLoadingDialog();
+		Toast.makeText(MainScreenActivity.context, "Hey! It is done! Relist you may do!", Toast.LENGTH_SHORT).show();
 	}
 
 	private void requestLeaderBoardSaveFailed(int errorCode, String message) {
 		log.info("\nLeaderboard save failed to save because of errorcode #" + errorCode + " - Message:" + message);
 		MainScreenActivity.stopLoadingDialog();
+		Toast.makeText(MainScreenActivity.context, "Oops! It looks like Server is down right now.!!!", Toast.LENGTH_SHORT).show();
 	}
 
 	public void leaderBoardSaveAndList(Object... args) {
@@ -139,22 +141,25 @@ public class LeaderBoardUtil {
 	private void requestLeaderBoardListFinished(ArrayList<PlaytomicScore> data) {
 		scoreList = data;
 		MathProblemsActivity.REFRESHING = false;
-//		log.info("Leaderboard {");
-//		Iterator<PlaytomicScore> itr = data.iterator();
-//		while (itr.hasNext()) {
-//			PlaytomicScore score = itr.next();
-//			log.info("----------------------------------\nScore:\nName=\"" + score.getName() + "\"");
-//			log.info("Points=\"" + score.getPoints() + "\"");
-//			log.info("Date=\"" + score.getDate() + "\"");
-//			log.info("Relative Date=\"" + score.getRelativeDate() + "\"");
-//			log.info("Rank=\"" + score.getRank() + "\"");
-//			log.info("Custom Data {");
-//			for (Map.Entry<String, String> entry : score.getCustomData().entrySet()) {
-//				log.info("Var: Name=\"" + entry.getKey() + "\" Value=\"" + entry.getValue() + "\"");
-//			}
-//			log.info("}");
-//		}
-//		log.info("}");
+		// log.info("Leaderboard {");
+		// Iterator<PlaytomicScore> itr = data.iterator();
+		// while (itr.hasNext()) {
+		// PlaytomicScore score = itr.next();
+		// log.info("----------------------------------\nScore:\nName=\"" +
+		// score.getName() + "\"");
+		// log.info("Points=\"" + score.getPoints() + "\"");
+		// log.info("Date=\"" + score.getDate() + "\"");
+		// log.info("Relative Date=\"" + score.getRelativeDate() + "\"");
+		// log.info("Rank=\"" + score.getRank() + "\"");
+		// log.info("Custom Data {");
+		// for (Map.Entry<String, String> entry :
+		// score.getCustomData().entrySet()) {
+		// log.info("Var: Name=\"" + entry.getKey() + "\" Value=\"" +
+		// entry.getValue() + "\"");
+		// }
+		// log.info("}");
+		// }
+		// log.info("}");
 		MainScreenActivity.stopLoadingDialog();
 		MathProblemsActivity.REFRESH = false;
 		MainScreenActivity.context.prepareScoresList();
@@ -165,6 +170,8 @@ public class LeaderBoardUtil {
 		MathProblemsActivity.REFRESHING = false;
 		log.info("Leaderboard list failed to list because of errorcode #" + errorCode + " - Message:" + message);
 		MainScreenActivity.stopLoadingDialog();
+
+		Toast.makeText(MainScreenActivity.context, "Oops! It looks like Server is down right now.!!!", Toast.LENGTH_SHORT).show();
 	}
 
 }

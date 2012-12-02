@@ -394,7 +394,7 @@ public class MathProblemsActivity extends Activity {
 		// });
 	}
 
-	private void showTime(String title, String message, int icon, boolean highscore) {
+	private void showTime(String title, String message, int icon, final boolean highscore) {
 		DIALOG_VISIBLE = true;
 		AlertDialog alertDialog = new AlertDialog.Builder(this).setIcon(icon).create();
 		alertDialog.setTitle(title);
@@ -416,7 +416,8 @@ public class MathProblemsActivity extends Activity {
 				info = info.trim().equals("") ? "OWLY" : info.trim();
 				String playerName = info;
 				int points = getPoints();
-				new LeaderBoardUtil().leaderboardSave(playerName, points, COUNT);
+				if (highscore)
+					new LeaderBoardUtil().leaderboardSave(playerName, points, COUNT);
 				finish();
 			}
 		});
