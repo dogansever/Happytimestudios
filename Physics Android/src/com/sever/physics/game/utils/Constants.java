@@ -39,7 +39,7 @@ public class Constants {
 	public static final float gravityPullPlayer = 2.0f * pixelpermeter;
 	public static final float gravityPullEnemy = 2.0f * pixelpermeter;
 	public static final float gravityPullExplosive = 10.0f * pixelpermeter;
-	public static final float gravityThrottle = 0.2f * pixelpermeter;
+	public static final float gravityThrottle = 0.1f * pixelpermeter;
 	public static final float gravityPullFieldRadiusPlayer = 500 / Constants.pixelpermeter;
 	public static final float gravityPullFieldRadiusEnemy = 100 / Constants.pixelpermeter;
 	public static final float gravityPullFieldRadiusExplosive = 500 / Constants.pixelpermeter;

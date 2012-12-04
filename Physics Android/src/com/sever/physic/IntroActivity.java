@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.sever.physics.game.IntroView;
+import com.sever.physics.game.utils.GeneralUtil;
 
 public class IntroActivity extends Activity {
 
@@ -36,8 +37,8 @@ public class IntroActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		recallDeviceMetrics();
 
-		bmpIntro = createScaledBitmap(R.drawable.space, (int) deviceWidth, (int) deviceHeight);
-		bmpIntro2 = createScaledBitmap(R.drawable.introsub1, (int) deviceWidth, (int) (deviceHeight * 0.125f));
+		bmpIntro = GeneralUtil.createScaledBitmap(this, R.drawable.space, (int) deviceWidth, (int) deviceHeight);
+		bmpIntro2 = GeneralUtil.createScaledBitmap(this, R.drawable.introsub1, (int) deviceWidth, (int) (deviceHeight * 0.125f));
 
 		setContentView(R.layout.intro);
 		RelativeLayout root = (RelativeLayout) findViewById(R.id.introViewRelativeLayout);
@@ -54,12 +55,41 @@ public class IntroActivity extends Activity {
 				start.setVisibility(View.GONE);
 			}
 		});
+
+		show(0);
 	}
 
-	public Bitmap createScaledBitmap(int decodeResource, int dstWidth, int dstHeight) {
-		if (dstWidth <= 0 || dstHeight <= 0) {
-			return BitmapFactory.decodeResource(getResources(), decodeResource);
+	private void show(int i) {
+		// TODO Auto-generated method stub
+		switch (i) {
+		case 0:
+			showTopScore();
+			break;
+		case 1:
+			showTopScoresLocal();
+			break;
+		case 2:
+			showTopScoresOnline();
+			break;
+
+		default:
+			break;
 		}
-		return Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), decodeResource), dstWidth, dstHeight, false);
 	}
+
+	private void showTopScoresOnline() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void showTopScoresLocal() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void showTopScore() {
+		// TODO Auto-generated method stub
+
+	}
+
 }

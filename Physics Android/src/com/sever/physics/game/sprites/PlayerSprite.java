@@ -25,7 +25,7 @@ public class PlayerSprite extends FreeSprite {
 	public int firePower_AGG = +1;
 	public final int firePower_MAX = 50;
 	public final int fireMultiplierBullet = 150;
-	public final int fireMultiplierBomb = 30;
+	public final int fireMultiplierBomb = 50;
 
 	public PlayerSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, Bitmap bmp, float x, float y, int bmpColumns, int bmpRows) {
 		BMP_COLUMNS = bmpColumns;
@@ -87,18 +87,36 @@ public class PlayerSprite extends FreeSprite {
 	}
 
 	public void fireGrenadeImploding() {
-		FreeSprite bullet = gameView.addGrenadeImploding(x, y + height * 0.5f);
-		bullet.getBody().setLinearVelocity(new Vec2((facingRigth ? 1 : -1) * (firePower * fireMultiplierBomb / firePower_MAX), 30));
+		FreeSprite bullet = gameView.addGrenadeImploding(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
+		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBomb));
 	}
 
 	public void fireGrenade() {
-		FreeSprite bullet = gameView.addGrenade(x, y + height * 0.5f);
-		bullet.getBody().setLinearVelocity(new Vec2((facingRigth ? 1 : -1) * (firePower * fireMultiplierBomb / firePower_MAX), 30));
+		FreeSprite bullet = gameView.addGrenade(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
+		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBomb));
 	}
 
 	public void fireBullet() {
-		FreeSprite bullet = gameView.addBullet(x + (facingRigth ? 1 : -1) * width * 0.5f, y);
-		bullet.getBody().setLinearVelocity(new Vec2((facingRigth ? 1 : -1) * (firePower * fireMultiplierBullet / firePower_MAX), 0));
+		FreeSprite bullet = gameView.addBullet(x + (facingRigth ? 1 : -1) * width * 0.9f, y);
+		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBullet));
+	}
+
+	private Vec2 getVelocityVec(int fireMultiplier) {
+		float fangle = ((FireArrowSprite) gameView.getFireArrowSprite()).getAngle();
+		// System.out.println("Math.cos(fangle):" +
+		// Math.cos(Math.toRadians(fangle)));
+		// System.out.println("Math.sin(fangle):" +
+		// Math.sin(Math.toRadians(fangle)));
+		Vec2 force = new Vec2((float) Math.cos(Math.toRadians(fangle)), (float) Math.sin(Math.toRadians(fangle)));
+		force.normalize();
+
+		float xt = (facingRigth ? 1 : -1) * (firePower * fireMultiplier / firePower_MAX) * force.x;
+		float yt = (firePower * fireMultiplier / firePower_MAX) * force.y;
+		Vec2 v = new Vec2(xt, yt);
+
+		// System.out.println("force():(" + force.x + "," + force.y + ")");
+		// System.out.println("getVelocityVec():(" + xt + "," + yt + ")");
+		return v;
 	}
 
 	void addSprite(float x, float y) {

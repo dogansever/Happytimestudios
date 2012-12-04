@@ -111,8 +111,9 @@ public class FreeSprite {
 	}
 
 	public Body getBody() {
-		if (body == null)
-			System.out.println("getBody():" + body + " " + this.getClass().getName());
+		// if (body == null)
+		// System.out.println("getBody():" + body + " " +
+		// this.getClass().getName());
 		return body;
 		// int index = PhysicsActivity.mWorld.bodies.indexOf(body);
 		// return PhysicsActivity.mWorld.bodies.get(index);
@@ -183,7 +184,7 @@ public class FreeSprite {
 	}
 
 	public boolean checkOutOfBounds() {
-		return this.x < 0 || this.x > Constants.upperBoundxScreen || this.y > Constants.upperBoundyScreen;
+		return this.x < 0 - width || this.x > Constants.upperBoundxScreen + width || this.y > Constants.upperBoundyScreen * 1.5 || this.y < 0 - width;
 	}
 
 	public boolean isCollision(float x2, float y2) {
@@ -231,6 +232,15 @@ public class FreeSprite {
 			force.set(force.mul(body.getMass() * pullG * (FIELD_RADIUS - range) / FIELD_RADIUS));
 			body.applyForce(force, body.getWorldCenter());
 		}
+	}
+
+	public void applyForce(FreeSprite sprite, Vec2 positionSrc, float pullG) {
+		Body body = sprite.getBody();
+		Vec2 positionTarget = body.getPosition();
+		Vec2 force = new Vec2(positionSrc.x - positionTarget.x, positionSrc.y - positionTarget.y);
+		force.normalize(); // force direction always point to source
+		force.set(force.mul(body.getMass() * pullG));
+		body.applyForce(force, body.getWorldCenter());
 	}
 
 	public boolean isVisible() {

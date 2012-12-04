@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.sever.physics.game.GameView;
+import com.sever.physics.game.sprites.FireArrowSprite;
 import com.sever.physics.game.sprites.PlayerSprite;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.PhysicsWorld;
@@ -44,6 +45,7 @@ public class PhysicsActivity extends Activity {
 	public static Bitmap powerBar;
 	public static Bitmap fuelBar;
 	public static Bitmap joystick;
+	public static Bitmap fireArrow;
 	public static PhysicsActivity context;
 
 	@Override
@@ -65,6 +67,7 @@ public class PhysicsActivity extends Activity {
 		powerBar = createScaledBitmap(R.drawable.powerbar, 0, 0);
 		fuelBar = createScaledBitmap(R.drawable.fuelbar, 0, 0);
 		joystick = createScaledBitmap(R.drawable.joystick, 0, 0);
+		fireArrow = createScaledBitmap(R.drawable.firearrow, 50, 50);
 
 		createWorld();
 		setContentView(R.layout.main);
@@ -89,17 +92,20 @@ public class PhysicsActivity extends Activity {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					((PlayerSprite) getGameView().getPlayerSprite()).powerUp();
-					break;
-				case MotionEvent.ACTION_MOVE:
-					break;
-				case MotionEvent.ACTION_UP:
-					((PlayerSprite) getGameView().getPlayerSprite()).powerDown();
-					break;
-				default:
-					break;
+				try {
+					switch (event.getAction()) {
+					case MotionEvent.ACTION_DOWN:
+						((PlayerSprite) getGameView().getPlayerSprite()).powerUp();
+						break;
+					case MotionEvent.ACTION_MOVE:
+						break;
+					case MotionEvent.ACTION_UP:
+						((PlayerSprite) getGameView().getPlayerSprite()).powerDown();
+						break;
+					default:
+						break;
+					}
+				} catch (Exception e) {
 				}
 				return true;
 			}
@@ -108,18 +114,26 @@ public class PhysicsActivity extends Activity {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					((PlayerSprite) getGameView().getPlayerSprite()).fireHold();
-					break;
-				case MotionEvent.ACTION_MOVE:
-					((PlayerSprite) getGameView().getPlayerSprite()).fireHold();
-					break;
-				case MotionEvent.ACTION_UP:
-					((PlayerSprite) getGameView().getPlayerSprite()).fire();
-					break;
-				default:
-					break;
+				try {
+					float x2 = event.getX();
+					float y2 = event.getY();
+					switch (event.getAction()) {
+					case MotionEvent.ACTION_DOWN:
+						((PlayerSprite) getGameView().getPlayerSprite()).fireHold();
+						((FireArrowSprite) getGameView().getFireArrowSprite()).onDown(x2, IntroActivity.deviceHeight - y2);
+						break;
+					case MotionEvent.ACTION_MOVE:
+						((PlayerSprite) getGameView().getPlayerSprite()).fireHold();
+						((FireArrowSprite) getGameView().getFireArrowSprite()).onMove(x2, IntroActivity.deviceHeight - y2);
+						break;
+					case MotionEvent.ACTION_UP:
+						((PlayerSprite) getGameView().getPlayerSprite()).fire();
+						((FireArrowSprite) getGameView().getFireArrowSprite()).onUp(x2, IntroActivity.deviceHeight - y2);
+						break;
+					default:
+						break;
+					}
+				} catch (Exception e) {
 				}
 				return true;
 			}
@@ -129,16 +143,19 @@ public class PhysicsActivity extends Activity {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					break;
-				case MotionEvent.ACTION_MOVE:
-					break;
-				case MotionEvent.ACTION_UP:
-					((PlayerSprite) getGameView().getPlayerSprite()).weapon = Weapons.BULLET;
-					break;
-				default:
-					break;
+				try {
+					switch (event.getAction()) {
+					case MotionEvent.ACTION_DOWN:
+						break;
+					case MotionEvent.ACTION_MOVE:
+						break;
+					case MotionEvent.ACTION_UP:
+						((PlayerSprite) getGameView().getPlayerSprite()).weapon = Weapons.BULLET;
+						break;
+					default:
+						break;
+					}
+				} catch (Exception e) {
 				}
 				return true;
 			}
@@ -148,16 +165,19 @@ public class PhysicsActivity extends Activity {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					break;
-				case MotionEvent.ACTION_MOVE:
-					break;
-				case MotionEvent.ACTION_UP:
-					((PlayerSprite) getGameView().getPlayerSprite()).weapon = Weapons.BOMB;
-					break;
-				default:
-					break;
+				try {
+					switch (event.getAction()) {
+					case MotionEvent.ACTION_DOWN:
+						break;
+					case MotionEvent.ACTION_MOVE:
+						break;
+					case MotionEvent.ACTION_UP:
+						((PlayerSprite) getGameView().getPlayerSprite()).weapon = Weapons.BOMB;
+						break;
+					default:
+						break;
+					}
+				} catch (Exception e) {
 				}
 				return true;
 			}
@@ -167,16 +187,19 @@ public class PhysicsActivity extends Activity {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					break;
-				case MotionEvent.ACTION_MOVE:
-					break;
-				case MotionEvent.ACTION_UP:
-					((PlayerSprite) getGameView().getPlayerSprite()).weapon = Weapons.BOMB_IMPLODING;
-					break;
-				default:
-					break;
+				try {
+					switch (event.getAction()) {
+					case MotionEvent.ACTION_DOWN:
+						break;
+					case MotionEvent.ACTION_MOVE:
+						break;
+					case MotionEvent.ACTION_UP:
+						((PlayerSprite) getGameView().getPlayerSprite()).weapon = Weapons.BOMB_IMPLODING;
+						break;
+					default:
+						break;
+					}
+				} catch (Exception e) {
 				}
 				return true;
 			}

@@ -37,7 +37,29 @@ public class EnemySprite extends FreeSprite {
 
 	public void fireGrenade() {
 		FreeSprite bullet = gameView.addGrenade(x, y + height * 0.5f);
-		bullet.getBody().setLinearVelocity(new Vec2((facingRigth ? 1 : -1) * 30, 30));
+		// applyForce(bullet,
+		// gameView.getPlayerSprite().getBody().getPosition(), 500);
+		Vec2 v = getFireVec();
+		bullet.getBody().setLinearVelocity(v);
+	}
+
+	private Vec2 getFireVec() {
+
+		float VELX = 30;
+		float VELY = 30;
+		Vec2 v;
+		try {
+			Vec2 positionSrc = getBody().getPosition();
+			Vec2 positionTarget = gameView.getPlayerSprite().getBody().getPosition();
+
+			VELX = (positionSrc.x - positionTarget.x) / 5;
+			VELY = VELX * 3;
+			System.out.println("VELX:" + VELX + ",VELY:" + VELY);
+			v = new Vec2(-1 * VELX * Constants.pixelpermeter, VELY * Constants.pixelpermeter);
+		} catch (Exception e) {
+			v = new Vec2((facingRigth ? 1 : -1) * VELX, VELY);
+		}
+		return v;
 	}
 
 	void addSprite(float x, float y) {

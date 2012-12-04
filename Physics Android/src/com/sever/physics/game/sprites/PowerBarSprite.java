@@ -27,6 +27,8 @@ public class PowerBarSprite extends FreeSprite {
 	public void onDraw(Canvas canvas) {
 		currentFrame = 0;
 		currentRow = BMP_ROWS * ((PlayerSprite) gameView.getPlayerSprite()).firePower / ((PlayerSprite) gameView.getPlayerSprite()).firePower_MAX;
+		x = ((PlayerSprite) gameView.getPlayerSprite()).x;
+		y = ((PlayerSprite) gameView.getPlayerSprite()).y + ((PlayerSprite) gameView.getPlayerSprite()).height * 0.5f;
 		super.onDraw(canvas);
 	}
 

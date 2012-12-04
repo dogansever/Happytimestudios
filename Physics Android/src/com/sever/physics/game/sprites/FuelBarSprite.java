@@ -28,6 +28,8 @@ public class FuelBarSprite extends FreeSprite {
 		int fm = ((PlayerSprite) gameView.getPlayerSprite()).fuel_MAX;
 		currentFrame = BMP_COLUMNS * (fm - f) / fm;
 		currentRow = 0;
+		x = ((PlayerSprite) gameView.getPlayerSprite()).x + ((PlayerSprite) gameView.getPlayerSprite()).width * 0.5f * (((PlayerSprite) gameView.getPlayerSprite()).facingRigth ? -1 : 1);
+		y = ((PlayerSprite) gameView.getPlayerSprite()).y;
 		super.onDraw(canvas);
 	}
 
