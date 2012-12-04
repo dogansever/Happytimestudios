@@ -418,12 +418,16 @@ public class MainScreenActivity extends Activity {
 	}
 
 	private boolean checkForBestTime(String nameOn, int pointOn) {
-		double score = Double.parseDouble(((String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 0)).replace(",", "."));
-		String time = String.format("%01.4f", score);
-		MathProblemsActivity.TIME = time;
-		String name = (String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 2);
-		name = (String) name.subSequence(0, name.indexOf(","));
-		return pointOn == MathProblemsActivity.getPoints() && name.trim().equals(nameOn.trim());
+		try {
+			double score = Double.parseDouble(((String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 0)).replace(",", "."));
+			String time = String.format("%01.4f", score);
+			MathProblemsActivity.TIME = time;
+			String name = (String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 2);
+			name = (String) name.subSequence(0, name.indexOf(","));
+			return pointOn == MathProblemsActivity.getPoints() && name.trim().equals(nameOn.trim());
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	RadioButton.OnClickListener myOptionOnClickListener = new RadioButton.OnClickListener() {
@@ -475,7 +479,7 @@ public class MainScreenActivity extends Activity {
 			buttonSend.setVisibility(View.VISIBLE);
 		} catch (Exception e) {
 			// e.printStackTrace();
-			textView.setText("");
+			textView.setText("#.####");
 			buttonSend.setVisibility(View.GONE);
 		}
 	}
