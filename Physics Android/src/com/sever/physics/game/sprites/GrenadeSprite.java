@@ -5,31 +5,41 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.jbox2d.collision.CircleDef;
 import org.jbox2d.common.Vec2;
 
-import android.graphics.Bitmap;
-
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
+import com.sever.physics.game.utils.SpriteBmp;
 
 public class GrenadeSprite extends FreeSprite {
 
 	public boolean powerOn;
-	public boolean scatter;
 
-	public GrenadeSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, Bitmap bmp, float x, float y, int bmpColumns, int bmpRows) {
-		BMP_COLUMNS = bmpColumns;
-		BMP_ROWS = bmpRows;
-		this.width = bmp.getWidth() / BMP_COLUMNS;
-		this.height = bmp.getHeight() / BMP_ROWS;
-		this.bmp = bmp;
-		this.gameView = gameView;
-		this.x = x;
-		this.y = y;
-		this.spriteList = spriteList;
-		
-		FADE_LIFE = 150;
-		makeExplodes();
-		makeFades();
-		addSprite(x, y);
+	public GrenadeSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+		try {
+			this.width = spriteBmp.getWidth();
+			this.height = spriteBmp.getHeight();
+			this.spriteBmp = spriteBmp;
+			this.widthExplosion = spriteBmp.getWidth();
+			this.gameView = gameView;
+			this.x = x;
+			this.y = y;
+			this.spriteList = spriteList;
+
+			FADE_LIFE = Constants.FPS * 5;
+			makeExplodes();
+			makeFades();
+			addSprite(x, y);
+		} catch (Exception e) {
+			killSprite();
+		}
+	}
+
+	public void explodeBmp() {
+		FADE_LIFE = Constants.FPS;
+		spriteBmp.setBmpIndex(1);
+		noupdate = true;
+		this.width = spriteBmp.getWidth();
+		this.height = spriteBmp.getHeight();
+		angle = 0;
 	}
 
 	void addSprite(float x, float y) {
@@ -61,8 +71,12 @@ public class GrenadeSprite extends FreeSprite {
 	}
 
 	public void push(FreeSprite sprite) {
-		float FIELD_RADIUS = getWidthPhysical() * 5.0f;
-		applyForce(sprite, getBody().getPosition(), FIELD_RADIUS, Constants.gravityPushExplosive);
+		float FIELD_RADIUS = getWidthExplosionPhysical() * 5.0f;
+		applyForce(sprite, getPosition(), FIELD_RADIUS, Constants.gravityPushExplosive);
+	}
+
+	private Vec2 getPosition() {
+		return new Vec2(x / Constants.pixelpermeter, y / Constants.pixelpermeter);
 	}
 
 	public void pull(FreeSprite sprite) {

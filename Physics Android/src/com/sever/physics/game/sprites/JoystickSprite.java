@@ -11,18 +11,17 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 import com.sever.physics.game.GameView;
+import com.sever.physics.game.utils.SpriteBmp;
 
 public class JoystickSprite extends FreeSprite {
 
 	public float xstick = 0;
 	public float ystick = 0;
 
-	public JoystickSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, Bitmap bmp, float x, float y, int bmpColumns, int bmpRows) {
-		BMP_COLUMNS = bmpColumns;
-		BMP_ROWS = bmpRows;
-		this.width = bmp.getWidth() / BMP_COLUMNS;
-		this.height = bmp.getHeight() / BMP_ROWS;
-		this.bmp = bmp;
+	public JoystickSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+		this.spriteBmp = spriteBmp;
+		this.width = spriteBmp.getWidth();
+		this.height = spriteBmp.getHeight();
 		this.gameView = gameView;
 		this.x = x;
 		this.y = y;
@@ -65,33 +64,33 @@ public class JoystickSprite extends FreeSprite {
 	}
 
 	public void onDraw(Canvas canvas) {
-		currentRow = 0;
-		currentFrame = 0;
+		spriteBmp.currentRow = 0;
+		spriteBmp.currentFrame = 0;
 		draw(canvas);
 
 		float xtemp = x;
 		float ytemp = y;
 		x = Math.abs(xstick - x) < width / 2 ? xstick : x + (xstick - x < 0 ? -1 : 1) * width / 2;
 		y = Math.abs(ystick - y) < height / 2 ? ystick : y + (ystick - y < 0 ? -1 : 1) * height / 2;
-		currentFrame = 1;
+		spriteBmp.currentFrame = 1;
 		draw(canvas);
 		x = xtemp;
 		y = ytemp;
 	}
 
 	private void draw(Canvas canvas) {
-		int srcX = (int) (currentFrame * width);
-		int srcY = (int) (currentRow * height);
+		int srcX = (int) (spriteBmp.currentFrame * width);
+		int srcY = (int) (spriteBmp.currentRow * height);
 		Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height));
 		Rect dst = new Rect((int) (x), (int) (y), (int) (x + width), (int) (y + height));
 		Paint p = new Paint();
-		bmpFrame = Bitmap.createBitmap(bmp, src.left, src.top, (int) width, (int) height);
+		spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) width, (int) height);
 
-		if (bmp != null && isVisible()) {
+		if (isVisible()) {
 			Matrix m = new Matrix();
 			Vec2 translate = getBitmapDrawingXY();
 			m.postTranslate(translate.x, translate.y);
-			canvas.drawBitmap(bmpFrame, m, null);
+			canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
 		}
 	}
 

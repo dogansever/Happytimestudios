@@ -6,7 +6,7 @@ public class Constants {
 	public static final int FPS_Intro = 24;
 	public static final int FPS = 30;
 	public static float timeStep = 1.0f / (1000 / Constants.FPS);
-	public static int iterations = 10;
+	public static int iterations = 20;
 
 	public static final float pixelpermeter = 10.0f;
 

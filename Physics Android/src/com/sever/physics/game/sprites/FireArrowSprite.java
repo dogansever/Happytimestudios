@@ -10,18 +10,17 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 
 import com.sever.physics.game.GameView;
+import com.sever.physics.game.utils.SpriteBmp;
 
 public class FireArrowSprite extends FreeSprite {
 
 	public float ystick1 = 0;
 	public float ystick2 = 0;
 
-	public FireArrowSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, Bitmap bmp, float x, float y, int bmpColumns, int bmpRows) {
-		BMP_COLUMNS = bmpColumns;
-		BMP_ROWS = bmpRows;
-		this.width = bmp.getWidth() / BMP_COLUMNS;
-		this.height = bmp.getHeight() / BMP_ROWS;
-		this.bmp = bmp;
+	public FireArrowSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+		this.spriteBmp = spriteBmp;
+		this.width = spriteBmp.getWidth();
+		this.height = spriteBmp.getHeight();
 		this.gameView = gameView;
 		this.x = x;
 		this.y = y;
@@ -41,13 +40,13 @@ public class FireArrowSprite extends FreeSprite {
 		try {
 			this.ystick2 = yn;
 			if (ystick1 - ystick2 < 0) {
-				angle++;
+				angle += 5;
 			} else if (ystick1 - ystick2 > 0) {
-				angle--;
+				angle -= 5;
 			}
 
-			if (angle < -45) {
-				angle = -45;
+			if (angle < -90) {
+				angle = -90;
 			} else if (angle > 45) {
 				angle = 45;
 			}
@@ -62,23 +61,25 @@ public class FireArrowSprite extends FreeSprite {
 	}
 
 	public void onDraw(Canvas canvas) {
-		currentRow = 0;
-		currentFrame = 0;
+		spriteBmp.currentRow = 0;
+		// currentFrame = 0;
+		spriteBmp.currentFrame = spriteBmp.BMP_COLUMNS * ((PlayerSprite) gameView.getPlayerSprite()).firePower / ((PlayerSprite) gameView.getPlayerSprite()).firePower_MAX;
+		spriteBmp.currentFrame = spriteBmp.currentFrame == spriteBmp.BMP_COLUMNS ? spriteBmp.currentFrame - 1 : spriteBmp.currentFrame;
 		draw(canvas);
 	}
 
 	private void draw(Canvas canvas) {
 		x = ((PlayerSprite) gameView.getPlayerSprite()).x + ((PlayerSprite) gameView.getPlayerSprite()).width * (((PlayerSprite) gameView.getPlayerSprite()).facingRigth ? 1 : -1);
 		y = gameView.getPlayerSprite().y;
-		int srcX = (int) (currentFrame * width);
-		int srcY = (int) (currentRow * height);
+		int srcX = (int) (spriteBmp.currentFrame * width);
+		int srcY = (int) (spriteBmp.currentRow * height);
 		Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height));
-		bmpFrame = Bitmap.createBitmap(bmp, src.left, src.top, (int) width, (int) height);
+		spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) width, (int) height);
 
-		if (bmp != null && isVisible()) {
+		if (spriteBmp.getBitmap() != null && isVisible()) {
 			Matrix m = new Matrix();
 			if (gameView.getPlayerSprite().facingRigth) {
-				m.postRotate(360-angle, 0, height);
+				m.postRotate(360 - angle, 0, height);
 			} else {
 				m.postRotate(angle, width, height);
 			}
@@ -87,15 +88,15 @@ public class FireArrowSprite extends FreeSprite {
 			if (gameView.getPlayerSprite().facingRigth) {
 				Matrix mirrorMatrix = new Matrix();
 				mirrorMatrix.preScale(-1.0f, 1.0f);
-				bmpFrame = Bitmap.createBitmap(bmpFrame, 0, 0, bmpFrame.getWidth(), bmpFrame.getHeight(), mirrorMatrix, false);
+				spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.bmpFrame, 0, 0, spriteBmp.bmpFrame.getWidth(), spriteBmp.bmpFrame.getHeight(), mirrorMatrix, false);
 			}
 
-			canvas.drawBitmap(bmpFrame, m, null);
+			canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
 		}
 	}
 
 	public float getAngle() {
-		System.out.println("getAngle():" + (angle + 45));
+		// System.out.println("getAngle():" + (angle + 45));
 		return angle + 45;
 	}
 

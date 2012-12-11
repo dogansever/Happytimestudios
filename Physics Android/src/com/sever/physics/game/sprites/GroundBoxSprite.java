@@ -4,15 +4,14 @@ import org.jbox2d.collision.PolygonDef;
 
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
-
-import android.graphics.Bitmap;
+import com.sever.physics.game.utils.SpriteBmp;
 
 public class GroundBoxSprite extends FreeSprite {
 
-	public GroundBoxSprite(GameView gameView, Bitmap bmp, float x, float y, float hx, float hy) {
+	public GroundBoxSprite(GameView gameView, SpriteBmp spriteBmp, float x, float y, float hx, float hy) {
 		this.width = hx * 2;
 		this.height = hy * 2;
-		this.bmp = bmp;
+		this.spriteBmp = spriteBmp;
 		this.gameView = gameView;
 		this.x = x;
 		this.y = y;

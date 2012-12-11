@@ -5,18 +5,17 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.jbox2d.collision.PolygonDef;
 
 import com.sever.physics.game.GameView;
-
-import android.graphics.Bitmap;
+import com.sever.physics.game.utils.SpriteBmp;
 
 public class GrenadeImplodeSprite extends GrenadeSprite {
 
 	public boolean powerOn;
 	public boolean scatter;
 
-	public GrenadeImplodeSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, Bitmap bmp, float x, float y, int bmpColumns, int bmpRows) {
-		super(spriteList, gameView, bmp, x, y, bmpColumns, bmpRows);
+	public GrenadeImplodeSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+		super(spriteList, gameView, spriteBmp, x, y);
 		implodes = true;
-		BMP_FPS = FADE_LIFE / 3;
+		spriteBmp.BMP_FPS = FADE_LIFE / 3;
 	}
 
 	public void createShape() {

@@ -3,20 +3,16 @@ package com.sever.physics.game.sprites;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jbox2d.collision.PolygonDef;
-import org.jbox2d.dynamics.joints.RevoluteJoint;
-import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
 import com.sever.physics.game.GameView;
-
-import android.graphics.Bitmap;
+import com.sever.physics.game.utils.SpriteBmp;
 
 public class BoxSprite extends FreeSprite {
 
-
-	public BoxSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, Bitmap bmp, float x, float y) {
-		this.width = bmp.getWidth() / BMP_COLUMNS;
-		this.height = bmp.getHeight();
-		this.bmp = bmp;
+	public BoxSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+		this.spriteBmp = spriteBmp;
+		this.width = spriteBmp.getWidth();
+		this.height = spriteBmp.getHeight();
 		this.gameView = gameView;
 		this.x = x;
 		this.y = y;
@@ -30,7 +26,7 @@ public class BoxSprite extends FreeSprite {
 	}
 
 	public void createShape() {
-		
+
 		PolygonDef playerDef = new PolygonDef();
 		playerDef.setAsBox(getWidthPhysical() * 0.5f, getHeightPhysical() * 0.5f);
 		playerDef.friction = 1.0f;

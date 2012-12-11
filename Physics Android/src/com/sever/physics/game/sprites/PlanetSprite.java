@@ -5,24 +5,22 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.jbox2d.collision.CircleDef;
 import org.jbox2d.common.Vec2;
 
-import android.graphics.Bitmap;
-
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
+import com.sever.physics.game.utils.SpriteBmp;
 
 public class PlanetSprite extends FreeSprite {
 
-	public PlanetSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, Bitmap bmp, float x, float y) {
-		this.width = bmp.getWidth() / BMP_COLUMNS;
-		this.height = bmp.getHeight();
-		this.bmp = bmp;
+	public PlanetSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+		this.spriteBmp = spriteBmp;
+		this.width = spriteBmp.getWidth();
+		this.height = spriteBmp.getHeight();
 		this.gameView = gameView;
 		this.x = x;
 		this.y = y;
 		this.spriteList = spriteList;
 		addSprite(x, y);
 	}
-
 
 	void addSprite(float x, float y) {
 		createStaticBody(x, y);

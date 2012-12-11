@@ -3,15 +3,14 @@ package com.sever.physics.game.sprites;
 import org.jbox2d.collision.PolygonDef;
 
 import com.sever.physics.game.GameView;
-
-import android.graphics.Bitmap;
+import com.sever.physics.game.utils.SpriteBmp;
 
 public class StaticBoxSprite extends FreeSprite {
 
-	public StaticBoxSprite(GameView gameView, Bitmap bmp, float x, float y) {
-		this.width = bmp.getWidth() / BMP_COLUMNS;
-		this.height = bmp.getHeight();
-		this.bmp = bmp;
+	public StaticBoxSprite(GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+		this.spriteBmp = spriteBmp;
+		this.width = spriteBmp.getWidth();
+		this.height = spriteBmp.getHeight();
 		this.gameView = gameView;
 		this.noupdate = true;
 		this.noRotation = true;

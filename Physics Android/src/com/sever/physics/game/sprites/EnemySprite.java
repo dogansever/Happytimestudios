@@ -4,14 +4,15 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jbox2d.collision.CircleDef;
+import org.jbox2d.collision.PolygonDef;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
+import com.sever.physics.game.utils.SpriteBmp;
 
 public class EnemySprite extends FreeSprite {
 
@@ -19,12 +20,10 @@ public class EnemySprite extends FreeSprite {
 	public boolean powerOn;
 	public boolean scatter;
 
-	public EnemySprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, Bitmap bmp, float x, float y, int bmpColumns, int bmpRows) {
-		BMP_COLUMNS = bmpColumns;
-		BMP_ROWS = bmpRows;
-		this.width = bmp.getWidth() / BMP_COLUMNS;
-		this.height = bmp.getHeight() / BMP_ROWS;
-		this.bmp = bmp;
+	public EnemySprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+		this.spriteBmp = spriteBmp;
+		this.width = spriteBmp.getWidth();
+		this.height = spriteBmp.getHeight();
 		this.gameView = gameView;
 		this.x = x;
 		this.y = y;
@@ -52,10 +51,11 @@ public class EnemySprite extends FreeSprite {
 			Vec2 positionSrc = getBody().getPosition();
 			Vec2 positionTarget = gameView.getPlayerSprite().getBody().getPosition();
 
-			VELX = (positionSrc.x - positionTarget.x) / 5;
+			VELX = (positionTarget.x - positionSrc.x) / (5 * Constants.pixelpermeter);
 			VELY = VELX * 3;
-			System.out.println("VELX:" + VELX + ",VELY:" + VELY);
-			v = new Vec2(-1 * VELX * Constants.pixelpermeter, VELY * Constants.pixelpermeter);
+			VELX += VELX * new Random().nextFloat();
+			// System.out.println("VELX:" + VELX + ",VELY:" + VELY);
+			v = new Vec2(VELX * Constants.pixelpermeter, VELY * Constants.pixelpermeter);
 		} catch (Exception e) {
 			v = new Vec2((facingRigth ? 1 : -1) * VELX, VELY);
 		}
@@ -70,7 +70,7 @@ public class EnemySprite extends FreeSprite {
 	public void onDraw(Canvas canvas) {
 		BULLET_FIRE_WAIT_TIME--;
 		if (BULLET_FIRE_WAIT_TIME == 0) {
-			BULLET_FIRE_WAIT_TIME = new Random().nextInt(BULLET_FIRE_WAIT_TIME_MAX);
+			BULLET_FIRE_WAIT_TIME = BULLET_FIRE_WAIT_TIME_MAX + new Random().nextInt(BULLET_FIRE_WAIT_TIME_MAX);
 			fireGrenade();
 		}
 		moveToPlayer();
@@ -87,17 +87,16 @@ public class EnemySprite extends FreeSprite {
 		circle.restitution = 0.2f;// zero being not bounce at all
 		circle.density = 10.0f;
 
-		// PolygonDef playerDef = new PolygonDef();
-		// playerDef.setAsBox(width * 0.5f / Constants.pixelpermeter, height *
-		// 0.5f / Constants.pixelpermeter);
-		// playerDef.friction = 1.0f;
-		// playerDef.restitution = 0.2f;
-		// playerDef.density = 10.0f;
+		PolygonDef playerDef = new PolygonDef();
+		playerDef.setAsBox(getWidthPhysical() * 0.5f, getHeightPhysical() * 0.5f);
+		playerDef.friction = 1.0f;
+		playerDef.restitution = 0.2f;
+		playerDef.density = 10.0f;
 
 		// Assign shape to Body
-		// getBody().createShape(playerDef);
+		getBody().createShape(playerDef);
 
-		getBody().createShape(circle);
+		// getBody().createShape(circle);
 		getBody().setMassFromShapes();
 		getBody().setBullet(true);
 
@@ -105,8 +104,8 @@ public class EnemySprite extends FreeSprite {
 
 	public void push(FreeSprite sprite) {
 		sprite.makeVisible();
-		currentRow = 0;
-		currentFrame = 0;
+		spriteBmp.currentRow = 0;
+		spriteBmp.currentFrame = 0;
 		float FIELD_RADIUS = getWidthPhysical();
 		Vec2 positionTarget = sprite.getBody().getPosition();
 		Vec2 positionSrc = this.getBody().getPosition();
@@ -141,8 +140,8 @@ public class EnemySprite extends FreeSprite {
 		// (FIELD_RADIUS - range) / FIELD_RADIUS));
 		// body.applyForce(force, body.getWorldCenter());
 		// }
-		currentRow = 1;
-		currentFrame = 0;
+		spriteBmp.currentRow = 1;
+		spriteBmp.currentFrame = 0;
 		if (range <= CLOSE_FIELD_RADIUS) {
 			// sprite.makeInvisible();
 			body.setAngularVelocity(0);

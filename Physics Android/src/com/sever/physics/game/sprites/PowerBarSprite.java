@@ -2,19 +2,17 @@ package com.sever.physics.game.sprites;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import com.sever.physics.game.GameView;
+import com.sever.physics.game.utils.SpriteBmp;
 
 public class PowerBarSprite extends FreeSprite {
 
-	public PowerBarSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, Bitmap bmp, float x, float y, int bmpColumns, int bmpRows) {
-		BMP_COLUMNS = bmpColumns;
-		BMP_ROWS = bmpRows;
-		this.width = bmp.getWidth() / BMP_COLUMNS;
-		this.height = bmp.getHeight() / BMP_ROWS;
-		this.bmp = bmp;
+	public PowerBarSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+		this.spriteBmp = spriteBmp;
+		this.width = spriteBmp.getWidth();
+		this.height = spriteBmp.getHeight();
 		this.gameView = gameView;
 		this.x = x;
 		this.y = y;
@@ -25,8 +23,9 @@ public class PowerBarSprite extends FreeSprite {
 	}
 
 	public void onDraw(Canvas canvas) {
-		currentFrame = 0;
-		currentRow = BMP_ROWS * ((PlayerSprite) gameView.getPlayerSprite()).firePower / ((PlayerSprite) gameView.getPlayerSprite()).firePower_MAX;
+		spriteBmp.currentFrame = 0;
+		spriteBmp.currentRow = spriteBmp.BMP_ROWS * ((PlayerSprite) gameView.getPlayerSprite()).firePower / ((PlayerSprite) gameView.getPlayerSprite()).firePower_MAX;
+		spriteBmp.currentRow = spriteBmp.currentRow == spriteBmp.BMP_ROWS ? spriteBmp.currentRow - 1 : spriteBmp.currentRow;
 		x = ((PlayerSprite) gameView.getPlayerSprite()).x;
 		y = ((PlayerSprite) gameView.getPlayerSprite()).y + ((PlayerSprite) gameView.getPlayerSprite()).height * 0.5f;
 		super.onDraw(canvas);

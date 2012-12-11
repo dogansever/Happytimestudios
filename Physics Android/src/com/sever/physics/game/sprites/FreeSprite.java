@@ -16,22 +16,18 @@ import com.sever.physic.IntroActivity;
 import com.sever.physic.PhysicsActivity;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
+import com.sever.physics.game.utils.SpriteBmp;
 
 public class FreeSprite {
 
-	public int BMP_COLUMNS = 1;
-	public int BMP_ROWS = 1;
-	public int BMP_FPS = 6;
-	public int BMP_FPS_CURRENT = 0;
 	public int FADE_LIFE = 100;
 	public int BULLET_FIRE_WAIT_TIME = 100;
 	public GameView gameView;
-	public Bitmap bmp;
-	public Bitmap bmpFrame;
 
 	public float x = 0;
 	public float y = 0;
 	public float width;
+	public float widthExplosion;
 	public float height;
 	// public int index;
 	public float angle;
@@ -43,15 +39,14 @@ public class FreeSprite {
 	public boolean implodes = false;
 	public boolean facingRigth = false;
 	public boolean manualFrameSet = false;
-	public int currentFrame = 0;
-	public int currentRow = 0;
+	public SpriteBmp spriteBmp;
 
 	protected ConcurrentLinkedQueue<FreeSprite> spriteList;
 	protected Body body;
 
 	public void freeBitmaps() {
-		bmp = null;
-		bmpFrame = null;
+		if (spriteBmp != null)
+			spriteBmp.freeBitmaps();
 	}
 
 	public void fireGrenadeImploding() {
@@ -90,7 +85,7 @@ public class FreeSprite {
 	}
 
 	public void killSprite() {
-		System.out.println("Killing:" + this);
+		// System.out.println("Killing:" + this);
 		spriteList.remove(this);
 		PhysicsActivity.mWorld.bodies.remove(body);
 		PhysicsActivity.mWorld.world.destroyBody(body);
@@ -106,8 +101,8 @@ public class FreeSprite {
 	}
 
 	public void destroyShape() {
-		if (getBody().getShapeList() != null)
-			getBody().destroyShape(getBody().getShapeList());
+		if (body != null && body.getShapeList() != null)
+			body.destroyShape(getBody().getShapeList());
 	}
 
 	public Body getBody() {
@@ -120,21 +115,21 @@ public class FreeSprite {
 	}
 
 	private void updateBitmap() {
-		if (!manualFrameSet && ++BMP_FPS_CURRENT % BMP_FPS == 0)
-			currentFrame = ++currentFrame % BMP_COLUMNS;
+		if (!manualFrameSet && ++spriteBmp.BMP_FPS_CURRENT % spriteBmp.BMP_FPS == 0)
+			spriteBmp.currentFrame = ++spriteBmp.currentFrame % spriteBmp.BMP_COLUMNS;
 
-		int srcX = (int) (currentFrame * width);
-		int srcY = (int) (currentRow * height);
+		int srcX = (int) (spriteBmp.currentFrame * width);
+		int srcY = (int) (spriteBmp.currentRow * height);
 		Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height));
 		Rect dst = new Rect((int) (x), (int) (y), (int) (x + width), (int) (y + height));
 		Paint p = new Paint();
-		bmpFrame = Bitmap.createBitmap(bmp, src.left, src.top, (int) width, (int) height);
+		spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) width, (int) height);
 		// bmpFrame = bmp;
 	}
 
 	private void updatePosition() {
 		Body body = getBody();
-		if (body != null) {
+		if (body != null && !noupdate) {
 			this.x = body.getPosition().x * Constants.pixelpermeter;
 			this.y = body.getPosition().y * Constants.pixelpermeter;
 			this.angle = body.getAngle();
@@ -166,7 +161,7 @@ public class FreeSprite {
 				return;
 			}
 		}
-		if (bmp != null && isVisible()) {
+		if (spriteBmp.getBitmap() != null && isVisible()) {
 			Matrix m = new Matrix();
 			if (!noRotation)
 				m.postRotate((float) Math.toDegrees(angle), width * 0.5f, height * 0.5f);
@@ -176,10 +171,10 @@ public class FreeSprite {
 			if (facingRigth) {
 				Matrix mirrorMatrix = new Matrix();
 				mirrorMatrix.preScale(-1.0f, 1.0f);
-				bmpFrame = Bitmap.createBitmap(bmpFrame, 0, 0, bmpFrame.getWidth(), bmpFrame.getHeight(), mirrorMatrix, false);
+				spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.bmpFrame, 0, 0, spriteBmp.bmpFrame.getWidth(), spriteBmp.bmpFrame.getHeight(), mirrorMatrix, false);
 			}
 
-			canvas.drawBitmap(bmpFrame, m, null);
+			canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
 		}
 	}
 
@@ -218,7 +213,7 @@ public class FreeSprite {
 			force.normalize(); // force direction always point to source
 			force.set(force.mul(body.getMass() * pullG));
 			body.applyForce(force, body.getWorldCenter());
-			System.out.println("applyForce:" + force);
+			// System.out.println("applyForce:" + force);
 		}
 	}
 
@@ -263,8 +258,20 @@ public class FreeSprite {
 		explodes = true;
 	}
 
+	public void explodeBmp() {
+
+	}
+
 	public boolean readyToExplode() {
-		return FADE_LIFE == 0;
+		boolean ready = (FADE_LIFE == 0 && spriteBmp.bmpIndex == 0);
+		if (ready) {
+			explodeBmp();
+		}
+		return ready;
+	}
+
+	public float getWidthExplosionPhysical() {
+		return widthExplosion / Constants.pixelpermeter;
 	}
 
 	public float getWidthPhysical() {

@@ -1,0 +1,10 @@
+IDEAS TO IMPLEMENT
+
+Weapon reloading
+Triple bomb gun (small bombs)
+super shock gun (push on wide radius)
+reduce bomb power and radius for small bomb
+big bomb gun
+hook gun for player(revolt joint)
+survival in seconds and in enemy counts (score points)
+

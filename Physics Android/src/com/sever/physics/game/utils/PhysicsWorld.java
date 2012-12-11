@@ -33,14 +33,6 @@ public class PhysicsWorld {
 		} catch (Exception e) {
 		}
 
-		// Print info of latest body
-		if (bodies.size() > 0) {
-			// Vec2 position = bodies.get(bodies.size() - 1).getPosition();
-			// float angle = bodies.get(bodies.size() - 1).getAngle();
-			// Log.v("Physics Test", "Pos: (" + position.x + ", " + position.y +
-			// "), Angle: " + angle);
-			PhysicsActivity.context.updateScreen();
-		}
 	}
 
 }
