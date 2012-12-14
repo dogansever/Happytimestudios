@@ -51,8 +51,9 @@ public class EnemySprite extends FreeSprite {
 			Vec2 positionSrc = getBody().getPosition();
 			Vec2 positionTarget = gameView.getPlayerSprite().getBody().getPosition();
 
-			VELX = (positionTarget.x - positionSrc.x) / (5 * Constants.pixelpermeter);
-			VELY = VELX * 3;
+			VELX = (positionTarget.x - positionSrc.x) / (3 * Constants.pixelpermeter);
+			VELY = (positionTarget.y - positionSrc.y) / (4 * Constants.pixelpermeter);
+			VELY = VELY * 3;
 			VELX += VELX * new Random().nextFloat();
 			// System.out.println("VELX:" + VELX + ",VELY:" + VELY);
 			v = new Vec2(VELX * Constants.pixelpermeter, VELY * Constants.pixelpermeter);

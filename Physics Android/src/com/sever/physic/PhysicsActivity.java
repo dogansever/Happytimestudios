@@ -65,13 +65,13 @@ public class PhysicsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		context = this;
 		bmpBack = createScaledBitmap(R.drawable.space, (int) IntroActivity.deviceWidth, (int) IntroActivity.deviceHeight);
-		bmpBall = createScaledBitmap(R.drawable.basketball20, 0, 0);
-		bmpBox = createScaledBitmap(R.drawable.crate50x50dark, 0, 0);
-		bmpBox2 = createScaledBitmap(R.drawable.crate50x50light, 0, 0);
+		bmpBall = createScaledBitmap(R.drawable.bullet, 20, 20);
+		bmpBox = createScaledBitmap(R.drawable.crate50x50dark, 40, 40);
+		bmpBox2 = createScaledBitmap(R.drawable.crate50x50light, 40, 40);
 		planet1 = createScaledBitmap(R.drawable.planet200x200, 50, 50);
 		barrel = createScaledBitmap(R.drawable.barrel, 45, 75);
-		player = createScaledBitmap(R.drawable.playerx2x2, 150, 148);
-		enemy = createScaledBitmap(R.drawable.enemy2x1, 0, 0);
+		player = createScaledBitmap(R.drawable.playerx2x2, (int) (150 * 0.8f), (int) (148 * 0.8f));
+		enemy = createScaledBitmap(R.drawable.enemy2x1, (int) (90 * 0.8f), (int) (42 * 0.8f));
 		ground = createScaledBitmap(R.drawable.crate50x50dark, 800, 50);
 		bomb = createScaledBitmap(R.drawable.bombx2x1, 90, 45);
 		bombsmall = createScaledBitmap(R.drawable.bombx2x1, 60, 30);

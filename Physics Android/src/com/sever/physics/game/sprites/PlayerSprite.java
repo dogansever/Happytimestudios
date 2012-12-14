@@ -56,20 +56,22 @@ public class PlayerSprite extends FreeSprite {
 	}
 
 	public boolean throttleHold() {
-		if (fuel == 0) {
-			return false;
-		}
 		fuel_AGG = -1;
 		fuel = fuel + fuel_AGG;
+		if (fuel <= 0) {
+			fuel = 0;
+			return false;
+		}
 		return true;
 	}
 
 	public void throttleLeave() {
-		if (fuel == fuel_MAX) {
+		fuel_AGG = 3;
+		fuel = fuel + fuel_AGG;
+		if (fuel >= fuel_MAX) {
+			fuel = fuel_MAX;
 			return;
 		}
-		fuel_AGG = 1;
-		fuel = fuel + fuel_AGG;
 	}
 
 	public void fireHold() {
@@ -329,13 +331,13 @@ public class PlayerSprite extends FreeSprite {
 		float max = 50;
 		System.out.println("getBody().getLinearVelocity():(x,y) (" + getBody().getLinearVelocity().x + "," + getBody().getLinearVelocity().y + ")");
 		if (getBody().getLinearVelocity().x < -max) {
-			getBody().setLinearVelocity(new Vec2(max, getBody().getLinearVelocity().y));
+			getBody().setLinearVelocity(new Vec2(-max, getBody().getLinearVelocity().y));
 		} else if (getBody().getLinearVelocity().x > max) {
 			getBody().setLinearVelocity(new Vec2(max, getBody().getLinearVelocity().y));
 		}
 
 		if (getBody().getLinearVelocity().y < -max) {
-			getBody().setLinearVelocity(new Vec2(getBody().getLinearVelocity().x, max));
+			getBody().setLinearVelocity(new Vec2(getBody().getLinearVelocity().x, -max));
 		} else if (getBody().getLinearVelocity().y > max) {
 			getBody().setLinearVelocity(new Vec2(getBody().getLinearVelocity().x, max));
 		}

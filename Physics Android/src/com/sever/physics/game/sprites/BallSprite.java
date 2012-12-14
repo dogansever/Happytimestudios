@@ -6,17 +6,22 @@ import org.jbox2d.collision.CircleDef;
 
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.SpriteBmp;
+import com.sever.physics.game.utils.WeaponTypes;
+import com.sever.physics.game.utils.WeaponsManager;
 
 public class BallSprite extends FreeSprite {
 
-	public BallSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+	public BallSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt) {
 		this.spriteBmp = spriteBmp;
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
 		this.gameView = gameView;
 		this.x = x;
 		this.y = y;
+		this.wt = wt;
 		this.spriteList = spriteList;
+		FADE_LIFE = WeaponsManager.getManager().getWeaponByType(wt).getLifeTimeInMiliseconds();
+
 		addSprite(x, y);
 	}
 

@@ -40,9 +40,9 @@ public class FireArrowSprite extends FreeSprite {
 		try {
 			this.ystick2 = yn;
 			if (ystick1 - ystick2 < 0) {
-				angle += 5;
+				angle += 3;
 			} else if (ystick1 - ystick2 > 0) {
-				angle -= 5;
+				angle -= 3;
 			}
 
 			if (angle < -90) {

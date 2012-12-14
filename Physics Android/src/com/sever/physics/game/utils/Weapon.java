@@ -3,20 +3,20 @@ package com.sever.physics.game.utils;
 public class Weapon {
 
 	WeaponTypes type;
-	int lifeTimeInMiliseconds;
+	int lifeTimeInFPS;
 	boolean available;
 	boolean explodes;
 	boolean implodes;
-	int loadingTimeInMiliseconds;
-	
-	public Weapon(WeaponTypes type, int lifeTimeInMiliseconds, boolean available, boolean explodes, boolean implodes, int loadingTimeInMiliseconds) {
+	int loadingTimeInFPS;
+
+	public Weapon(WeaponTypes type, int lifeTimeInFPS, boolean available, boolean explodes, boolean implodes, int loadingTimeInFPS) {
 		super();
 		this.type = type;
-		this.lifeTimeInMiliseconds = lifeTimeInMiliseconds;
+		this.lifeTimeInFPS = lifeTimeInFPS;
 		this.available = available;
 		this.explodes = explodes;
 		this.implodes = implodes;
-		this.loadingTimeInMiliseconds = loadingTimeInMiliseconds;
+		this.loadingTimeInFPS = loadingTimeInFPS;
 	}
 
 	public WeaponTypes getType() {
@@ -28,11 +28,11 @@ public class Weapon {
 	}
 
 	public int getLifeTimeInMiliseconds() {
-		return lifeTimeInMiliseconds;
+		return lifeTimeInFPS;
 	}
 
 	public void setLifeTimeInMiliseconds(int lifeTimeInMiliseconds) {
-		this.lifeTimeInMiliseconds = lifeTimeInMiliseconds;
+		this.lifeTimeInFPS = lifeTimeInMiliseconds;
 	}
 
 	public boolean isAvailable() {
@@ -60,10 +60,10 @@ public class Weapon {
 	}
 
 	public int getLoadingTimeInMiliseconds() {
-		return loadingTimeInMiliseconds;
+		return loadingTimeInFPS;
 	}
 
 	public void setLoadingTimeInMiliseconds(int loadingTimeInMiliseconds) {
-		this.loadingTimeInMiliseconds = loadingTimeInMiliseconds;
+		this.loadingTimeInFPS = loadingTimeInMiliseconds;
 	}
 }

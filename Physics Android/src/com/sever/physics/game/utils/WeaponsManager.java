@@ -11,17 +11,27 @@ public class WeaponsManager {
 
 	static {
 		weaponsList = new ArrayList<Weapon>();
-		weaponsList.add(new Weapon(WeaponTypes.BULLET, 3000, true, false, false, 100));
-		weaponsList.add(new Weapon(WeaponTypes.BOMB, 5000, true, true, false, 2000));
-		weaponsList.add(new Weapon(WeaponTypes.BOMB_TRIPLE, 5000, true, true, false, 4000));
-		weaponsList.add(new Weapon(WeaponTypes.BOMB_BIG, 5000, true, true, false, 4000));
-		weaponsList.add(new Weapon(WeaponTypes.BOMB_IMPLODING, 5000, true, true, true, 10000));
-		weaponsList.add(new Weapon(WeaponTypes.SHOCK_GUN, 100, true, false, false, 10000));
-		weaponsList.add(new Weapon(WeaponTypes.SUPER_SHOCK_GUN, 100, true, false, false, 20000));
+		weaponsList.add(new Weapon(WeaponTypes.BULLET, Constants.FPS * 2, true, false, false, (int) (Constants.FPS * 0.5)));
+		weaponsList.add(new Weapon(WeaponTypes.BOMB, Constants.FPS * 2, true, true, false, Constants.FPS * 2));
+		weaponsList.add(new Weapon(WeaponTypes.BOMB_TRIPLE, Constants.FPS * 2, true, true, false, Constants.FPS * 2));
+		weaponsList.add(new Weapon(WeaponTypes.BOMB_BIG, Constants.FPS * 4, true, true, false, Constants.FPS * 4));
+		weaponsList.add(new Weapon(WeaponTypes.BOMB_IMPLODING, Constants.FPS * 5, true, true, true, Constants.FPS * 10));
+		weaponsList.add(new Weapon(WeaponTypes.SHOCK_GUN, 0, true, false, false, Constants.FPS * 10));
+		weaponsList.add(new Weapon(WeaponTypes.SUPER_SHOCK_GUN, 0, true, false, false, Constants.FPS * 10));
 	}
 
 	public boolean getWeaponStatus() {
+		currentWeapon = getWeaponByType(WeaponTypes.BOMB);
 		return currentWeapon.isAvailable();
+	}
+
+	public Weapon getWeaponByType(WeaponTypes wt) {
+		for (Weapon w : weaponsList) {
+			if (w.getType() == wt) {
+				return w;
+			}
+		}
+		return null;
 	}
 
 	public Weapon firstWeapon() {

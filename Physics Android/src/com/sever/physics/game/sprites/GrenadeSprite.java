@@ -8,12 +8,14 @@ import org.jbox2d.common.Vec2;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
+import com.sever.physics.game.utils.WeaponTypes;
+import com.sever.physics.game.utils.WeaponsManager;
 
 public class GrenadeSprite extends FreeSprite {
 
 	public boolean powerOn;
 
-	public GrenadeSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+	public GrenadeSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt) {
 		try {
 			this.width = spriteBmp.getWidth();
 			this.height = spriteBmp.getHeight();
@@ -23,8 +25,9 @@ public class GrenadeSprite extends FreeSprite {
 			this.x = x;
 			this.y = y;
 			this.spriteList = spriteList;
+			this.wt = wt;
 
-			FADE_LIFE = Constants.FPS * 5;
+			FADE_LIFE = WeaponsManager.getManager().getWeaponByType(wt).getLifeTimeInMiliseconds();
 			makeExplodes();
 			makeFades();
 			addSprite(x, y);
@@ -34,7 +37,7 @@ public class GrenadeSprite extends FreeSprite {
 	}
 
 	public void explodeBmp() {
-		FADE_LIFE = Constants.FPS;
+		FADE_LIFE = (int) (WeaponsManager.getManager().getWeaponByType(wt).getLifeTimeInMiliseconds() * 0.25);
 		spriteBmp.setBmpIndex(1);
 		noupdate = true;
 		this.width = spriteBmp.getWidth();
@@ -71,7 +74,7 @@ public class GrenadeSprite extends FreeSprite {
 	}
 
 	public void push(FreeSprite sprite) {
-		float FIELD_RADIUS = getWidthExplosionPhysical() * 5.0f;
+		float FIELD_RADIUS = getWidthExplosionPhysical() * 3.0f;
 		applyForce(sprite, getPosition(), FIELD_RADIUS, Constants.gravityPushExplosive);
 	}
 

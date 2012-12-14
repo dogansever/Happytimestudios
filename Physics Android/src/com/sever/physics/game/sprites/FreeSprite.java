@@ -17,6 +17,7 @@ import com.sever.physic.PhysicsActivity;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
+import com.sever.physics.game.utils.WeaponTypes;
 
 public class FreeSprite {
 
@@ -40,6 +41,7 @@ public class FreeSprite {
 	public boolean facingRigth = false;
 	public boolean manualFrameSet = false;
 	public SpriteBmp spriteBmp;
+	public WeaponTypes wt;
 
 	protected ConcurrentLinkedQueue<FreeSprite> spriteList;
 	protected Body body;
