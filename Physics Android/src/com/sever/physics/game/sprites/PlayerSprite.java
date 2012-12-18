@@ -11,9 +11,9 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 
 import android.graphics.Canvas;
-import android.os.Handler;
 
 import com.sever.physic.PhysicsActivity;
+import com.sever.physic.PhysicsApplication;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
@@ -21,9 +21,10 @@ import com.sever.physics.game.utils.Weapon;
 import com.sever.physics.game.utils.WeaponTypes;
 import com.sever.physics.game.utils.WeaponsManager;
 
-public class PlayerSprite extends FreeSprite {
+public class PlayerSprite extends ActiveSprite {
 
 	public Weapon weapon = WeaponsManager.getManager().firstWeapon();
+	public boolean hoverOn;
 	public boolean powerOn;
 	public boolean powerPush;
 	public boolean scatter;
@@ -36,6 +37,7 @@ public class PlayerSprite extends FreeSprite {
 	public final int firePower_MAX = 50;
 	public final int fireMultiplierBullet = 150;
 	public final int fireMultiplierBomb = 50;
+	public FreeSprite sprite;
 
 	public PlayerSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
@@ -48,11 +50,74 @@ public class PlayerSprite extends FreeSprite {
 		this.spriteList = spriteList;
 		fuel = fuel_MAX;
 		addSprite(x, y);
+		setLifeBarSprite();
 	}
 
 	public void onDraw(Canvas canvas) {
+		if (life <= 0) {
+			killSprite();
+			return;
+		}
+
 		super.onDraw(canvas);
-		throttleLeave();
+		lifeBarSprite.onDraw(canvas);
+		shiftCheck();
+		hoverCheck();
+	}
+
+	private void hoverCheck() {
+		if (!hoverOn) {
+			throttleLeave();
+		} else if (getBody().getLinearVelocity().y < 0)
+			throttle(0, 2.0f);
+	}
+
+	public void throttlexBmp() {
+		throttleBmp();
+		spriteBmp.currentRow = 0;
+	}
+
+	public void throttleyBmp() {
+		throttleBmp();
+		spriteBmp.currentRow = 1;
+	}
+
+	public void throttleBmp() {
+		spriteBmp.setBmpIndex(1);
+		this.width = spriteBmp.getWidth();
+		this.height = spriteBmp.getHeight();
+	}
+
+	public void throttleOffBmp() {
+		spriteBmp.setBmpIndex(0);
+		this.width = spriteBmp.getWidth();
+		this.height = spriteBmp.getHeight();
+		spriteBmp.currentRow = 0;
+	}
+
+	private void shiftCheck() {
+		if (sprite == null)
+			shiftLockOnME();
+
+		// System.out.println("shiftCheck starting...x:" + this.x);
+		if (sprite.x > PhysicsApplication.deviceWidth * 0.5) {
+			Constants.extraWidthOffset = sprite.x - PhysicsApplication.deviceWidth * 0.5f;
+			if (Constants.extraWidthOffset < 0)
+				Constants.extraWidthOffset = 0;
+			if (Constants.extraWidthOffset > Constants.extraWidth)
+				Constants.extraWidthOffset = Constants.extraWidth;
+		}
+		if (sprite.y > PhysicsApplication.deviceHeight * 0.5) {
+			Constants.extraHeightOffset = sprite.y - PhysicsApplication.deviceHeight * 0.5f;
+			if (Constants.extraHeightOffset < 0)
+				Constants.extraHeightOffset = 0;
+			if (Constants.extraHeightOffset > Constants.extraHeight)
+				Constants.extraHeightOffset = Constants.extraHeight;
+		}
+		// System.out.println("shiftCheck ending...x:" + this.x +
+		// ",extraWidthOffset:" + Constants.extraWidthOffset);
+		// System.out.println("shiftCheck ending...y:" + this.y +
+		// ",extraHeightOffset:" + Constants.extraHeightOffset);
 	}
 
 	public boolean throttleHold() {
@@ -60,12 +125,14 @@ public class PlayerSprite extends FreeSprite {
 		fuel = fuel + fuel_AGG;
 		if (fuel <= 0) {
 			fuel = 0;
+			throttleOffBmp();
 			return false;
 		}
 		return true;
 	}
 
 	public void throttleLeave() {
+		throttleOffBmp();
 		fuel_AGG = 3;
 		fuel = fuel + fuel_AGG;
 		if (fuel >= fuel_MAX) {
@@ -95,6 +162,8 @@ public class PlayerSprite extends FreeSprite {
 			fireGrenade();
 		} else if (weapon.getType() == WeaponTypes.BOMB) {
 			fireGrenadeSmall();
+		} else if (weapon.getType() == WeaponTypes.MISSILE) {
+			fireMissile();
 		} else if (weapon.getType() == WeaponTypes.BOMB_TRIPLE) {
 			firePowerOld = firePower;
 			fireGrenadeTripleThread();
@@ -119,6 +188,13 @@ public class PlayerSprite extends FreeSprite {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void fireMissile() {
+		FreeSprite bullet = gameView.addMissile(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
+		firePower = firePower_MAX;
+		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBullet));
+		bullet.shiftLockOnME();
 	}
 
 	public void fireGrenadeSmall() {
@@ -247,26 +323,9 @@ public class PlayerSprite extends FreeSprite {
 		}
 	}
 
-	public void superJump() {
-		throttle(0, 50);
-	}
-
-	public void throttleUp() {
-		throttle(0);
-	}
-
-	public void throttleDown() {
-		throttle(1);
-	}
-
-	public void throttleLeft() {
-		facingRigth = false;
-		throttle(2);
-	}
-
-	public void throttleRight() {
-		facingRigth = true;
-		throttle(3);
+	public boolean hoverOnOff() {
+		hoverOn = !hoverOn;
+		return hoverOn;
 	}
 
 	public void powerPush() {
@@ -284,64 +343,6 @@ public class PlayerSprite extends FreeSprite {
 		spriteBmp.currentRow = 0;
 		spriteBmp.currentFrame = 0;
 		powerOn = false;
-	}
-
-	public void throttle(int direction, int... jumpPower) {
-		if (!throttleHold()) {
-			return;
-		}
-		float jp = 1;
-		if (jumpPower.length == 1) {
-			jp = jumpPower[0];
-		}
-
-		Vec2 force = null;
-		switch (direction) {
-		case 0:
-			// up
-			force = new Vec2(0.0f, 1.0f);
-			break;
-		case 1:
-			// down
-			force = new Vec2(0.0f, -1.0f);
-			break;
-		case 2:
-			// left
-			force = new Vec2(-1.0f, 0.0f);
-			break;
-		case 3:
-			// right
-			force = new Vec2(1.0f, 0.0f);
-			break;
-
-		default:
-			break;
-		}
-		Body body = getBody();
-		force.normalize(); // force direction always point to source
-		force.set(force.mul((float) (body.getMass() * Constants.gravityThrottle * jp)));
-		body.applyImpulse(force, body.getWorldCenter());
-
-		checkVelocity();
-		// System.out.println("!!!Kicked it!!!:" + index + ", force:x:" +
-		// force.x + ", y:" + force.y);
-	}
-
-	private void checkVelocity() {
-		float max = 50;
-		System.out.println("getBody().getLinearVelocity():(x,y) (" + getBody().getLinearVelocity().x + "," + getBody().getLinearVelocity().y + ")");
-		if (getBody().getLinearVelocity().x < -max) {
-			getBody().setLinearVelocity(new Vec2(-max, getBody().getLinearVelocity().y));
-		} else if (getBody().getLinearVelocity().x > max) {
-			getBody().setLinearVelocity(new Vec2(max, getBody().getLinearVelocity().y));
-		}
-
-		if (getBody().getLinearVelocity().y < -max) {
-			getBody().setLinearVelocity(new Vec2(getBody().getLinearVelocity().x, -max));
-		} else if (getBody().getLinearVelocity().y > max) {
-			getBody().setLinearVelocity(new Vec2(getBody().getLinearVelocity().x, max));
-		}
-		;
 	}
 
 	protected void fireGrenadeTripleThread() {
@@ -365,4 +366,5 @@ public class PlayerSprite extends FreeSprite {
 		PhysicsActivity.context.timer = new Timer();
 		PhysicsActivity.context.timer.schedule(task, new Date(), 200);
 	}
+
 }

@@ -8,8 +8,9 @@ public class Weapon {
 	boolean explodes;
 	boolean implodes;
 	int loadingTimeInFPS;
+	int damageLife;
 
-	public Weapon(WeaponTypes type, int lifeTimeInFPS, boolean available, boolean explodes, boolean implodes, int loadingTimeInFPS) {
+	public Weapon(WeaponTypes type, int lifeTimeInFPS, boolean available, boolean explodes, boolean implodes, int loadingTimeInFPS, int damageLife) {
 		super();
 		this.type = type;
 		this.lifeTimeInFPS = lifeTimeInFPS;
@@ -17,6 +18,7 @@ public class Weapon {
 		this.explodes = explodes;
 		this.implodes = implodes;
 		this.loadingTimeInFPS = loadingTimeInFPS;
+		this.damageLife = damageLife;
 	}
 
 	public WeaponTypes getType() {
@@ -65,5 +67,17 @@ public class Weapon {
 
 	public void setLoadingTimeInMiliseconds(int loadingTimeInMiliseconds) {
 		this.loadingTimeInFPS = loadingTimeInMiliseconds;
+	}
+
+	public int getLifeTimeInFPS() {
+		return lifeTimeInFPS;
+	}
+
+	public int getLoadingTimeInFPS() {
+		return loadingTimeInFPS;
+	}
+
+	public int getDamageLife() {
+		return damageLife;
 	}
 }

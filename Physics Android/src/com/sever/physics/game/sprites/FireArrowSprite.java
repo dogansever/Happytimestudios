@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 
 import com.sever.physics.game.GameView;
+import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
 
 public class FireArrowSprite extends FreeSprite {
@@ -84,7 +85,7 @@ public class FireArrowSprite extends FreeSprite {
 				m.postRotate(angle, width, height);
 			}
 			Vec2 translate = getBitmapDrawingXY();
-			m.postTranslate(translate.x, translate.y);
+			m.postTranslate(translate.x - Constants.extraWidthOffset, translate.y + Constants.extraHeightOffset);
 			if (gameView.getPlayerSprite().facingRigth) {
 				Matrix mirrorMatrix = new Matrix();
 				mirrorMatrix.preScale(-1.0f, 1.0f);

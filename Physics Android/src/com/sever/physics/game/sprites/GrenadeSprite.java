@@ -14,6 +14,8 @@ import com.sever.physics.game.utils.WeaponsManager;
 public class GrenadeSprite extends FreeSprite {
 
 	public boolean powerOn;
+	private float velx;
+	private float vely;
 
 	public GrenadeSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt) {
 		try {
@@ -33,6 +35,36 @@ public class GrenadeSprite extends FreeSprite {
 			addSprite(x, y);
 		} catch (Exception e) {
 			killSprite();
+		}
+	}
+
+	public boolean readyToExplode() {
+		checkSuddenChangeInDirection();
+		boolean ready = (FADE_LIFE == 0 && spriteBmp.bmpIndex == 0);
+		if (ready) {
+			explodeBmp();
+		}
+		return ready;
+	}
+
+	private void checkSuddenChangeInDirection() {
+		try {
+			if (implodes)
+				return;
+			if (getBody() == null)
+				return;
+
+			float diffx = Math.abs(getBody().getLinearVelocity().x - velx);
+			float diffy = Math.abs(getBody().getLinearVelocity().y - vely);
+//			System.out.println("velx:" + getBody().getLinearVelocity().x + ",diffx:" + diffx + ", diffy:" + diffy);
+			if (spriteBmp.bmpIndex == 0 && velx != 0 && diffx >= 2.0f) {
+				FADE_LIFE = 0;
+			} else {
+				velx = getBody().getLinearVelocity().x;
+				vely = getBody().getLinearVelocity().y;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -75,7 +107,12 @@ public class GrenadeSprite extends FreeSprite {
 
 	public void push(FreeSprite sprite) {
 		float FIELD_RADIUS = getWidthExplosionPhysical() * 3.0f;
-		applyForce(sprite, getPosition(), FIELD_RADIUS, Constants.gravityPushExplosive);
+		boolean result = applyForce(sprite, getPosition(), FIELD_RADIUS, Constants.gravityPushExplosive);
+		Constants.startQuake();
+
+		if (result && sprite instanceof ActiveSprite) {
+			((ActiveSprite) sprite).lifeLost(WeaponsManager.getManager().getWeaponByType(wt).getDamageLife());
+		}
 	}
 
 	private Vec2 getPosition() {

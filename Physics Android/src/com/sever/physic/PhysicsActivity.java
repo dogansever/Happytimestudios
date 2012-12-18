@@ -45,14 +45,18 @@ public class PhysicsActivity extends Activity {
 	public static Bitmap planet1;
 	public static Bitmap barrel;
 	public static Bitmap player;
+	public static Bitmap playerThrottle;
 	public static Bitmap enemy;
+	public static Bitmap enemyThrottle;
 	public static Bitmap ground;
+	public static Bitmap missile;
 	public static Bitmap bomb;
 	public static Bitmap bombsmall;
 	public static Bitmap bombtriple;
 	public static Bitmap bombexploding;
 	public static Bitmap bomb2;
 	public static Bitmap powerBar;
+	public static Bitmap lifeBar;
 	public static Bitmap fuelBar;
 	public static Bitmap joystick;
 	public static Bitmap fireArrow;
@@ -64,22 +68,26 @@ public class PhysicsActivity extends Activity {
 		System.out.println("onCreate:" + this);
 		super.onCreate(savedInstanceState);
 		context = this;
-		bmpBack = createScaledBitmap(R.drawable.space, (int) IntroActivity.deviceWidth, (int) IntroActivity.deviceHeight);
+		bmpBack = createScaledBitmap(R.drawable.space, (int) PhysicsApplication.deviceWidth, (int) PhysicsApplication.deviceHeight);
 		bmpBall = createScaledBitmap(R.drawable.bullet, 20, 20);
 		bmpBox = createScaledBitmap(R.drawable.crate50x50dark, 40, 40);
 		bmpBox2 = createScaledBitmap(R.drawable.crate50x50light, 40, 40);
 		planet1 = createScaledBitmap(R.drawable.planet200x200, 50, 50);
 		barrel = createScaledBitmap(R.drawable.barrel, 45, 75);
-		player = createScaledBitmap(R.drawable.playerx2x2, (int) (150 * 0.8f), (int) (148 * 0.8f));
+		player = createScaledBitmap(R.drawable.playerx2x2, (int) (340 * 0.4f), (int) (296 * 0.4f));
+		playerThrottle = createScaledBitmap(R.drawable.playerthrottlex2x2, (int) (340 * 0.4f), (int) (296 * 0.4f));
 		enemy = createScaledBitmap(R.drawable.enemy2x1, (int) (90 * 0.8f), (int) (42 * 0.8f));
+		enemyThrottle = createScaledBitmap(R.drawable.enemythrottlex2x2, (int) (90 * 0.8f), (int) (84 * 0.8f));
 		ground = createScaledBitmap(R.drawable.crate50x50dark, 800, 50);
 		bomb = createScaledBitmap(R.drawable.bombx2x1, 90, 45);
 		bombsmall = createScaledBitmap(R.drawable.bombx2x1, 60, 30);
+		missile = createScaledBitmap(R.drawable.missilex4x1, 200, 30);
 		bombtriple = createScaledBitmap(R.drawable.bombx2x1, 50, 25);
 		bombexploding = createScaledBitmap(R.drawable.bombexplodingx4x1, 0, 0);
 		bomb2 = createScaledBitmap(R.drawable.bombx4x1, 120, 30);
-		powerBar = createScaledBitmap(R.drawable.powerbar, 0, 0);
-		fuelBar = createScaledBitmap(R.drawable.fuelbar, 0, 0);
+		powerBar = createScaledBitmap(R.drawable.powerbar, 45, 60);
+		lifeBar = createScaledBitmap(R.drawable.powerbar, 45, 60);
+		fuelBar = createScaledBitmap(R.drawable.fuelbar, 60, 45);
 		joystick = createScaledBitmap(R.drawable.joystick, 0, 0);
 		fireArrow = createScaledBitmap(R.drawable.firearrowx10, 500, 50);
 		hook = createScaledBitmap(R.drawable.hook, 0, 0);
@@ -97,7 +105,8 @@ public class PhysicsActivity extends Activity {
 
 	private void setButtonHandlers() {
 		Button fire = (Button) findViewById(R.id.button6);
-		Button jump = (Button) findViewById(R.id.Button01);
+		final Button jump = (Button) findViewById(R.id.Button01);
+		jump.setBackgroundResource(R.drawable.buttonhoveroff);
 		final Button bullet = (Button) findViewById(R.id.Button07);
 		bullet.setBackgroundResource(R.drawable.buttongun2);
 
@@ -105,7 +114,11 @@ public class PhysicsActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				((PlayerSprite) getGameView().getPlayerSprite()).superJump();
+				if (((PlayerSprite) getGameView().getPlayerSprite()).hoverOnOff()) {
+					jump.setBackgroundResource(R.drawable.buttonhoveron);
+				} else {
+					jump.setBackgroundResource(R.drawable.buttonhoveroff);
+				}
 			}
 		});
 
@@ -123,7 +136,7 @@ public class PhysicsActivity extends Activity {
 							((PlayerSprite) getGameView().getPlayerSprite()).powerUp();
 						} else {
 							((PlayerSprite) getGameView().getPlayerSprite()).fireHold();
-							((FireArrowSprite) getGameView().getFireArrowSprite()).onDown(x2, IntroActivity.deviceHeight - y2);
+							((FireArrowSprite) getGameView().getFireArrowSprite()).onDown(x2, PhysicsApplication.deviceHeight - y2);
 						}
 						break;
 					case MotionEvent.ACTION_MOVE:
@@ -131,7 +144,7 @@ public class PhysicsActivity extends Activity {
 						} else if (((PlayerSprite) getGameView().getPlayerSprite()).weapon.getType() == WeaponTypes.SHOCK_GUN) {
 						} else {
 							((PlayerSprite) getGameView().getPlayerSprite()).fireHold();
-							((FireArrowSprite) getGameView().getFireArrowSprite()).onMove(x2, IntroActivity.deviceHeight - y2);
+							((FireArrowSprite) getGameView().getFireArrowSprite()).onMove(x2, PhysicsApplication.deviceHeight - y2);
 						}
 						break;
 					case MotionEvent.ACTION_UP:
@@ -142,7 +155,7 @@ public class PhysicsActivity extends Activity {
 							((PlayerSprite) getGameView().getPlayerSprite()).powerDown();
 						} else {
 							((PlayerSprite) getGameView().getPlayerSprite()).fire();
-							((FireArrowSprite) getGameView().getFireArrowSprite()).onUp(x2, IntroActivity.deviceHeight - y2);
+							((FireArrowSprite) getGameView().getFireArrowSprite()).onUp(x2, PhysicsApplication.deviceHeight - y2);
 						}
 						break;
 					default:
@@ -219,6 +232,11 @@ public class PhysicsActivity extends Activity {
 				bullet.setBackgroundResource(R.drawable.bigshock);
 			else
 				bullet.setBackgroundResource(R.drawable.bigshock2);
+		} else if (type == WeaponTypes.MISSILE) {
+			if (weapon.isAvailable())
+				bullet.setBackgroundResource(R.drawable.buttonmissile2);
+			else
+				bullet.setBackgroundResource(R.drawable.buttonmissile);
 		}
 	}
 

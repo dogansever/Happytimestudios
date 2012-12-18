@@ -12,8 +12,8 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-import com.sever.physic.IntroActivity;
 import com.sever.physic.PhysicsActivity;
+import com.sever.physic.PhysicsApplication;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
@@ -87,6 +87,7 @@ public class FreeSprite {
 	}
 
 	public void killSprite() {
+		releaseShiftLockOnMe();
 		// System.out.println("Killing:" + this);
 		spriteList.remove(this);
 		PhysicsActivity.mWorld.bodies.remove(body);
@@ -105,6 +106,18 @@ public class FreeSprite {
 	public void destroyShape() {
 		if (body != null && body.getShapeList() != null)
 			body.destroyShape(getBody().getShapeList());
+	}
+
+	public void shiftLockOnME() {
+		System.out.println("shiftLockOnME:" + this);
+		if (gameView.getPlayerSprite() != null)
+			((PlayerSprite) gameView.getPlayerSprite()).sprite = this;
+	}
+
+	public void releaseShiftLockOnMe() {
+		System.out.println("releaseShiftLockOnMe:");
+		if (gameView.getPlayerSprite() != null)
+			((PlayerSprite) gameView.getPlayerSprite()).sprite = null;
 	}
 
 	public Body getBody() {
@@ -168,7 +181,12 @@ public class FreeSprite {
 			if (!noRotation)
 				m.postRotate((float) Math.toDegrees(angle), width * 0.5f, height * 0.5f);
 			Vec2 translate = getBitmapDrawingXY();
-			m.postTranslate(translate.x, translate.y);
+			if (Constants.checkForQuake()) {
+				m.postTranslate(translate.x - Constants.extraWidthOffset + Constants.getQuakePower(), translate.y + Constants.extraHeightOffset + Constants.getQuakePower());
+			} else {
+				Constants.endQuake();
+				m.postTranslate(translate.x - Constants.extraWidthOffset, translate.y + Constants.extraHeightOffset);
+			}
 			// canvas.drawColor(Color.TRANSPARENT);
 			if (facingRigth) {
 				Matrix mirrorMatrix = new Matrix();
@@ -181,7 +199,7 @@ public class FreeSprite {
 	}
 
 	public boolean checkOutOfBounds() {
-		return this.x < 0 - width || this.x > Constants.upperBoundxScreen + width || this.y > Constants.upperBoundyScreen * 1.5 || this.y < 0 - width;
+		return this.x < 0 - width || this.x > Constants.upperBoundxScreen + width || this.y > Constants.upperBoundyScreen * 1.1 || this.y < 0 - width;
 	}
 
 	public boolean isCollision(float x2, float y2) {
@@ -192,14 +210,14 @@ public class FreeSprite {
 	public Vec2 fromScreen(float x2, float y2) {
 		Vec2 pos = new Vec2();
 		pos.x = x2;
-		pos.y = IntroActivity.deviceHeight - y2;
+		pos.y = PhysicsApplication.deviceHeight - y2;
 		return pos;
 	}
 
 	public Vec2 getBitmapDrawingXY() {
 		Vec2 pos = new Vec2();
 		pos.x = x - width * 0.5f;
-		pos.y = IntroActivity.deviceHeight - y - height * 0.5f;
+		pos.y = PhysicsApplication.deviceHeight - y - height * 0.5f;
 		return pos;
 	}
 
@@ -219,7 +237,7 @@ public class FreeSprite {
 		}
 	}
 
-	public void applyForce(FreeSprite sprite, Vec2 positionSrc, float FIELD_RADIUS, float pullG) {
+	public boolean applyForce(FreeSprite sprite, Vec2 positionSrc, float FIELD_RADIUS, float pullG) {
 		Body body = sprite.getBody();
 		Vec2 positionTarget = body.getPosition();
 		float range = spacing(positionSrc.x - positionTarget.x, positionSrc.y - positionTarget.y);
@@ -228,7 +246,9 @@ public class FreeSprite {
 			force.normalize(); // force direction always point to source
 			force.set(force.mul(body.getMass() * pullG * (FIELD_RADIUS - range) / FIELD_RADIUS));
 			body.applyForce(force, body.getWorldCenter());
+			return true;
 		}
+		return false;
 	}
 
 	public void applyForce(FreeSprite sprite, Vec2 positionSrc, float pullG) {
@@ -262,14 +282,6 @@ public class FreeSprite {
 
 	public void explodeBmp() {
 
-	}
-
-	public boolean readyToExplode() {
-		boolean ready = (FADE_LIFE == 0 && spriteBmp.bmpIndex == 0);
-		if (ready) {
-			explodeBmp();
-		}
-		return ready;
 	}
 
 	public float getWidthExplosionPhysical() {

@@ -18,8 +18,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.sever.physic.IntroActivity;
 import com.sever.physic.PhysicsActivity;
+import com.sever.physic.PhysicsApplication;
 import com.sever.physic.StageEndActivity;
 import com.sever.physics.game.sprites.BoxSprite;
 import com.sever.physics.game.sprites.BulletSprite;
@@ -31,6 +31,7 @@ import com.sever.physics.game.sprites.GrenadeImplodeSprite;
 import com.sever.physics.game.sprites.GrenadeSprite;
 import com.sever.physics.game.sprites.GroundBoxSprite;
 import com.sever.physics.game.sprites.JoystickSprite;
+import com.sever.physics.game.sprites.MissileSprite;
 import com.sever.physics.game.sprites.PlanetSprite;
 import com.sever.physics.game.sprites.PlayerSprite;
 import com.sever.physics.game.sprites.PowerBarSprite;
@@ -166,6 +167,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		return sprite;
 	}
 
+	public FreeSprite addMissile(float x, float y) {
+		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
+		bmp.add(PhysicsActivity.missile);
+		bmp.add(PhysicsActivity.bombexploding);
+		ArrayList<int[]> colsrows = new ArrayList<int[]>();
+		colsrows.add(new int[] { 4, 1 });
+		colsrows.add(new int[] { 4, 1 });
+		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
+		FreeSprite sprite = new MissileSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.MISSILE);
+		explosiveSprites.add(sprite);
+		return sprite;
+	}
+
 	public FreeSprite addGrenadeSmall(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
 		bmp.add(PhysicsActivity.bombsmall);
@@ -275,7 +289,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	public void addPlayer(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
 		bmp.add(PhysicsActivity.player);
+		bmp.add(PhysicsActivity.playerThrottle);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
+		colsrows.add(new int[] { 2, 2 });
 		colsrows.add(new int[] { 2, 2 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		playerSprite.add(new PlayerSprite(playerSprite, this, spriteBmp, x, y));
@@ -285,8 +301,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	public void addEnemy(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
 		bmp.add(PhysicsActivity.enemy);
+		bmp.add(PhysicsActivity.enemyThrottle);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 2, 1 });
+		colsrows.add(new int[] { 2, 2 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		enemySprites.add(new EnemySprite(enemySprites, this, spriteBmp, x, y));
 	}
@@ -314,7 +332,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		// addBox2(500, 500);
 		// addBox2(500, 150);
 		createTrash();
-		addPlayer(700, 500);
+		addPlayer(600, 100);
 		createJointStuff();
 		createNophysicSprites();
 	}
@@ -325,19 +343,25 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	private void createJointStuff() {
-		addBoxStatic(this.getWidth() * 0.5f, -25.0f, (int) (this.getWidth() * 1.0), 150);
+		addBoxStatic(Constants.upperBoundxScreen * 0.5f, -25.0f, (int) (Constants.upperBoundxScreen), 150);
 		addBoxStatic(950, 300, 50, 50);
 		addBoxStatic(950, 250, 50, 50);
 		addBoxStatic(950, 75, 50, 50);
 
-		addBoxStatic(50, 200, 50, 50);
-		addBoxStatic(50, 125, 50, 50);
-		addBoxStatic(50, 75, 50, 50);
+		addBoxStatic(125, 225, 50, 50);
+		addBoxStatic(125, 175, 50, 50);
+		addBoxStatic(25, 125, 50, 50);
+		addBoxStatic(25, 75, 50, 50);
 		addBoxStatic(100, 450, 50, 50);
 		addBoxStatic(150, 450, 50, 50);
 
 		addBoxStatic(300, 350, 50, 50);
 		addBoxStatic(350, 350, 50, 50);
+		addBoxStatic(1350, 350, 50, 50);
+		addBoxStatic(1300, 350, 50, 50);
+
+		addBoxStatic(Constants.upperBoundxScreen - 25, 125, 50, 50);
+		addBoxStatic(Constants.upperBoundxScreen - 25, 75, 50, 50);
 		// FreeSprite b1 = addGround(450, 400, 50, 50);
 		// FreeSprite b2 = addBox(500, 200);
 		// new Joint().createRevolute(b1, b2);
@@ -347,36 +371,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	private void createTrash() {
-		// addBox2(250, 250);
-		addBox2(250, 200);
-		// addBox2(250, 150);
-		addBox2(300, 200);
-		// addBox2(300, 150);
-		addBox(350, 150);
-		addBarrel(450, 100);
-		// addBarrel(400, 100);
-		addBarrel(350, 100);
-		// addBarrel(300, 100);
-		addBarrel(250, 100);
-		// addBarrel(200, 100);
-		addBarrel(150, 100);
-
+		sendSpaceTrash();
 	}
 
-	private void sendSpaceTrash(int x, int y) {
-		addBox2(250 + x, 250 + y);
-		// addBox2(250 + x, 200 + y);
-		addBox2(250 + x, 150 + y);
-		// addBox2(300 + x, 200 + y);
-		addBox2(300 + x, 150 + y);
-		addBox(350 + x, 150 + y);
-		addBarrel(450 + x, 100 + y);
-		// addBarrel(400 + x, 100 + y);
-		addBarrel(350 + x, 100 + y);
-		// addBarrel(300 + x, 100 + y);
-		addBarrel(250 + x, 100 + y);
-		// addBarrel(200 + x, 100 + y);
-		addBarrel(150 + x, 100 + y);
+	private void sendSpaceTrash() {
+		float x = new Random().nextFloat() * Constants.upperBoundxScreen;
+		float y = new Random().nextFloat() * Constants.upperBoundyScreen;
+		addBox2(x, y);
+		x = new Random().nextFloat() * Constants.upperBoundxScreen;
+		y = new Random().nextFloat() * Constants.upperBoundyScreen;
+		addBox(x, y);
+		x = new Random().nextFloat() * Constants.upperBoundxScreen;
+		y = new Random().nextFloat() * Constants.upperBoundyScreen;
+		addBarrel(x, y);
 	}
 
 	private void createNophysicSprites() {
@@ -555,14 +562,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			float y2 = event.getY();
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				((JoystickSprite) getJoystickSprite()).onDown(x2, IntroActivity.deviceHeight - y2);
+				((JoystickSprite) getJoystickSprite()).onDown(x2, PhysicsApplication.deviceHeight - y2);
 				break;
 			case MotionEvent.ACTION_MOVE:
-				((JoystickSprite) getJoystickSprite()).onMove(x2, IntroActivity.deviceHeight - y2);
+				((JoystickSprite) getJoystickSprite()).onMove(x2, PhysicsApplication.deviceHeight - y2);
 				break;
 			case MotionEvent.ACTION_UP:
 			case MotionEvent.ACTION_CANCEL:
-				((JoystickSprite) getJoystickSprite()).onUp(x2, IntroActivity.deviceHeight - y2);
+				((JoystickSprite) getJoystickSprite()).onUp(x2, PhysicsApplication.deviceHeight - y2);
 				break;
 
 			default:
@@ -600,7 +607,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 		// draw explosives, push enemies
 		for (Iterator<FreeSprite> it = explosiveSprites.iterator(); it.hasNext();) {
-			FreeSprite spriteExplosive = it.next();
+			GrenadeSprite spriteExplosive = (GrenadeSprite) it.next();
 			boolean ready = spriteExplosive.readyToExplode();
 			applyPullPushOn(spriteExplosive, freeSprites, ready);
 			applyPullPushOn(spriteExplosive, enemySprites, ready);
@@ -632,14 +639,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	private void checkSpaceTrash() {
 		// System.out.println("checkSpaceTrash():freeSprites.size():" +
 		// freeSprites.size());
-		if (freeSprites.size() <= 5) {
-			sendSpaceTrash(0, 250);
+		if (freeSprites.size() < 5) {
+			sendSpaceTrash();
 		}
 	}
 
 	private void checkEnemyCount() {
-		if (enemySprites.size() < 2) {
-			addEnemy(50 + new Random().nextInt((int) IntroActivity.deviceWidth - 50), IntroActivity.deviceHeight);
+		if (enemySprites.size() < 1) {
+			addEnemy(50 + new Random().nextInt((int) Constants.upperBoundxScreen - 50), Constants.upperBoundyScreen);
 		}
 	}
 

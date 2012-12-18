@@ -14,11 +14,15 @@ import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
 
-public class EnemySprite extends FreeSprite {
+public class EnemySprite extends ActiveSprite {
 
 	private static final int BULLET_FIRE_WAIT_TIME_MAX = 50;
 	public boolean powerOn;
 	public boolean scatter;
+	public boolean fueling;
+	public int fuel;
+	public int fuel_AGG = +1;
+	public final int fuel_MAX = 100;
 
 	public EnemySprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
@@ -32,6 +36,7 @@ public class EnemySprite extends FreeSprite {
 		this.BULLET_FIRE_WAIT_TIME = BULLET_FIRE_WAIT_TIME_MAX;
 		this.spriteList = spriteList;
 		addSprite(x, y);
+		setLifeBarSprite();
 	}
 
 	public void fireGrenade() {
@@ -69,16 +74,95 @@ public class EnemySprite extends FreeSprite {
 	}
 
 	public void onDraw(Canvas canvas) {
+		if (life <= 0) {
+			killSprite();
+			return;
+		}
+
 		BULLET_FIRE_WAIT_TIME--;
 		if (BULLET_FIRE_WAIT_TIME == 0) {
 			BULLET_FIRE_WAIT_TIME = BULLET_FIRE_WAIT_TIME_MAX + new Random().nextInt(BULLET_FIRE_WAIT_TIME_MAX);
 			fireGrenade();
 		}
 		moveToPlayer();
+//		throttleLeave();
 		super.onDraw(canvas);
+		lifeBarSprite.onDraw(canvas);
 	}
 
 	private void moveToPlayer() {
+		float targetx = gameView.getPlayerSprite().x;
+		float targety = gameView.getPlayerSprite().y;
+		// System.out.println("targetx:" + targetx + ",x:" + x + "    targety:"
+		// + targety + ",y:" + y);
+
+		// if player is higher fly
+		if (targety - y > 50) {
+			throttleUp();
+		} else if (targety - y < -50) {
+			throttleDown();
+		}
+
+		// move to player
+		if (targetx - x > 50) {
+			throttleRight();
+		} else if (targetx - x < -50) {
+			throttleLeft();
+		}
+
+	}
+
+	public boolean throttleHold() {
+//		if (fueling) {
+//			if (fuel == fuel_MAX) {
+//				fueling = false;
+//			} else {
+//				return false;
+//			}
+//		}
+//
+//		fuel_AGG = -1;
+//		fuel = fuel + fuel_AGG;
+//		if (fuel <= 0) {
+//			fuel = 0;
+//			fueling = true;
+//			throttleOffBmp();
+//			return false;
+//		}
+		return true;
+	}
+
+	public void throttleLeave() {
+		throttleOffBmp();
+		fuel_AGG = 3;
+		fuel = fuel + fuel_AGG;
+		if (fuel >= fuel_MAX) {
+			fuel = fuel_MAX;
+			return;
+		}
+	}
+
+	public void throttlexBmp() {
+		throttleBmp();
+		spriteBmp.currentRow = 0;
+	}
+
+	public void throttleyBmp() {
+		throttleBmp();
+		spriteBmp.currentRow = 1;
+	}
+
+	public void throttleBmp() {
+		spriteBmp.setBmpIndex(1);
+		this.width = spriteBmp.getWidth();
+		this.height = spriteBmp.getHeight();
+	}
+
+	public void throttleOffBmp() {
+		spriteBmp.setBmpIndex(0);
+		this.width = spriteBmp.getWidth();
+		this.height = spriteBmp.getHeight();
+		spriteBmp.currentRow = 0;
 	}
 
 	public void createShape() {
@@ -152,60 +236,4 @@ public class EnemySprite extends FreeSprite {
 		}
 	}
 
-	public void throttleUp() {
-		throttle(0);
-	}
-
-	public void throttleDown() {
-		throttle(1);
-	}
-
-	public void throttleLeft() {
-		throttle(2);
-	}
-
-	public void throttleRight() {
-		throttle(3);
-	}
-
-	public void powerUp() {
-		powerOn = true;
-		scatter = true;
-	}
-
-	public void powerDown() {
-		powerOn = false;
-	}
-
-	public void throttle(int direction) {
-		Vec2 force = null;
-		switch (direction) {
-		case 0:
-			// up
-			force = new Vec2(0.0f, 1.0f);
-			break;
-		case 1:
-			// down
-			force = new Vec2(0.0f, -1.0f);
-			break;
-		case 2:
-			// left
-			force = new Vec2(-1.0f, 0.0f);
-			break;
-		case 3:
-			// right
-			force = new Vec2(1.0f, 0.0f);
-			break;
-
-		default:
-			break;
-		}
-		Body body = getBody();
-		force.normalize(); // force direction always point to source
-		force.set(force.mul((float) (body.getMass() * Constants.gravityThrottle)));
-		body.applyImpulse(force, body.getWorldCenter());
-
-		// System.out.println("!!!Kicked it!!!:" + index + ", force:x:" +
-		// force.x + ", y:" + force.y);
-	}
 }

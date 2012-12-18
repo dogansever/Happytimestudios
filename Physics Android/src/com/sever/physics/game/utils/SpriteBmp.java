@@ -44,6 +44,10 @@ public class SpriteBmp {
 		bmpFrame = null;
 	}
 
+	public float getWidth(int index) {
+		return bmpArray.get(index).getWidth() / colsrows.get(index)[0];
+	}
+
 	public float getWidth() {
 		return bmpArray.get(bmpIndex).getWidth() / BMP_COLUMNS;
 	}

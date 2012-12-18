@@ -1,15 +1,15 @@
 package com.sever.physics.game.sprites;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import android.graphics.Canvas;
 
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.SpriteBmp;
 
-public class PowerBarSprite extends FreeSprite {
+public class LifeBarSprite extends FreeSprite {
 
-	public PowerBarSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+	private ActiveSprite activeSprite;
+
+	public LifeBarSprite(ActiveSprite activeSprite, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
@@ -18,16 +18,15 @@ public class PowerBarSprite extends FreeSprite {
 		this.y = y;
 		this.noRotation = true;
 		this.manualFrameSet = true;
-		this.invisible = true;
-		this.spriteList = spriteList;
+		this.activeSprite = activeSprite;
 	}
 
 	public void onDraw(Canvas canvas) {
 		spriteBmp.currentFrame = 0;
-		spriteBmp.currentRow = spriteBmp.BMP_ROWS * ((PlayerSprite) gameView.getPlayerSprite()).firePower / ((PlayerSprite) gameView.getPlayerSprite()).firePower_MAX;
+		spriteBmp.currentRow = spriteBmp.BMP_ROWS * activeSprite.life / activeSprite.life_MAX;
 		spriteBmp.currentRow = spriteBmp.currentRow == spriteBmp.BMP_ROWS ? spriteBmp.currentRow - 1 : spriteBmp.currentRow;
-		x = ((PlayerSprite) gameView.getPlayerSprite()).x;
-		y = ((PlayerSprite) gameView.getPlayerSprite()).y + ((PlayerSprite) gameView.getPlayerSprite()).height * 0.65f;
+		x = activeSprite.x;
+		y = activeSprite.y + activeSprite.height * 0.5f;
 		super.onDraw(canvas);
 	}
 

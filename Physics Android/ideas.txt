@@ -1,10 +1,20 @@
 IDEAS TO IMPLEMENT
 
-Weapon reloading
 Triple bomb gun (small bombs)
 super shock gun (push on wide radius)
 reduce bomb power and radius for small bomb
 big bomb gun
+explode bomb in sudden change in velocity
+explosions cost life
+hovering
+enemies moving and flying on you
+
+
+Weapon reloading
 hook gun for player(revolt joint)
 survival in seconds and in enemy counts (score points)
+jump and fall animations detected from velocity direction
+ground2air locking missile
+picking carrying releasing objects
+
 

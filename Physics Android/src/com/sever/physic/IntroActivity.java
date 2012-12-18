@@ -2,9 +2,7 @@ package com.sever.physic;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -18,27 +16,14 @@ public class IntroActivity extends Activity {
 	private IntroView introView;
 	public static Bitmap bmpIntro;
 	public static Bitmap bmpIntro2;
-	public static float deviceWidth;
-	public static float deviceHeight;
-
-	public void recallDeviceMetrics() {
-		try {
-			DisplayMetrics metrics = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(metrics);
-			deviceWidth = metrics.widthPixels;
-			deviceHeight = metrics.heightPixels;
-		} catch (Exception e) {
-		}
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		System.out.println("onCreate:" + this);
 		super.onCreate(savedInstanceState);
-		recallDeviceMetrics();
 
-		bmpIntro = GeneralUtil.createScaledBitmap(this, R.drawable.space, (int) deviceWidth, (int) deviceHeight);
-		bmpIntro2 = GeneralUtil.createScaledBitmap(this, R.drawable.introsub1, (int) deviceWidth, (int) (deviceHeight * 0.125f));
+		bmpIntro = GeneralUtil.createScaledBitmap(this, R.drawable.space, (int) PhysicsApplication.deviceWidth, (int) PhysicsApplication.deviceHeight);
+		bmpIntro2 = GeneralUtil.createScaledBitmap(this, R.drawable.introsub1, (int) PhysicsApplication.deviceWidth, (int) (PhysicsApplication.deviceHeight * 0.125f));
 
 		setContentView(R.layout.intro);
 		RelativeLayout root = (RelativeLayout) findViewById(R.id.introViewRelativeLayout);
@@ -90,6 +75,34 @@ public class IntroActivity extends Activity {
 	private void showTopScore() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onBackPressed() {
+	}
+
+	@Override
+	protected void onDestroy() {
+		System.out.println("onDestroy:" + this);
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onPause() {
+		System.out.println("onPause:" + this);
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		System.out.println("onResume:" + this);
+		super.onResume();
+	}
+
+	@Override
+	protected void onStop() {
+		System.out.println("onStop:" + this);
+		super.onStop();
 	}
 
 }
