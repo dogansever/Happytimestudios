@@ -1,7 +1,5 @@
 package com.sever.physics.game.sprites;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import android.graphics.Canvas;
 
 import com.sever.physics.game.GameView;
@@ -9,7 +7,8 @@ import com.sever.physics.game.utils.SpriteBmp;
 
 public class PowerBarSprite extends FreeSprite {
 
-	public PowerBarSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+	private ActiveSprite activeSprite;
+	public PowerBarSprite(ActiveSprite activeSprite, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
@@ -19,7 +18,7 @@ public class PowerBarSprite extends FreeSprite {
 		this.noRotation = true;
 		this.manualFrameSet = true;
 		this.invisible = true;
-		this.spriteList = spriteList;
+		this.activeSprite = activeSprite;
 	}
 
 	public void onDraw(Canvas canvas) {

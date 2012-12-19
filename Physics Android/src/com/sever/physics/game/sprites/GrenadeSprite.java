@@ -22,7 +22,7 @@ public class GrenadeSprite extends FreeSprite {
 			this.width = spriteBmp.getWidth();
 			this.height = spriteBmp.getHeight();
 			this.spriteBmp = spriteBmp;
-			this.widthExplosion = spriteBmp.getWidth();
+			this.widthExplosion = WeaponsManager.getManager().getWeaponByType(wt).getExplosionRadius();
 			this.gameView = gameView;
 			this.x = x;
 			this.y = y;
@@ -56,7 +56,8 @@ public class GrenadeSprite extends FreeSprite {
 
 			float diffx = Math.abs(getBody().getLinearVelocity().x - velx);
 			float diffy = Math.abs(getBody().getLinearVelocity().y - vely);
-//			System.out.println("velx:" + getBody().getLinearVelocity().x + ",diffx:" + diffx + ", diffy:" + diffy);
+			// System.out.println("velx:" + getBody().getLinearVelocity().x +
+			// ",diffx:" + diffx + ", diffy:" + diffy);
 			if (spriteBmp.bmpIndex == 0 && velx != 0 && diffx >= 2.0f) {
 				FADE_LIFE = 0;
 			} else {
@@ -71,7 +72,8 @@ public class GrenadeSprite extends FreeSprite {
 	public void explodeBmp() {
 		FADE_LIFE = (int) (WeaponsManager.getManager().getWeaponByType(wt).getLifeTimeInMiliseconds() * 0.25);
 		spriteBmp.setBmpIndex(1);
-		noupdate = true;
+		noPositionUpdate = true;
+		noRotation = true;
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
 		angle = 0;

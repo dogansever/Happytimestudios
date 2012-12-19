@@ -13,6 +13,7 @@ import android.graphics.Canvas;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
+import com.sever.physics.game.utils.WeaponTypes;
 
 public class EnemySprite extends ActiveSprite {
 
@@ -23,6 +24,7 @@ public class EnemySprite extends ActiveSprite {
 	public int fuel;
 	public int fuel_AGG = +1;
 	public final int fuel_MAX = 100;
+	WeaponTypes wt;
 
 	public EnemySprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
@@ -32,15 +34,34 @@ public class EnemySprite extends ActiveSprite {
 		this.x = x;
 		this.y = y;
 		this.noRotation = true;
-		this.facingRigth = true;
+		this.facingRigth = gameView.getPlayerSprite().x > x;
 		this.BULLET_FIRE_WAIT_TIME = BULLET_FIRE_WAIT_TIME_MAX;
+		FADE_LIFE = 50;
 		this.spriteList = spriteList;
 		addSprite(x, y);
-		setLifeBarSprite();
+		addLifeBarSprite();
+		velocity_MAX = 30;
+	}
+
+	public void activateBomb() {
+		wt = WeaponTypes.BOMB_BIG;
+	}
+
+	public void activateMissile() {
+		wt = WeaponTypes.MISSILE;
+	}
+
+	public void fireMissile() {
+		FreeSprite bullet = gameView.addMissile(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
+		firePower = firePower_MAX;
+		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissile, gameView.getPlayerSprite()));
+		// bullet.shiftLockOnME();
 	}
 
 	public void fireGrenade() {
-		FreeSprite bullet = gameView.addGrenade(x, y + height * 0.5f);
+		float yt = (getBody().getLinearVelocity().y < 0 ? 1 : -1) * height * 0.75f;
+		float xt = (facingRigth ? 1 : -1) * width * 0.75f;
+		FreeSprite bullet = gameView.addGrenade(x + xt, y + yt);
 		// applyForce(bullet,
 		// gameView.getPlayerSprite().getBody().getPosition(), 500);
 		Vec2 v = getFireVec();
@@ -48,23 +69,33 @@ public class EnemySprite extends ActiveSprite {
 	}
 
 	private Vec2 getFireVec() {
-
-		float VELX = 30;
-		float VELY = 30;
+		float VELX;
+		float VELY;
 		Vec2 v;
 		try {
-			Vec2 positionSrc = getBody().getPosition();
-			Vec2 positionTarget = gameView.getPlayerSprite().getBody().getPosition();
+			// Vec2 positionSrc = getBody().getPosition();
+			// Vec2 positionTarget =
+			// gameView.getPlayerSprite().getBody().getPosition();
+			// float VelCurx = getBody().getLinearVelocity().x;
+			// float VelCury = getBody().getLinearVelocity().y;
+			float VelPlayerx = gameView.getPlayerSprite().getBody().getLinearVelocity().x;
+			float VelPlayery = gameView.getPlayerSprite().getBody().getLinearVelocity().y;
 
-			VELX = (positionTarget.x - positionSrc.x) / (3 * Constants.pixelpermeter);
-			VELY = (positionTarget.y - positionSrc.y) / (4 * Constants.pixelpermeter);
-			VELY = VELY * 3;
-			VELX += VELX * new Random().nextFloat();
+			VELX = (gameView.getPlayerSprite().x - this.x) / (Constants.pixelpermeter * 10);
+			VELY = (gameView.getPlayerSprite().y - this.y) / (Constants.pixelpermeter * 10);
+			// VELY = VELY * 3;
+			// VELX += VELX * new Random().nextFloat();
 			// System.out.println("VELX:" + VELX + ",VELY:" + VELY);
-			v = new Vec2(VELX * Constants.pixelpermeter, VELY * Constants.pixelpermeter);
+			// System.out.println("VelPlayerx:" + VelPlayerx + ",VelPlayery:" +
+			// VelPlayery);
+			v = new Vec2(VELX + VelPlayerx, VELY + VelPlayery);
 		} catch (Exception e) {
+			e.printStackTrace();
+			VELX = 30;
+			VELY = 30;
 			v = new Vec2((facingRigth ? 1 : -1) * VELX, VELY);
 		}
+		// System.out.println("Vec2 x:" + v.x + ",y:" + v.y);
 		return v;
 	}
 
@@ -75,60 +106,78 @@ public class EnemySprite extends ActiveSprite {
 
 	public void onDraw(Canvas canvas) {
 		if (life <= 0) {
-			killSprite();
-			return;
-		}
+			explodeAndDie();
+		} else {
 
-		BULLET_FIRE_WAIT_TIME--;
-		if (BULLET_FIRE_WAIT_TIME == 0) {
-			BULLET_FIRE_WAIT_TIME = BULLET_FIRE_WAIT_TIME_MAX + new Random().nextInt(BULLET_FIRE_WAIT_TIME_MAX);
-			fireGrenade();
+			BULLET_FIRE_WAIT_TIME--;
+			if (BULLET_FIRE_WAIT_TIME == 0) {
+				BULLET_FIRE_WAIT_TIME = BULLET_FIRE_WAIT_TIME_MAX + new Random().nextInt(BULLET_FIRE_WAIT_TIME_MAX);
+				fire();
+			}
+			moveToPlayer();
+			lifeBarSprite.onDraw(canvas);
 		}
-		moveToPlayer();
-//		throttleLeave();
+		// throttleLeave();
 		super.onDraw(canvas);
-		lifeBarSprite.onDraw(canvas);
+	}
+
+	private void fire() {
+		if (gameView.idle)
+			return;
+
+		if (wt == WeaponTypes.MISSILE) {
+			fireMissile();
+		} else if (wt == WeaponTypes.BOMB_BIG) {
+			fireGrenade();
+		} else {
+			fireMissile();
+		}
 	}
 
 	private void moveToPlayer() {
+		// if (gameView.idle) {
+		// return;
+		// }
+
+		float minDistanceBetween = 200;
 		float targetx = gameView.getPlayerSprite().x;
 		float targety = gameView.getPlayerSprite().y;
 		// System.out.println("targetx:" + targetx + ",x:" + x + "    targety:"
 		// + targety + ",y:" + y);
 
 		// if player is higher fly
-		if (targety - y > 50) {
+		if (targety - y > minDistanceBetween) {
 			throttleUp();
-		} else if (targety - y < -50) {
+		} else if (targety - y < -minDistanceBetween) {
 			throttleDown();
 		}
 
 		// move to player
-		if (targetx - x > 50) {
+		if (targetx - x > minDistanceBetween) {
 			throttleRight();
-		} else if (targetx - x < -50) {
+		} else if (targetx - x < -minDistanceBetween) {
 			throttleLeft();
 		}
 
 	}
 
 	public boolean throttleHold() {
-//		if (fueling) {
-//			if (fuel == fuel_MAX) {
-//				fueling = false;
-//			} else {
-//				return false;
-//			}
-//		}
-//
-//		fuel_AGG = -1;
-//		fuel = fuel + fuel_AGG;
-//		if (fuel <= 0) {
-//			fuel = 0;
-//			fueling = true;
-//			throttleOffBmp();
-//			return false;
-//		}
+		// if (fueling) {
+		// if (fuel == fuel_MAX) {
+		// fueling = false;
+		// } else {
+		// return false;
+		// }
+		// }
+		//
+		// fuel_AGG = -1;
+		// fuel = fuel + fuel_AGG;
+		// if (fuel <= 0) {
+		// fuel = 0;
+		// fueling = true;
+		// throttleOffBmp();
+		// return false;
+		// }
 		return true;
 	}
 
@@ -236,4 +285,13 @@ public class EnemySprite extends ActiveSprite {
 		}
 	}
 
+	public WeaponTypes getWt() {
+		return wt;
+	}
+
+	public void setWt(WeaponTypes wt) {
+		this.wt = wt;
+	}
+
+	
 }

@@ -34,7 +34,7 @@ public class FreeSprite {
 	public float angle;
 	public boolean noRotation = false;
 	public boolean invisible = false;
-	public boolean noupdate = false;
+	public boolean noPositionUpdate = false;
 	public boolean fades = false;
 	public boolean explodes = false;
 	public boolean implodes = false;
@@ -49,6 +49,9 @@ public class FreeSprite {
 	public void freeBitmaps() {
 		if (spriteBmp != null)
 			spriteBmp.freeBitmaps();
+	}
+
+	public void explodeAndDie() {
 	}
 
 	public void fireGrenadeImploding() {
@@ -87,13 +90,26 @@ public class FreeSprite {
 	}
 
 	public void killSprite() {
-		releaseShiftLockOnMe();
 		// System.out.println("Killing:" + this);
-		spriteList.remove(this);
-		PhysicsActivity.mWorld.bodies.remove(body);
-		PhysicsActivity.mWorld.world.destroyBody(body);
-		destroyShape();
-		freeBitmaps();
+		if (this instanceof EnemySprite) {
+			Constants.enemyKilledCount++;
+		}
+
+		if (!(this instanceof PlayerSprite)) {
+			releaseShiftLockOnMe();
+			spriteList.remove(this);
+			PhysicsActivity.mWorld.bodies.remove(body);
+			PhysicsActivity.mWorld.world.destroyBody(body);
+			destroyShape();
+			freeBitmaps();
+		} else if (this instanceof PlayerSprite && !gameView.idle) {
+			((PlayerSprite) this).setAlive(false);
+			Constants.playerKilledCount++;
+			// PhysicsActivity.mWorld.bodies.remove(body);
+			// PhysicsActivity.mWorld.world.destroyBody(body);
+			// destroyShape();
+		}
+
 	}
 
 	public void createDynamicBody(float x, float y) {
@@ -144,7 +160,7 @@ public class FreeSprite {
 
 	private void updatePosition() {
 		Body body = getBody();
-		if (body != null && !noupdate) {
+		if (body != null && !noPositionUpdate) {
 			this.x = body.getPosition().x * Constants.pixelpermeter;
 			this.y = body.getPosition().y * Constants.pixelpermeter;
 			this.angle = body.getAngle();

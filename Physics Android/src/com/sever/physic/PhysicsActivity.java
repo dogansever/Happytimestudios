@@ -14,10 +14,12 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.sprites.FireArrowSprite;
 import com.sever.physics.game.sprites.PlayerSprite;
+import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.PhysicsWorld;
 import com.sever.physics.game.utils.Weapon;
 import com.sever.physics.game.utils.WeaponTypes;
@@ -48,6 +50,7 @@ public class PhysicsActivity extends Activity {
 	public static Bitmap playerThrottle;
 	public static Bitmap enemy;
 	public static Bitmap enemyThrottle;
+	public static Bitmap enemyexploding;
 	public static Bitmap ground;
 	public static Bitmap missile;
 	public static Bitmap bomb;
@@ -78,6 +81,7 @@ public class PhysicsActivity extends Activity {
 		playerThrottle = createScaledBitmap(R.drawable.playerthrottlex2x2, (int) (340 * 0.4f), (int) (296 * 0.4f));
 		enemy = createScaledBitmap(R.drawable.enemy2x1, (int) (90 * 0.8f), (int) (42 * 0.8f));
 		enemyThrottle = createScaledBitmap(R.drawable.enemythrottlex2x2, (int) (90 * 0.8f), (int) (84 * 0.8f));
+		enemyexploding = createScaledBitmap(R.drawable.enemyexplosionx3x1, 0, 0);
 		ground = createScaledBitmap(R.drawable.crate50x50dark, 800, 50);
 		bomb = createScaledBitmap(R.drawable.bombx2x1, 90, 45);
 		bombsmall = createScaledBitmap(R.drawable.bombx2x1, 60, 30);
@@ -101,6 +105,34 @@ public class PhysicsActivity extends Activity {
 		// Start Regular Update
 		// mHandler = new Handler();
 		setButtonHandlers();
+		clearScore();
+	}
+
+	private void clearScore() {
+		Constants.enemyKilledCount = 0;
+		Constants.playerKilledCount = 0;
+		TextView score = (TextView) findViewById(R.id.textViewScore);
+		score.setText("");
+		TextView score2 = (TextView) findViewById(R.id.TextView02Score);
+		score2.setText("");
+	}
+
+	public void updateScore() {
+		final Runnable r = new Runnable() {
+			public void run() {
+				TextView score = (TextView) findViewById(R.id.textViewScore);
+				score.setText("" + Constants.enemyKilledCount);
+				TextView score2 = (TextView) findViewById(R.id.TextView02Score);
+				score2.setText("" + Constants.playerKilledCount);
+			}
+		};
+		Thread t = new Thread() {
+			public void run() {
+				mHandler.post(r);
+			}
+		};
+		t.start();
+
 	}
 
 	private void setButtonHandlers() {
@@ -127,6 +159,7 @@ public class PhysicsActivity extends Activity {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				try {
+
 					float x2 = event.getX();
 					float y2 = event.getY();
 					switch (event.getAction()) {
@@ -171,6 +204,7 @@ public class PhysicsActivity extends Activity {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
+
 				try {
 					switch (event.getAction()) {
 					case MotionEvent.ACTION_DOWN:

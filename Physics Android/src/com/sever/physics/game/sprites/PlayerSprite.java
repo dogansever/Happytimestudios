@@ -28,15 +28,7 @@ public class PlayerSprite extends ActiveSprite {
 	public boolean powerOn;
 	public boolean powerPush;
 	public boolean scatter;
-	public int fuel;
-	public int fuel_AGG = +1;
-	public final int fuel_MAX = 100;
-	public int firePower;
-	public int firePowerOld;
-	public int firePower_AGG = +1;
-	public final int firePower_MAX = 50;
-	public final int fireMultiplierBullet = 150;
-	public final int fireMultiplierBomb = 50;
+	public boolean alive = true;
 	public FreeSprite sprite;
 
 	public PlayerSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
@@ -49,18 +41,43 @@ public class PlayerSprite extends ActiveSprite {
 		this.noRotation = true;
 		this.spriteList = spriteList;
 		fuel = fuel_MAX;
+		alive = true;
 		addSprite(x, y);
-		setLifeBarSprite();
+		addLifeBarSprite();
+		addFuelBar();
+		addPowerBar();
+		addFireArrow();
+		FADE_LIFE = 80;
+	}
+
+	public void restartSprite(float x, float y) {
+		PhysicsActivity.mWorld.bodies.remove(body);
+		PhysicsActivity.mWorld.world.destroyBody(body);
+		destroyShape();
+		life = life_MAX;
+		this.x = x;
+		this.y = y;
+		addSprite(x, y);
+		gameView.resumeIdleGame();
+		this.shiftLockOnME();
 	}
 
 	public void onDraw(Canvas canvas) {
-		if (life <= 0) {
+
+		if (!gameView.idle && life <= 0) {
 			killSprite();
+			return;
+		}
+
+		if (gameView.idle) {
 			return;
 		}
 
 		super.onDraw(canvas);
 		lifeBarSprite.onDraw(canvas);
+		fuelBarSprite.onDraw(canvas);
+		powerBarSprite.onDraw(canvas);
+		fireArrowSprite.onDraw(canvas);
 		shiftCheck();
 		hoverCheck();
 	}
@@ -156,6 +173,10 @@ public class PlayerSprite extends ActiveSprite {
 	}
 
 	public void fire() {
+		if (gameView.idle) {
+			return;
+		}
+
 		if (weapon.getType() == WeaponTypes.BULLET) {
 			fireBullet();
 		} else if (weapon.getType() == WeaponTypes.BOMB_BIG) {
@@ -193,8 +214,8 @@ public class PlayerSprite extends ActiveSprite {
 	public void fireMissile() {
 		FreeSprite bullet = gameView.addMissile(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
 		firePower = firePower_MAX;
-		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBullet));
-		bullet.shiftLockOnME();
+		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissile));
+		// bullet.shiftLockOnME();
 	}
 
 	public void fireGrenadeSmall() {
@@ -210,32 +231,6 @@ public class PlayerSprite extends ActiveSprite {
 	public void fireBullet() {
 		FreeSprite bullet = gameView.addBullet(x + (facingRigth ? 1 : -1) * width * 0.9f, y);
 		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBullet));
-	}
-
-	private Vec2 getVelocityVec(int fireMultiplier) {
-		float fangle = ((FireArrowSprite) gameView.getFireArrowSprite()).getAngle();
-		Vec2 force = new Vec2((float) Math.cos(Math.toRadians(fangle)), (float) Math.sin(Math.toRadians(fangle)));
-		force.normalize();
-
-		float xt = (facingRigth ? 1 : -1) * (firePower * fireMultiplier / firePower_MAX) * force.x;
-		float yt = (firePower * fireMultiplier / firePower_MAX) * force.y;
-		Vec2 v = new Vec2(xt, yt);
-
-		return v;
-	}
-
-	private Vec2 getVelocityVec(int fireMultiplier, int firePowerx) {
-		float fangle = ((FireArrowSprite) gameView.getFireArrowSprite()).getAngle();
-		Vec2 force = new Vec2((float) Math.cos(Math.toRadians(fangle)), (float) Math.sin(Math.toRadians(fangle)));
-		force.normalize();
-
-		float xt = (facingRigth ? 1 : -1) * (firePowerx * fireMultiplier / firePower_MAX) * force.x;
-		float yt = (firePowerx * fireMultiplier / firePower_MAX) * force.y;
-		Vec2 v = new Vec2(xt, yt);
-
-		// System.out.println("force():(" + force.x + "," + force.y + ")");
-		// System.out.println("getVelocityVec():(" + xt + "," + yt + ")");
-		return v;
 	}
 
 	void addSprite(float x, float y) {
@@ -365,6 +360,22 @@ public class PlayerSprite extends ActiveSprite {
 		};
 		PhysicsActivity.context.timer = new Timer();
 		PhysicsActivity.context.timer.schedule(task, new Date(), 200);
+	}
+
+	public boolean isAlive() {
+		return alive;
+	}
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
+	}
+
+	@Override
+	public void throttle(int direction, float... f) {
+		if (gameView.idle) {
+			return;
+		}
+		super.throttle(direction, f);
 	}
 
 }

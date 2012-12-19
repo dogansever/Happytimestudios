@@ -41,6 +41,10 @@ public class JoystickSprite extends FreeSprite {
 
 	public void onMove(float xn, float yn) {
 		try {
+			if (gameView.idle) {
+				return;
+			}
+
 			this.xstick = xn;
 			this.ystick = yn;
 			if (x - xstick < -width * 0.2f) {
@@ -64,6 +68,11 @@ public class JoystickSprite extends FreeSprite {
 	}
 
 	public void onDraw(Canvas canvas) {
+
+		if (gameView.idle) {
+			return;
+		}
+
 		spriteBmp.currentRow = 0;
 		spriteBmp.currentFrame = 0;
 		draw(canvas);

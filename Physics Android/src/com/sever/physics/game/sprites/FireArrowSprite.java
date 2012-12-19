@@ -17,8 +17,9 @@ public class FireArrowSprite extends FreeSprite {
 
 	public float ystick1 = 0;
 	public float ystick2 = 0;
+	private ActiveSprite activeSprite;
 
-	public FireArrowSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+	public FireArrowSprite(ActiveSprite activeSprite, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
@@ -27,7 +28,7 @@ public class FireArrowSprite extends FreeSprite {
 		this.y = y;
 		this.manualFrameSet = true;
 		this.invisible = true;
-		this.spriteList = spriteList;
+		this.activeSprite = activeSprite;
 	}
 
 	public void onDown(float xn, float yn) {

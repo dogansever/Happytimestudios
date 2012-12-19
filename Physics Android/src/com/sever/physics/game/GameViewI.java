@@ -1,16 +1,11 @@
 package com.sever.physics.game;
 
 import com.sever.physics.game.sprites.FreeSprite;
+import com.sever.physics.game.utils.WeaponTypes;
 
 public interface GameViewI {
 
-	public FreeSprite addFireArrow(float x, float y);
-
 	public FreeSprite addJoystick(float x, float y);
-
-	public FreeSprite addFuelBar(float x, float y);
-
-	public FreeSprite addPowerBar(float x, float y);
 
 	public FreeSprite addBullet(float x, float y);
 
@@ -26,7 +21,7 @@ public interface GameViewI {
 
 	public void addPlayer(float x, float y);
 
-	public void addEnemy(float x, float y);
+	public void addEnemy(float x, float y, WeaponTypes wt);
 
 	public FreeSprite addGroundBoxStatic(float x, float y, float hx, float hy);
 

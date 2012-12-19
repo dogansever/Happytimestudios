@@ -12,7 +12,7 @@ public class StaticBoxSprite extends FreeSprite {
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
 		this.gameView = gameView;
-		this.noupdate = true;
+		this.noPositionUpdate = true;
 		this.noRotation = true;
 		this.x = x;
 		this.y = y;

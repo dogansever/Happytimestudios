@@ -31,6 +31,8 @@ public class Constants {
 	public static final float upperBoundx = upperBoundxScreen / pixelpermeter;
 
 	public static float upperBoundyScreen = PhysicsApplication.deviceHeight + extraHeight;
+	public static int enemyKilledCount;
+	public static int playerKilledCount;
 	public static final float upperBoundy = upperBoundyScreen / pixelpermeter;
 
 	public static final float setAsBoxhxScreen = 500.0f;
@@ -43,11 +45,11 @@ public class Constants {
 	public static final float gravityy = -2.0f * pixelpermeter;
 	public static final float gravityPushPlayer = 10.0f * pixelpermeter;
 	public static final float gravityPushEnemy = 5.0f * pixelpermeter;
-	public static final float gravityPushExplosive = -1000.0f * pixelpermeter;
+	public static final float gravityPushExplosive = -500.0f * pixelpermeter;
 	public static final float gravityPullPlayer = 2.0f * pixelpermeter;
 	public static final float gravityPullEnemy = 2.0f * pixelpermeter;
 	public static final float gravityPullExplosive = 10.0f * pixelpermeter;
-	public static final float gravityThrottle = 0.1f * pixelpermeter;
+	public static final float gravityThrottle = 0.5f * pixelpermeter;
 	public static final float gravityPullFieldRadiusPlayer = 500 / Constants.pixelpermeter;
 	public static final float gravityPullFieldRadiusEnemy = 100 / Constants.pixelpermeter;
 	public static final float gravityPullFieldRadiusExplosive = 500 / Constants.pixelpermeter;

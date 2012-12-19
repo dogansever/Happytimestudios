@@ -24,9 +24,7 @@ import com.sever.physic.StageEndActivity;
 import com.sever.physics.game.sprites.BoxSprite;
 import com.sever.physics.game.sprites.BulletSprite;
 import com.sever.physics.game.sprites.EnemySprite;
-import com.sever.physics.game.sprites.FireArrowSprite;
 import com.sever.physics.game.sprites.FreeSprite;
-import com.sever.physics.game.sprites.FuelBarSprite;
 import com.sever.physics.game.sprites.GrenadeImplodeSprite;
 import com.sever.physics.game.sprites.GrenadeSprite;
 import com.sever.physics.game.sprites.GroundBoxSprite;
@@ -34,7 +32,6 @@ import com.sever.physics.game.sprites.JoystickSprite;
 import com.sever.physics.game.sprites.MissileSprite;
 import com.sever.physics.game.sprites.PlanetSprite;
 import com.sever.physics.game.sprites.PlayerSprite;
-import com.sever.physics.game.sprites.PowerBarSprite;
 import com.sever.physics.game.sprites.StaticBoxSprite;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.Joint;
@@ -65,18 +62,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	public long delayInSeconds;
 	public SurfaceHolder holder;
 	private FreeSprite victim;
+	public boolean finishGame;
+	public boolean idle;
 	public static boolean success;
 
 	public FreeSprite getJoystickSprite() {
-		return (FreeSprite) this.nophysicsSprite.toArray()[2];
+		return (FreeSprite) this.nophysicsSprite.toArray()[0];
 	}
 
 	public FreeSprite getFireArrowSprite() {
-		return (FreeSprite) this.nophysicsSprite.toArray()[3];
+		return ((PlayerSprite) getPlayerSprite()).fireArrowSprite;
 	}
 
 	public FreeSprite getPowerBarSprite() {
-		return (FreeSprite) this.nophysicsSprite.toArray()[0];
+		return ((PlayerSprite) getPlayerSprite()).powerBarSprite;
 	}
 
 	public FreeSprite getPlayerSprite() {
@@ -99,17 +98,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		this.score = score;
 	}
 
-	public FreeSprite addFireArrow(float x, float y) {
-		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.fireArrow);
-		ArrayList<int[]> colsrows = new ArrayList<int[]>();
-		colsrows.add(new int[] { 10, 1 });
-		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
-		FreeSprite sprite = new FireArrowSprite(nophysicsSprite, this, spriteBmp, x, y);
-		nophysicsSprite.add(sprite);
-		return sprite;
-	}
-
 	public FreeSprite addJoystick(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
 		bmp.add(PhysicsActivity.joystick);
@@ -117,28 +105,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		colsrows.add(new int[] { 2, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new JoystickSprite(nophysicsSprite, this, spriteBmp, x, y);
-		nophysicsSprite.add(sprite);
-		return sprite;
-	}
-
-	public FreeSprite addFuelBar(float x, float y) {
-		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.fuelBar);
-		ArrayList<int[]> colsrows = new ArrayList<int[]>();
-		colsrows.add(new int[] { 10, 1 });
-		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
-		FreeSprite sprite = new FuelBarSprite(nophysicsSprite, this, spriteBmp, x, y);
-		nophysicsSprite.add(sprite);
-		return sprite;
-	}
-
-	public FreeSprite addPowerBar(float x, float y) {
-		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.powerBar);
-		ArrayList<int[]> colsrows = new ArrayList<int[]>();
-		colsrows.add(new int[] { 1, 10 });
-		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
-		FreeSprite sprite = new PowerBarSprite(nophysicsSprite, this, spriteBmp, x, y);
 		nophysicsSprite.add(sprite);
 		return sprite;
 	}
@@ -290,23 +256,29 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
 		bmp.add(PhysicsActivity.player);
 		bmp.add(PhysicsActivity.playerThrottle);
+		bmp.add(PhysicsActivity.enemyexploding);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 2, 2 });
 		colsrows.add(new int[] { 2, 2 });
+		colsrows.add(new int[] { 3, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		playerSprite.add(new PlayerSprite(playerSprite, this, spriteBmp, x, y));
 		((PlayerSprite) getPlayerSprite()).weapon = WeaponsManager.getManager().nextWeapon();
 	}
 
-	public void addEnemy(float x, float y) {
+	public void addEnemy(float x, float y, WeaponTypes wt) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
 		bmp.add(PhysicsActivity.enemy);
 		bmp.add(PhysicsActivity.enemyThrottle);
+		bmp.add(PhysicsActivity.enemyexploding);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 2, 1 });
 		colsrows.add(new int[] { 2, 2 });
+		colsrows.add(new int[] { 3, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
-		enemySprites.add(new EnemySprite(enemySprites, this, spriteBmp, x, y));
+		EnemySprite e = new EnemySprite(enemySprites, this, spriteBmp, x, y);
+		e.setWt(wt);
+		enemySprites.add(e);
 	}
 
 	protected void createSprites() {
@@ -387,10 +359,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	private void createNophysicSprites() {
-		addPowerBar(950, 150);
-		addFuelBar(250, 50);
 		addJoystick(120, 60);
-		addFireArrow(120, 60);
 	}
 
 	@Override
@@ -459,9 +428,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				canvas.drawPaint(paint);
 
 				drawBackground(canvas);
-
-				if (getPlayerSprite() == null)
-					return;
 
 				// draw statics, pull frees
 				for (Iterator<FreeSprite> it = staticSprites.iterator(); it.hasNext();) {
@@ -569,6 +535,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				break;
 			case MotionEvent.ACTION_UP:
 			case MotionEvent.ACTION_CANCEL:
+				if (idle) {
+					((PlayerSprite) getPlayerSprite()).setAlive(true);
+					((PlayerSprite) getPlayerSprite()).restartSprite(x2 + Constants.extraWidthOffset, PhysicsApplication.deviceHeight - y2 + Constants.extraHeightOffset);
+				}
 				((JoystickSprite) getJoystickSprite()).onUp(x2, PhysicsApplication.deviceHeight - y2);
 				break;
 
@@ -582,6 +552,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	public void update() {
 		try {
+			PhysicsActivity.context.updateScore();
 			PhysicsActivity.context.mWorld.update();
 			checkPhysicalEffects();
 			checkEnemyCount();
@@ -593,9 +564,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	private void checkPhysicalEffects() {
-
-		if (getPlayerSprite() == null)
-			return;
 
 		// draw statics, pull frees
 		for (Iterator<FreeSprite> it = staticSprites.iterator(); it.hasNext();) {
@@ -645,16 +613,29 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	private void checkEnemyCount() {
-		if (enemySprites.size() < 1) {
-			addEnemy(50 + new Random().nextInt((int) Constants.upperBoundxScreen - 50), Constants.upperBoundyScreen);
+		// System.out.println("checking Enemy Count..." + enemySprites.size());
+		if (enemySprites.size() < 2) {
+			System.out.println("Sending Enemies...");
+			addEnemy(50 + new Random().nextInt((int) Constants.upperBoundxScreen - 50), Constants.upperBoundyScreen, WeaponTypes.MISSILE);
+			addEnemy(50 + new Random().nextInt((int) Constants.upperBoundxScreen - 50), Constants.upperBoundyScreen, WeaponTypes.BOMB_BIG);
 		}
 	}
 
 	private void checkGameEnd() {
-		if (playerSprite.size() == 0) {
+		if (!((PlayerSprite) getPlayerSprite()).isAlive()) {
 			// success = true;
+			idleGame();
+		} else if (finishGame) {
 			finishGame();
 		}
+	}
+
+	public void idleGame() {
+		idle = true;
+	}
+
+	public void resumeIdleGame() {
+		idle = false;
 	}
 
 	public void stopGame() {

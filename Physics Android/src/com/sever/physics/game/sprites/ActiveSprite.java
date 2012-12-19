@@ -13,12 +13,71 @@ import com.sever.physics.game.utils.SpriteBmp;
 
 public class ActiveSprite extends FreeSprite {
 
+	public int velocity_MAX = 50;
 	public int life_AGG = +1;
 	public final int life_MAX = 100;
 	public int life = life_MAX;
-	LifeBarSprite lifeBarSprite;
+	public LifeBarSprite lifeBarSprite;
+	public FuelBarSprite fuelBarSprite;
+	public PowerBarSprite powerBarSprite;
+	public FireArrowSprite fireArrowSprite;
 
-	public void setLifeBarSprite() {
+	public int fuel;
+	public int fuel_AGG = +1;
+	public final int fuel_MAX = 100;
+	public int firePower;
+	public int firePowerOld;
+	public int firePower_AGG = +1;
+	public final int firePower_MAX = 50;
+	public final int fireMultiplierBullet = 150;
+	public final int fireMultiplierMissile = 150;
+	public final int fireMultiplierBomb = 50;
+
+	@Override
+	public void explodeAndDie() {
+		super.explodeAndDie();
+		explodeBmp();
+	}
+
+	public void explodeBmp() {
+		fades = true;
+		spriteBmp.setBmpIndex(2);
+		noPositionUpdate = true;
+		noRotation = true;
+		facingRigth = false;
+		this.width = spriteBmp.getWidth();
+		this.height = spriteBmp.getHeight();
+		angle = 180;
+	}
+	
+	public void addFireArrow() {
+		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
+		bmp.add(PhysicsActivity.fireArrow);
+		ArrayList<int[]> colsrows = new ArrayList<int[]>();
+		colsrows.add(new int[] { 10, 1 });
+		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
+		fireArrowSprite = new FireArrowSprite(this, gameView, spriteBmp, x, y);
+	}
+
+	public void addFuelBar() {
+		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
+		bmp.add(PhysicsActivity.fuelBar);
+		ArrayList<int[]> colsrows = new ArrayList<int[]>();
+		colsrows.add(new int[] { 10, 1 });
+		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
+		fuelBarSprite = new FuelBarSprite(this, gameView, spriteBmp, x, y);
+	}
+
+	public void addPowerBar() {
+		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
+		bmp.add(PhysicsActivity.powerBar);
+		ArrayList<int[]> colsrows = new ArrayList<int[]>();
+		colsrows.add(new int[] { 1, 10 });
+		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
+		powerBarSprite = new PowerBarSprite(this, gameView, spriteBmp, x, y);
+	}
+
+	public void addLifeBarSprite() {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
 		bmp.add(PhysicsActivity.lifeBar);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
@@ -32,7 +91,7 @@ public class ActiveSprite extends FreeSprite {
 	}
 
 	public void checkVelocity() {
-		float max = 50;
+		float max = velocity_MAX;
 		// System.out.println("getBody().getLinearVelocity():(x,y) (" +
 		// getBody().getLinearVelocity().x + "," +
 		// getBody().getLinearVelocity().y + ")");
@@ -127,5 +186,45 @@ public class ActiveSprite extends FreeSprite {
 	public void throttleRight() {
 		facingRigth = true;
 		throttle(3);
+	}
+
+	public Vec2 getVelocityVec(int fireMultiplier, FreeSprite target) {
+		Vec2 positionTarget = target.getBody().getPosition();
+		Vec2 positionSrc = body.getPosition();
+		Vec2 force = new Vec2(positionTarget.x - positionSrc.x, positionTarget.y - positionSrc.y);
+		force.normalize();
+
+		float xt = (firePower * fireMultiplier / firePower_MAX) * force.x;
+		float yt = (firePower * fireMultiplier / firePower_MAX) * force.y;
+		Vec2 v = new Vec2(xt, yt);
+
+		System.out.println("getVelocityVec: x:" + v.x + ", y:" + v.y);
+		return v;
+	}
+
+	public Vec2 getVelocityVec(int fireMultiplier) {
+		float fangle = ((FireArrowSprite) gameView.getFireArrowSprite()).getAngle();
+		Vec2 force = new Vec2((float) Math.cos(Math.toRadians(fangle)), (float) Math.sin(Math.toRadians(fangle)));
+		force.normalize();
+
+		float xt = (facingRigth ? 1 : -1) * (firePower * fireMultiplier / firePower_MAX) * force.x;
+		float yt = (firePower * fireMultiplier / firePower_MAX) * force.y;
+		Vec2 v = new Vec2(xt, yt);
+
+		return v;
+	}
+
+	public Vec2 getVelocityVec(int fireMultiplier, int firePowerx) {
+		float fangle = ((FireArrowSprite) gameView.getFireArrowSprite()).getAngle();
+		Vec2 force = new Vec2((float) Math.cos(Math.toRadians(fangle)), (float) Math.sin(Math.toRadians(fangle)));
+		force.normalize();
+
+		float xt = (facingRigth ? 1 : -1) * (firePowerx * fireMultiplier / firePower_MAX) * force.x;
+		float yt = (firePowerx * fireMultiplier / firePower_MAX) * force.y;
+		Vec2 v = new Vec2(xt, yt);
+
+		// System.out.println("force():(" + force.x + "," + force.y + ")");
+		// System.out.println("getVelocityVec():(" + xt + "," + yt + ")");
+		return v;
 	}
 }
