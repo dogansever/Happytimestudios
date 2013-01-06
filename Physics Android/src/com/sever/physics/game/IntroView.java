@@ -79,8 +79,8 @@ public class IntroView extends SurfaceView implements SurfaceHolder.Callback {
 				paint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
 				canvas.drawPaint(paint);
 				drawBackground(canvas);
-				drawBackground2(canvas);
-				drawBackground3(canvas);
+//				drawBackground2(canvas);
+//				drawBackground3(canvas);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

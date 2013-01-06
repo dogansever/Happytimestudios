@@ -30,6 +30,7 @@ public class PlayerSprite extends ActiveSprite {
 	public boolean scatter;
 	public boolean alive = true;
 	public FreeSprite sprite;
+	private int loadingTimeInFPS;
 
 	public PlayerSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
@@ -50,6 +51,11 @@ public class PlayerSprite extends ActiveSprite {
 		FADE_LIFE = 80;
 	}
 
+	public WeaponTypes getWt() {
+		wt = weapon.getType();
+		return wt;
+	}
+
 	public void restartSprite(float x, float y) {
 		PhysicsActivity.mWorld.bodies.remove(body);
 		PhysicsActivity.mWorld.world.destroyBody(body);
@@ -63,7 +69,6 @@ public class PlayerSprite extends ActiveSprite {
 	}
 
 	public void onDraw(Canvas canvas) {
-
 		if (!gameView.idle && life <= 0) {
 			killSprite();
 			return;
@@ -80,13 +85,14 @@ public class PlayerSprite extends ActiveSprite {
 		fireArrowSprite.onDraw(canvas);
 		shiftCheck();
 		hoverCheck();
+		fireTry();
 	}
 
 	private void hoverCheck() {
 		if (!hoverOn) {
 			throttleLeave();
-		} else if (getBody().getLinearVelocity().y < 0)
-			throttle(0, 2.0f);
+		} else if (getBody().getLinearVelocity().y < -5)
+			throttle(0, 1.5f);
 	}
 
 	public void throttlexBmp() {
@@ -150,7 +156,7 @@ public class PlayerSprite extends ActiveSprite {
 
 	public void throttleLeave() {
 		throttleOffBmp();
-		fuel_AGG = 3;
+		fuel_AGG = 5;
 		fuel = fuel + fuel_AGG;
 		if (fuel >= fuel_MAX) {
 			fuel = fuel_MAX;
@@ -159,17 +165,37 @@ public class PlayerSprite extends ActiveSprite {
 	}
 
 	public void fireHold() {
+		if (WeaponsManager.getManager().getWeaponByType(weapon.getType()).fireAtMaxSpeed) {
+			firePower = firePower_MAX;
+			gameView.getPowerBarSprite().makeInvisible();
+			return;
+		}
+
 		gameView.getPowerBarSprite().makeVisible();
 		firePower += firePower_AGG;
 		if (firePower >= firePower_MAX) {
 			firePower = firePower_MAX;
 		}
-		// firePower = firePower + firePower_AGG % firePower_MAX;
-		// if (firePower >= firePower_MAX) {
-		// firePower_AGG = -1;
-		// } else if (firePower == 0) {
-		// firePower_AGG = 1;
-		// }
+	}
+
+	public void fireStart() {
+		if (!WeaponsManager.getManager().getWeaponByType(weapon.getType()).automatic) {
+			fire();
+		} else {
+			triggerOn = true;
+			loadingTimeInFPS = 0;
+		}
+	}
+
+	public void fireCease() {
+		triggerOn = false;
+	}
+
+	public void fireTry() {
+		if (triggerOn && loadingTimeInFPS-- <= 0) {
+			fire();
+			loadingTimeInFPS = WeaponsManager.getManager().getWeaponByType(weapon.getType()).loadingTimeInFPS;
+		}
 	}
 
 	public void fire() {
@@ -185,6 +211,8 @@ public class PlayerSprite extends ActiveSprite {
 			fireGrenadeSmall();
 		} else if (weapon.getType() == WeaponTypes.MISSILE) {
 			fireMissile();
+		} else if (weapon.getType() == WeaponTypes.MISSILE_LIGHT) {
+			fireMissileLight();
 		} else if (weapon.getType() == WeaponTypes.BOMB_TRIPLE) {
 			firePowerOld = firePower;
 			fireGrenadeTripleThread();
@@ -198,8 +226,12 @@ public class PlayerSprite extends ActiveSprite {
 	}
 
 	public void fireGrenadeImploding() {
-		FreeSprite bullet = gameView.addGrenadeImploding(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
-		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBomb));
+		try {
+			FreeSprite bullet = gameView.addGrenadeImploding(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
+			bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBomb));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void fireGrenadeTriple() {
@@ -212,25 +244,52 @@ public class PlayerSprite extends ActiveSprite {
 	}
 
 	public void fireMissile() {
-		FreeSprite bullet = gameView.addMissile(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
-		firePower = firePower_MAX;
-		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissile));
+		try {
+			FreeSprite bullet = gameView.addMissile(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f, facingRigth);
+			bullet.setAngle((float) Math.toRadians(!facingRigth ? fireArrowSprite.getAngle() : 360 - fireArrowSprite.getAngle()));
+			bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissile));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// bullet.shiftLockOnME();
+	}
+
+	public void fireMissileLight() {
+		try {
+			FreeSprite bullet = gameView.addMissileLight(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f, facingRigth);
+			bullet.setAngle((float) Math.toRadians(!facingRigth ? fireArrowSprite.getAngle() : 360 - fireArrowSprite.getAngle()));
+			bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissile));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		// bullet.shiftLockOnME();
 	}
 
 	public void fireGrenadeSmall() {
-		FreeSprite bullet = gameView.addGrenadeSmall(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
-		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBomb));
+		try {
+			FreeSprite bullet = gameView.addGrenadeSmall(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
+			bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBomb));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void fireGrenade() {
-		FreeSprite bullet = gameView.addGrenade(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
-		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBomb));
+		try {
+			FreeSprite bullet = gameView.addGrenade(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
+			bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBomb));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void fireBullet() {
-		FreeSprite bullet = gameView.addBullet(x + (facingRigth ? 1 : -1) * width * 0.9f, y);
-		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBullet));
+		try {
+			FreeSprite bullet = gameView.addBullet(x + (!facingRigth ? 1 : -1) * width * 1.0f, y);
+			bullet.getBody().setLinearVelocity(new Vec2(0, 0));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	void addSprite(float x, float y) {

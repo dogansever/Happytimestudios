@@ -1,5 +1,6 @@
 package com.sever.physics.game.sprites;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -8,8 +9,10 @@ import org.jbox2d.collision.PolygonDef;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import com.sever.physic.PhysicsActivity;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
@@ -24,7 +27,7 @@ public class EnemySprite extends ActiveSprite {
 	public int fuel;
 	public int fuel_AGG = +1;
 	public final int fuel_MAX = 100;
-	WeaponTypes wt;
+	public EnemyPointerSprite enemyPointerSprite;
 
 	public EnemySprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
@@ -41,6 +44,16 @@ public class EnemySprite extends ActiveSprite {
 		addSprite(x, y);
 		addLifeBarSprite();
 		velocity_MAX = 30;
+		addEnemyPointerSprite();
+	}
+
+	public void addEnemyPointerSprite() {
+		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
+		bmp.add(PhysicsActivity.enemypointer);
+		ArrayList<int[]> colsrows = new ArrayList<int[]>();
+		colsrows.add(new int[] { 1, 1 });
+		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
+		enemyPointerSprite = new EnemyPointerSprite(this, gameView, spriteBmp, x, y);
 	}
 
 	public void activateBomb() {
@@ -52,16 +65,40 @@ public class EnemySprite extends ActiveSprite {
 	}
 
 	public void fireMissile() {
-		FreeSprite bullet = gameView.addMissile(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
-		firePower = firePower_MAX;
+		FreeSprite bullet = gameView.addMissile(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f, isMissileFacingRight(gameView.getPlayerSprite()));
+		bullet.aimAt(gameView.getPlayerSprite());
+		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissile, gameView.getPlayerSprite()));
+		// bullet.shiftLockOnME();
+	}
+
+	public void fireMissileLocking() {
+		FreeSprite bullet = gameView.addMissileLocking(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f, isMissileFacingRight(gameView.getPlayerSprite()));
+		bullet.aimAt(gameView.getPlayerSprite());
+		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissileLocking, gameView.getPlayerSprite()));
+		// bullet.shiftLockOnME();
+	}
+
+	public void fireMissileLight() {
+		FreeSprite bullet = gameView.addMissileLight(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f, isMissileFacingRight(gameView.getPlayerSprite()));
+		bullet.aimAt(gameView.getPlayerSprite());
 		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissile, gameView.getPlayerSprite()));
 		// bullet.shiftLockOnME();
 	}
 
 	public void fireGrenade() {
-		float yt = (getBody().getLinearVelocity().y < 0 ? 1 : -1) * height * 0.75f;
-		float xt = (facingRigth ? 1 : -1) * width * 0.75f;
+		float yt = (getBody().getLinearVelocity().y < 0 ? 1 : -1) * height * 1.5f;
+		float xt = (facingRigth ? 1 : -1) * width * 1.5f;
 		FreeSprite bullet = gameView.addGrenade(x + xt, y + yt);
+		// applyForce(bullet,
+		// gameView.getPlayerSprite().getBody().getPosition(), 500);
+		Vec2 v = getFireVec();
+		bullet.getBody().setLinearVelocity(v);
+	}
+
+	public void fireGrenadeSmall() {
+		float yt = (getBody().getLinearVelocity().y < 0 ? 1 : -1) * height * 1.5f;
+		float xt = (facingRigth ? 1 : -1) * width * 1.5f;
+		FreeSprite bullet = gameView.addGrenadeSmall(x + xt, y + yt);
 		// applyForce(bullet,
 		// gameView.getPlayerSprite().getBody().getPosition(), 500);
 		Vec2 v = getFireVec();
@@ -81,8 +118,8 @@ public class EnemySprite extends ActiveSprite {
 			float VelPlayerx = gameView.getPlayerSprite().getBody().getLinearVelocity().x;
 			float VelPlayery = gameView.getPlayerSprite().getBody().getLinearVelocity().y;
 
-			VELX = (gameView.getPlayerSprite().x - this.x) / (Constants.pixelpermeter * 10);
-			VELY = (gameView.getPlayerSprite().y - this.y) / (Constants.pixelpermeter * 10);
+			VELX = (gameView.getPlayerSprite().x - this.x) / (Constants.pixelpermeter * 1);
+			VELY = (gameView.getPlayerSprite().y - this.y) / (Constants.pixelpermeter * 1);
 			// VELY = VELY * 3;
 			// VELX += VELX * new Random().nextFloat();
 			// System.out.println("VELX:" + VELX + ",VELY:" + VELY);
@@ -106,9 +143,8 @@ public class EnemySprite extends ActiveSprite {
 
 	public void onDraw(Canvas canvas) {
 		if (life <= 0) {
-			explodeAndDie();
+			freefallAndExplodeAndDie();
 		} else {
-
 			BULLET_FIRE_WAIT_TIME--;
 			if (BULLET_FIRE_WAIT_TIME == 0) {
 				BULLET_FIRE_WAIT_TIME = BULLET_FIRE_WAIT_TIME_MAX + new Random().nextInt(BULLET_FIRE_WAIT_TIME_MAX);
@@ -116,6 +152,7 @@ public class EnemySprite extends ActiveSprite {
 			}
 			moveToPlayer();
 			lifeBarSprite.onDraw(canvas);
+			enemyPointerSprite.onDraw(canvas);
 		}
 		// throttleLeave();
 		super.onDraw(canvas);
@@ -127,10 +164,14 @@ public class EnemySprite extends ActiveSprite {
 
 		if (wt == WeaponTypes.MISSILE) {
 			fireMissile();
+		} else if (wt == WeaponTypes.MISSILE_LIGHT) {
+			fireMissileLight();
+		} else if (wt == WeaponTypes.MISSILE_LOCKING) {
+			fireMissileLocking();
 		} else if (wt == WeaponTypes.BOMB_BIG) {
 			fireGrenade();
-		} else {
-			fireMissile();
+		} else if (wt == WeaponTypes.BOMB) {
+			fireGrenadeSmall();
 		}
 	}
 
@@ -139,23 +180,24 @@ public class EnemySprite extends ActiveSprite {
 		// return;
 		// }
 
-		float minDistanceBetween = 200;
+		float minDistanceBetweenx = 150;
+		float minDistanceBetweeny = 250;
 		float targetx = gameView.getPlayerSprite().x;
 		float targety = gameView.getPlayerSprite().y;
 		// System.out.println("targetx:" + targetx + ",x:" + x + "    targety:"
 		// + targety + ",y:" + y);
 
 		// if player is higher fly
-		if (targety - y > minDistanceBetween) {
+		if (targety - y > minDistanceBetweeny) {
 			throttleUp();
-		} else if (targety - y < -minDistanceBetween) {
+		} else if (targety - y < -minDistanceBetweeny) {
 			throttleDown();
 		}
 
 		// move to player
-		if (targetx - x > minDistanceBetween) {
+		if (targetx - x > minDistanceBetweenx) {
 			throttleRight();
-		} else if (targetx - x < -minDistanceBetween) {
+		} else if (targetx - x < -minDistanceBetweenx) {
 			throttleLeft();
 		}
 
@@ -224,7 +266,7 @@ public class EnemySprite extends ActiveSprite {
 		PolygonDef playerDef = new PolygonDef();
 		playerDef.setAsBox(getWidthPhysical() * 0.5f, getHeightPhysical() * 0.5f);
 		playerDef.friction = 1.0f;
-		playerDef.restitution = 0.2f;
+		playerDef.restitution = 0.0f;
 		playerDef.density = 10.0f;
 
 		// Assign shape to Body
@@ -293,5 +335,4 @@ public class EnemySprite extends ActiveSprite {
 		this.wt = wt;
 	}
 
-	
 }

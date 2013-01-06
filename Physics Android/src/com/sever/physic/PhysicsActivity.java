@@ -8,22 +8,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
-import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.sever.physics.game.GameView;
-import com.sever.physics.game.sprites.FireArrowSprite;
 import com.sever.physics.game.sprites.PlayerSprite;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.PhysicsWorld;
 import com.sever.physics.game.utils.Weapon;
 import com.sever.physics.game.utils.WeaponTypes;
-import com.sever.physics.game.utils.WeaponsManager;
 
 public class PhysicsActivity extends Activity {
 
@@ -49,10 +42,13 @@ public class PhysicsActivity extends Activity {
 	public static Bitmap player;
 	public static Bitmap playerThrottle;
 	public static Bitmap enemy;
+	public static Bitmap enemypointer;
 	public static Bitmap enemyThrottle;
 	public static Bitmap enemyexploding;
+	public static Bitmap enemyBurning;
 	public static Bitmap ground;
 	public static Bitmap missile;
+	public static Bitmap missileLight;
 	public static Bitmap bomb;
 	public static Bitmap bombsmall;
 	public static Bitmap bombtriple;
@@ -62,6 +58,8 @@ public class PhysicsActivity extends Activity {
 	public static Bitmap lifeBar;
 	public static Bitmap fuelBar;
 	public static Bitmap joystick;
+	public static Bitmap fireButton;
+	public static Bitmap weaponSwapButton;
 	public static Bitmap fireArrow;
 	public static Bitmap hook;
 	public static PhysicsActivity context;
@@ -81,11 +79,13 @@ public class PhysicsActivity extends Activity {
 		playerThrottle = createScaledBitmap(R.drawable.playerthrottlex2x2, (int) (340 * 0.4f), (int) (296 * 0.4f));
 		enemy = createScaledBitmap(R.drawable.enemy2x1, (int) (90 * 0.8f), (int) (42 * 0.8f));
 		enemyThrottle = createScaledBitmap(R.drawable.enemythrottlex2x2, (int) (90 * 0.8f), (int) (84 * 0.8f));
+		enemyBurning = createScaledBitmap(R.drawable.enemyburningx2x2, (int) (90 * 0.8f), (int) (84 * 0.8f));
 		enemyexploding = createScaledBitmap(R.drawable.enemyexplosionx3x1, 0, 0);
 		ground = createScaledBitmap(R.drawable.crate50x50dark, 800, 50);
 		bomb = createScaledBitmap(R.drawable.bombx2x1, 90, 45);
 		bombsmall = createScaledBitmap(R.drawable.bombx2x1, 60, 30);
 		missile = createScaledBitmap(R.drawable.missilex4x1, 200, 30);
+		missileLight = createScaledBitmap(R.drawable.missilex4x1, 140, 21);
 		bombtriple = createScaledBitmap(R.drawable.bombx2x1, 50, 25);
 		bombexploding = createScaledBitmap(R.drawable.bombexplodingx4x1, 0, 0);
 		bomb2 = createScaledBitmap(R.drawable.bombx4x1, 120, 30);
@@ -93,8 +93,11 @@ public class PhysicsActivity extends Activity {
 		lifeBar = createScaledBitmap(R.drawable.powerbar, 45, 60);
 		fuelBar = createScaledBitmap(R.drawable.fuelbar, 60, 45);
 		joystick = createScaledBitmap(R.drawable.joystick, 0, 0);
+		fireButton = createScaledBitmap(R.drawable.buttonred, 400, 200);
 		fireArrow = createScaledBitmap(R.drawable.firearrowx10, 500, 50);
 		hook = createScaledBitmap(R.drawable.hook, 0, 0);
+		enemypointer = createScaledBitmap(R.drawable.enemypointer, 0, 0);
+		weaponSwapButton = context.createScaledBitmap(R.drawable.buttongun2, 100, 100);
 
 		createWorld();
 		setContentView(R.layout.main);
@@ -109,168 +112,165 @@ public class PhysicsActivity extends Activity {
 	}
 
 	private void clearScore() {
+		Constants.score = 0;
+		Constants.scorePass = 0;
 		Constants.enemyKilledCount = 0;
 		Constants.playerKilledCount = 0;
-		TextView score = (TextView) findViewById(R.id.textViewScore);
-		score.setText("");
-		TextView score2 = (TextView) findViewById(R.id.TextView02Score);
-		score2.setText("");
-	}
-
-	public void updateScore() {
-		final Runnable r = new Runnable() {
-			public void run() {
-				TextView score = (TextView) findViewById(R.id.textViewScore);
-				score.setText("" + Constants.enemyKilledCount);
-				TextView score2 = (TextView) findViewById(R.id.TextView02Score);
-				score2.setText("" + Constants.playerKilledCount);
-			}
-		};
-		Thread t = new Thread() {
-			public void run() {
-				mHandler.post(r);
-			}
-		};
-		t.start();
-
 	}
 
 	private void setButtonHandlers() {
-		Button fire = (Button) findViewById(R.id.button6);
-		final Button jump = (Button) findViewById(R.id.Button01);
-		jump.setBackgroundResource(R.drawable.buttonhoveroff);
-		final Button bullet = (Button) findViewById(R.id.Button07);
-		bullet.setBackgroundResource(R.drawable.buttongun2);
+		// Button fire = (Button) findViewById(R.id.button6);
+		// final Button jump = (Button) findViewById(R.id.Button01);
+		// jump.setBackgroundResource(R.drawable.buttonhoveroff);
+		// final Button bullet = (Button) findViewById(R.id.Button07);
+		// bullet.setBackgroundResource(R.drawable.buttongun2);
 
-		jump.setOnClickListener(new OnClickListener() {
+		// jump.setOnClickListener(new OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View v) {
+		// if (((PlayerSprite) getGameView().getPlayerSprite()).hoverOnOff()) {
+		// jump.setBackgroundResource(R.drawable.buttonhoveron);
+		// } else {
+		// jump.setBackgroundResource(R.drawable.buttonhoveroff);
+		// }
+		// }
+		// });
 
-			@Override
-			public void onClick(View v) {
-				if (((PlayerSprite) getGameView().getPlayerSprite()).hoverOnOff()) {
-					jump.setBackgroundResource(R.drawable.buttonhoveron);
-				} else {
-					jump.setBackgroundResource(R.drawable.buttonhoveroff);
-				}
-			}
-		});
+		// fire.setOnTouchListener(new OnTouchListener() {
+		//
+		// @Override
+		// public boolean onTouch(View v, MotionEvent event) {
+		// try {
+		//
+		// float x2 = event.getX();
+		// float y2 = event.getY();
+		// switch (event.getAction()) {
+		// case MotionEvent.ACTION_DOWN:
+		// if (((PlayerSprite) getGameView().getPlayerSprite()).weapon.getType()
+		// == WeaponTypes.SUPER_SHOCK_GUN) {
+		// } else if (((PlayerSprite)
+		// getGameView().getPlayerSprite()).weapon.getType() ==
+		// WeaponTypes.SHOCK_GUN) {
+		// ((PlayerSprite) getGameView().getPlayerSprite()).powerUp();
+		// } else {
+		// ((PlayerSprite) getGameView().getPlayerSprite()).fireHold();
+		// if (WeaponsManager.getManager().getWeaponByType(((PlayerSprite)
+		// getGameView().getPlayerSprite()).weapon.getType()).automatic) {
+		// ((PlayerSprite) getGameView().getPlayerSprite()).fireStart();
+		// }
+		// ((FireArrowSprite) getGameView().getFireArrowSprite()).onDown(x2,
+		// PhysicsApplication.deviceHeight - y2);
+		// }
+		// break;
+		// case MotionEvent.ACTION_MOVE:
+		// if (((PlayerSprite) getGameView().getPlayerSprite()).weapon.getType()
+		// == WeaponTypes.SUPER_SHOCK_GUN) {
+		// } else if (((PlayerSprite)
+		// getGameView().getPlayerSprite()).weapon.getType() ==
+		// WeaponTypes.SHOCK_GUN) {
+		// } else {
+		// ((PlayerSprite) getGameView().getPlayerSprite()).fireHold();
+		// ((FireArrowSprite) getGameView().getFireArrowSprite()).onMove(x2,
+		// PhysicsApplication.deviceHeight - y2);
+		// }
+		// break;
+		// case MotionEvent.ACTION_UP:
+		// case MotionEvent.ACTION_CANCEL:
+		// if (((PlayerSprite) getGameView().getPlayerSprite()).weapon.getType()
+		// == WeaponTypes.SUPER_SHOCK_GUN) {
+		// ((PlayerSprite) getGameView().getPlayerSprite()).powerPush();
+		// } else if (((PlayerSprite)
+		// getGameView().getPlayerSprite()).weapon.getType() ==
+		// WeaponTypes.SHOCK_GUN) {
+		// ((PlayerSprite) getGameView().getPlayerSprite()).powerDown();
+		// } else {
+		// if (WeaponsManager.getManager().getWeaponByType(((PlayerSprite)
+		// getGameView().getPlayerSprite()).weapon.getType()).automatic) {
+		// ((PlayerSprite) getGameView().getPlayerSprite()).fireCease();
+		// } else {
+		// ((PlayerSprite) getGameView().getPlayerSprite()).fireStart();
+		// }
+		// ((FireArrowSprite) getGameView().getFireArrowSprite()).onUp(x2,
+		// PhysicsApplication.deviceHeight - y2);
+		// }
+		// break;
+		// default:
+		// break;
+		// }
+		// } catch (Exception e) {
+		// }
+		// return true;
+		// }
+		// });
 
-		fire.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				try {
-
-					float x2 = event.getX();
-					float y2 = event.getY();
-					switch (event.getAction()) {
-					case MotionEvent.ACTION_DOWN:
-						if (((PlayerSprite) getGameView().getPlayerSprite()).weapon.getType() == WeaponTypes.SUPER_SHOCK_GUN) {
-						} else if (((PlayerSprite) getGameView().getPlayerSprite()).weapon.getType() == WeaponTypes.SHOCK_GUN) {
-							((PlayerSprite) getGameView().getPlayerSprite()).powerUp();
-						} else {
-							((PlayerSprite) getGameView().getPlayerSprite()).fireHold();
-							((FireArrowSprite) getGameView().getFireArrowSprite()).onDown(x2, PhysicsApplication.deviceHeight - y2);
-						}
-						break;
-					case MotionEvent.ACTION_MOVE:
-						if (((PlayerSprite) getGameView().getPlayerSprite()).weapon.getType() == WeaponTypes.SUPER_SHOCK_GUN) {
-						} else if (((PlayerSprite) getGameView().getPlayerSprite()).weapon.getType() == WeaponTypes.SHOCK_GUN) {
-						} else {
-							((PlayerSprite) getGameView().getPlayerSprite()).fireHold();
-							((FireArrowSprite) getGameView().getFireArrowSprite()).onMove(x2, PhysicsApplication.deviceHeight - y2);
-						}
-						break;
-					case MotionEvent.ACTION_UP:
-					case MotionEvent.ACTION_CANCEL:
-						if (((PlayerSprite) getGameView().getPlayerSprite()).weapon.getType() == WeaponTypes.SUPER_SHOCK_GUN) {
-							((PlayerSprite) getGameView().getPlayerSprite()).powerPush();
-						} else if (((PlayerSprite) getGameView().getPlayerSprite()).weapon.getType() == WeaponTypes.SHOCK_GUN) {
-							((PlayerSprite) getGameView().getPlayerSprite()).powerDown();
-						} else {
-							((PlayerSprite) getGameView().getPlayerSprite()).fire();
-							((FireArrowSprite) getGameView().getFireArrowSprite()).onUp(x2, PhysicsApplication.deviceHeight - y2);
-						}
-						break;
-					default:
-						break;
-					}
-				} catch (Exception e) {
-				}
-				return true;
-			}
-		});
-
-		bullet.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-
-				try {
-					switch (event.getAction()) {
-					case MotionEvent.ACTION_DOWN:
-						break;
-					case MotionEvent.ACTION_MOVE:
-						break;
-					case MotionEvent.ACTION_UP:
-						((PlayerSprite) getGameView().getPlayerSprite()).weapon = WeaponsManager.getManager().nextWeapon();
-						refreshButtons();
-						break;
-					default:
-						break;
-					}
-				} catch (Exception e) {
-				}
-				return true;
-			}
-		});
+		// bullet.setOnTouchListener(new OnTouchListener() {
+		//
+		// @Override
+		// public boolean onTouch(View v, MotionEvent event) {
+		//
+		// try {
+		// switch (event.getAction()) {
+		// case MotionEvent.ACTION_DOWN:
+		// break;
+		// case MotionEvent.ACTION_MOVE:
+		// break;
+		// case MotionEvent.ACTION_UP:
+		// ((PlayerSprite) getGameView().getPlayerSprite()).weapon =
+		// WeaponsManager.getManager().nextWeapon();
+		// refreshButtons();
+		// break;
+		// default:
+		// break;
+		// }
+		// } catch (Exception e) {
+		// }
+		// return true;
+		// }
+		// });
 
 	}
 
-	private void refreshButtons() {
-		final Button bullet = (Button) findViewById(R.id.Button07);
-		bullet.setBackgroundResource(R.drawable.buttongun);
-		Weapon weapon = ((PlayerSprite) getGameView().getPlayerSprite()).weapon;
+	public static void refreshSwapWeaponButtonBitmap() {
+		Weapon weapon = ((PlayerSprite) context.getGameView().getPlayerSprite()).weapon;
 		WeaponTypes type = weapon.getType();
+		int h = 100;
+		int w = 100;
 		if (type == WeaponTypes.BULLET) {
 			if (weapon.isAvailable())
-				bullet.setBackgroundResource(R.drawable.buttongun2);
+				weaponSwapButton = context.createScaledBitmap(R.drawable.buttongun2, w, h);
 			else
-				bullet.setBackgroundResource(R.drawable.buttongun);
+				weaponSwapButton = context.createScaledBitmap(R.drawable.buttongun, w, h);
 		} else if (type == WeaponTypes.BOMB) {
 			if (weapon.isAvailable())
-				bullet.setBackgroundResource(R.drawable.bombsmall);
+				weaponSwapButton = context.createScaledBitmap(R.drawable.bombsmall, w, h);
 			else
-				bullet.setBackgroundResource(R.drawable.bombsmall2);
+				weaponSwapButton = context.createScaledBitmap(R.drawable.bombsmall2, w, h);
 		} else if (type == WeaponTypes.BOMB_TRIPLE) {
 			if (weapon.isAvailable())
-				bullet.setBackgroundResource(R.drawable.bombtriple);
+				weaponSwapButton = context.createScaledBitmap(R.drawable.bombtriple, w, h);
 			else
-				bullet.setBackgroundResource(R.drawable.bombtriple2);
+				weaponSwapButton = context.createScaledBitmap(R.drawable.bombtriple2, w, h);
 		} else if (type == WeaponTypes.BOMB_BIG) {
 			if (weapon.isAvailable())
-				bullet.setBackgroundResource(R.drawable.buttonbomb2);
+				weaponSwapButton = context.createScaledBitmap(R.drawable.buttonbomb2, w, h);
 			else
-				bullet.setBackgroundResource(R.drawable.buttonbomb);
+				weaponSwapButton = context.createScaledBitmap(R.drawable.buttonbomb, w, h);
 		} else if (type == WeaponTypes.BOMB_IMPLODING) {
 			if (weapon.isAvailable())
-				bullet.setBackgroundResource(R.drawable.buttonbombimploding2);
+				weaponSwapButton = context.createScaledBitmap(R.drawable.buttonbombimploding2, w, h);
 			else
-				bullet.setBackgroundResource(R.drawable.buttonbombimploding);
-		} else if (type == WeaponTypes.SHOCK_GUN) {
-			if (weapon.isAvailable())
-				bullet.setBackgroundResource(R.drawable.shockgun);
-			else
-				bullet.setBackgroundResource(R.drawable.shockgun2);
-		} else if (type == WeaponTypes.SUPER_SHOCK_GUN) {
-			if (weapon.isAvailable())
-				bullet.setBackgroundResource(R.drawable.bigshock);
-			else
-				bullet.setBackgroundResource(R.drawable.bigshock2);
+				weaponSwapButton = context.createScaledBitmap(R.drawable.buttonbombimploding, w, h);
 		} else if (type == WeaponTypes.MISSILE) {
 			if (weapon.isAvailable())
-				bullet.setBackgroundResource(R.drawable.buttonmissile2);
+				weaponSwapButton = context.createScaledBitmap(R.drawable.buttonmissile2, w, h);
 			else
-				bullet.setBackgroundResource(R.drawable.buttonmissile);
+				weaponSwapButton = context.createScaledBitmap(R.drawable.buttonmissile, w, h);
+		} else if (type == WeaponTypes.MISSILE_LIGHT) {
+			if (weapon.isAvailable())
+				weaponSwapButton = context.createScaledBitmap(R.drawable.buttonmissilelight2, w, h);
+			else
+				weaponSwapButton = context.createScaledBitmap(R.drawable.buttonmissilelight, w, h);
 		}
 	}
 

@@ -40,6 +40,7 @@ public class FreeSprite {
 	public boolean implodes = false;
 	public boolean facingRigth = false;
 	public boolean manualFrameSet = false;
+	public boolean manualAngleSet = false;
 	public SpriteBmp spriteBmp;
 	public WeaponTypes wt;
 
@@ -51,7 +52,7 @@ public class FreeSprite {
 			spriteBmp.freeBitmaps();
 	}
 
-	public void explodeAndDie() {
+	public void freefallAndExplodeAndDie() {
 	}
 
 	public void fireGrenadeImploding() {
@@ -93,6 +94,9 @@ public class FreeSprite {
 		// System.out.println("Killing:" + this);
 		if (this instanceof EnemySprite) {
 			Constants.enemyKilledCount++;
+			boolean cont = gameView.updateScore(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
+			if (cont)
+				gameView.addEnemy(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
 		}
 
 		if (!(this instanceof PlayerSprite)) {
@@ -112,11 +116,27 @@ public class FreeSprite {
 
 	}
 
+	public void destroySprite() {
+		if (!(this instanceof PlayerSprite)) {
+			releaseShiftLockOnMe();
+			spriteList.remove(this);
+			PhysicsActivity.mWorld.bodies.remove(body);
+			PhysicsActivity.mWorld.world.destroyBody(body);
+			destroyShape();
+			freeBitmaps();
+		}
+
+	}
+
 	public void createDynamicBody(float x, float y) {
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.position.set(x / Constants.pixelpermeter, y / Constants.pixelpermeter);
-		this.body = PhysicsActivity.mWorld.world.createDynamicBody(bodyDef);
-		PhysicsActivity.mWorld.bodies.add(body);
+		try {
+			BodyDef bodyDef = new BodyDef();
+			bodyDef.position.set(x / Constants.pixelpermeter, y / Constants.pixelpermeter);
+			this.body = PhysicsActivity.mWorld.world.createDynamicBody(bodyDef);
+			PhysicsActivity.mWorld.bodies.add(body);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void destroyShape() {
@@ -125,21 +145,22 @@ public class FreeSprite {
 	}
 
 	public void shiftLockOnME() {
-		System.out.println("shiftLockOnME:" + this);
+		// System.out.println("shiftLockOnME:" + this);
 		if (gameView.getPlayerSprite() != null)
 			((PlayerSprite) gameView.getPlayerSprite()).sprite = this;
 	}
 
 	public void releaseShiftLockOnMe() {
-		System.out.println("releaseShiftLockOnMe:");
+		// System.out.println("releaseShiftLockOnMe:");
 		if (gameView.getPlayerSprite() != null)
 			((PlayerSprite) gameView.getPlayerSprite()).sprite = null;
 	}
 
 	public Body getBody() {
-		// if (body == null)
-		// System.out.println("getBody():" + body + " " +
-		// this.getClass().getName());
+		if (body == null) {
+			// System.out.println("getBody():" + body + " " +
+			// this.getClass().getName());
+		}
 		return body;
 		// int index = PhysicsActivity.mWorld.bodies.indexOf(body);
 		// return PhysicsActivity.mWorld.bodies.get(index);
@@ -163,7 +184,8 @@ public class FreeSprite {
 		if (body != null && !noPositionUpdate) {
 			this.x = body.getPosition().x * Constants.pixelpermeter;
 			this.y = body.getPosition().y * Constants.pixelpermeter;
-			this.angle = body.getAngle();
+			if (!manualAngleSet)
+				this.angle = body.getAngle();
 		}
 	}
 
@@ -215,7 +237,7 @@ public class FreeSprite {
 	}
 
 	public boolean checkOutOfBounds() {
-		return this.x < 0 - width || this.x > Constants.upperBoundxScreen + width || this.y > Constants.upperBoundyScreen * 1.1 || this.y < 0 - width;
+		return body != null && (this.x < 0 - width || this.x > Constants.upperBoundxScreen + width || this.y > Constants.upperBoundyScreen * 1.1 || this.y < 0 - width);
 	}
 
 	public boolean isCollision(float x2, float y2) {
@@ -322,6 +344,21 @@ public class FreeSprite {
 
 	public void setRestitution(float r) {
 		getBody().getShapeList().m_restitution = r;
+	}
+
+	public void aimAt(FreeSprite target) {
+		float tx = target.x - x;
+		float ty = target.y - y;
+		angle = (float) Math.atan2(ty, tx);
+		if (facingRigth)
+			angle = (float) Math.toRadians(360 - Math.toDegrees(angle));
+		else
+			angle = (float) Math.toRadians(180 - Math.toDegrees(angle));
+
+	}
+
+	public void setAngle(float angle) {
+		this.angle = angle;
 	}
 
 }

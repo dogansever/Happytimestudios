@@ -1,5 +1,6 @@
 IDEAS TO IMPLEMENT
 
+done:
 Triple bomb gun (small bombs)
 super shock gun (push on wide radius)
 reduce bomb power and radius for small bomb
@@ -8,13 +9,21 @@ explode bomb in sudden change in velocity
 explosions cost life
 hovering
 enemies moving and flying on you
+locking missiles locking on player
+leaving behind baits for incoming missiles
+multi touch support
+when destroyed, enemy will fly burning and explode if hits ground or somewhere
 
-
+secondary:
 Weapon reloading
 hook gun for player(revolt joint)
 survival in seconds and in enemy counts (score points)
-jump and fall animations detected from velocity direction
-ground2air locking missile
 picking carrying releasing objects
+weapon shortcuts
+
+primary:
+explode effect on player
+main page design (survival and stage modes)
+info page design (weapon infos and locked weapons)
 
 

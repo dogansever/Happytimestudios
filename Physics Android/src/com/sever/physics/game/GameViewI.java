@@ -21,7 +21,7 @@ public interface GameViewI {
 
 	public void addPlayer(float x, float y);
 
-	public void addEnemy(float x, float y, WeaponTypes wt);
+	public void addEnemy(float x, float y, WeaponTypes wt, Boolean fly);
 
 	public FreeSprite addGroundBoxStatic(float x, float y, float hx, float hy);
 

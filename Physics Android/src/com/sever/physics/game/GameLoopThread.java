@@ -28,7 +28,7 @@ public class GameLoopThread extends Thread {
 
 	private long now;
 	private int framesCount = 0;
-	private int framesCountAvg = 0;
+	public static int framesCountAvg = 0;
 	private long framesTimer = 0;
 
 	@Override
@@ -59,7 +59,7 @@ public class GameLoopThread extends Thread {
 				}
 			}
 			sleepTime = ticksPS - (System.currentTimeMillis() - startTime);
-//			System.out.println("sleepTime:" + sleepTime + " ms");
+			// System.out.println("sleepTime:" + sleepTime + " ms");
 			try {
 				if (sleepTime > 0)
 					sleep(sleepTime);

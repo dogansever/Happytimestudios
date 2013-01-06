@@ -4,7 +4,7 @@ import com.sever.physic.PhysicsApplication;
 
 public class Constants {
 
-	public static float extraHeight = PhysicsApplication.deviceHeight * 0.5f;
+	public static float extraHeight = PhysicsApplication.deviceHeight * 0.75f;
 	public static float extraWidth = PhysicsApplication.deviceWidth * 0.75f;
 	public static float extraWidthOffset = 0;
 	public static float extraHeightOffset = 0;
@@ -32,6 +32,8 @@ public class Constants {
 
 	public static float upperBoundyScreen = PhysicsApplication.deviceHeight + extraHeight;
 	public static int enemyKilledCount;
+	public static int score;
+	public static int scorePass;
 	public static int playerKilledCount;
 	public static final float upperBoundy = upperBoundyScreen / pixelpermeter;
 

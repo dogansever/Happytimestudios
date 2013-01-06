@@ -12,9 +12,11 @@ import com.sever.physics.game.utils.WeaponTypes;
 
 public class MissileSprite extends GrenadeSprite {
 
-	public MissileSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt) {
+	public MissileSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt, boolean facingRigth) {
 		super(spriteList, gameView, spriteBmp, x, y, wt);
-		facingRigth = gameView.getPlayerSprite().facingRigth;
+		this.facingRigth = facingRigth;
+		noRotation = false;
+		manualAngleSet = true;
 	}
 
 	public void createShape() {

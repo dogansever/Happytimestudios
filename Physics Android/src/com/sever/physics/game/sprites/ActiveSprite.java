@@ -10,6 +10,8 @@ import android.graphics.Bitmap;
 import com.sever.physic.PhysicsActivity;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
+import com.sever.physics.game.utils.WeaponTypes;
+import com.sever.physics.game.utils.WeaponsManager;
 
 public class ActiveSprite extends FreeSprite {
 
@@ -30,16 +32,50 @@ public class ActiveSprite extends FreeSprite {
 	public int firePower_AGG = +1;
 	public final int firePower_MAX = 50;
 	public final int fireMultiplierBullet = 150;
-	public final int fireMultiplierMissile = 150;
+	public static final int fireMultiplierMissile = 150;
+	public static final int fireMultiplierMissileLocking = 60;
 	public final int fireMultiplierBomb = 50;
 
-	@Override
-	public void explodeAndDie() {
-		super.explodeAndDie();
-		explodeBmp();
+	public boolean triggerOn;
+	public boolean freeFalling;
+	public WeaponTypes wt;
+	private boolean fly;
+
+	public void setFly(boolean fly) {
+		this.fly = fly;
+	}
+	public boolean getFly() {
+		return fly;
+	}
+
+	public void freefallAndExplodeAndDie() {
+		freeFallForAWhile();
+		if (!freeFalling)
+			explodeBmp();
+	}
+
+	private void freeFallForAWhile() {
+		if (fades)
+			return;
+
+		if (!freeFalling) {
+			FADE_LIFE = 50;
+			getBody().setLinearVelocity(new Vec2(0, 0));
+			spriteBmp.setBmpIndex(3);
+			this.width = spriteBmp.getWidth();
+			this.height = spriteBmp.getHeight();
+		}
+
+		if (FADE_LIFE-- <= 0) {
+			freeFalling = false;
+		} else {
+			freeFalling = true;
+		}
 	}
 
 	public void explodeBmp() {
+		if (!fades)
+			FADE_LIFE = 50;
 		fades = true;
 		spriteBmp.setBmpIndex(2);
 		noPositionUpdate = true;
@@ -49,7 +85,7 @@ public class ActiveSprite extends FreeSprite {
 		this.height = spriteBmp.getHeight();
 		angle = 180;
 	}
-	
+
 	public void addFireArrow() {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
 		bmp.add(PhysicsActivity.fireArrow);
@@ -171,10 +207,14 @@ public class ActiveSprite extends FreeSprite {
 	}
 
 	public void throttleUp() {
+		if (!fly)
+			return;
 		throttle(0);
 	}
 
 	public void throttleDown() {
+		if (!fly)
+			return;
 		throttle(1);
 	}
 
@@ -188,17 +228,24 @@ public class ActiveSprite extends FreeSprite {
 		throttle(3);
 	}
 
+	public boolean isMissileFacingRight(FreeSprite target) {
+		Vec2 positionTarget = target.getBody().getPosition();
+		Vec2 positionSrc = body.getPosition();
+		return positionTarget.x > positionSrc.x;
+	}
+
 	public Vec2 getVelocityVec(int fireMultiplier, FreeSprite target) {
 		Vec2 positionTarget = target.getBody().getPosition();
 		Vec2 positionSrc = body.getPosition();
 		Vec2 force = new Vec2(positionTarget.x - positionSrc.x, positionTarget.y - positionSrc.y);
 		force.normalize();
 
+		firePower = WeaponsManager.getManager().getWeaponByType(getWt()).fireAtMaxSpeed ? firePower_MAX : firePower;
 		float xt = (firePower * fireMultiplier / firePower_MAX) * force.x;
 		float yt = (firePower * fireMultiplier / firePower_MAX) * force.y;
 		Vec2 v = new Vec2(xt, yt);
 
-		System.out.println("getVelocityVec: x:" + v.x + ", y:" + v.y);
+		// System.out.println("getVelocityVec: x:" + v.x + ", y:" + v.y);
 		return v;
 	}
 
@@ -207,6 +254,7 @@ public class ActiveSprite extends FreeSprite {
 		Vec2 force = new Vec2((float) Math.cos(Math.toRadians(fangle)), (float) Math.sin(Math.toRadians(fangle)));
 		force.normalize();
 
+		firePower = WeaponsManager.getManager().getWeaponByType(getWt()).fireAtMaxSpeed ? firePower_MAX : firePower;
 		float xt = (facingRigth ? 1 : -1) * (firePower * fireMultiplier / firePower_MAX) * force.x;
 		float yt = (firePower * fireMultiplier / firePower_MAX) * force.y;
 		Vec2 v = new Vec2(xt, yt);
@@ -227,4 +275,9 @@ public class ActiveSprite extends FreeSprite {
 		// System.out.println("getVelocityVec():(" + xt + "," + yt + ")");
 		return v;
 	}
+
+	public WeaponTypes getWt() {
+		return wt;
+	}
+
 }

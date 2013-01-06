@@ -40,17 +40,20 @@ public class FireArrowSprite extends FreeSprite {
 
 	public void onMove(float xn, float yn) {
 		try {
+			float angleStep = 3;
+			float angleMin = -45;
+			float angleMax = 45;
 			this.ystick2 = yn;
 			if (ystick1 - ystick2 < 0) {
-				angle += 3;
+				angle -= angleStep;
 			} else if (ystick1 - ystick2 > 0) {
-				angle -= 3;
+				angle += angleStep;
 			}
 
-			if (angle < -90) {
-				angle = -90;
-			} else if (angle > 45) {
-				angle = 45;
+			if (angle < -45 + angleMin) {
+				angle = -45 + angleMin;
+			} else if (angle > -45 + angleMax) {
+				angle = -45 + angleMax;
 			}
 			getAngle();
 			ystick1 = ystick2;

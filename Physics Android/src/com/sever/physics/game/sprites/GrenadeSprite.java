@@ -56,9 +56,12 @@ public class GrenadeSprite extends FreeSprite {
 
 			float diffx = Math.abs(getBody().getLinearVelocity().x - velx);
 			float diffy = Math.abs(getBody().getLinearVelocity().y - vely);
+			float diffxMax = wt == WeaponTypes.MISSILE_LOCKING ? 20.0f : 2.0f;
+
 			// System.out.println("velx:" + getBody().getLinearVelocity().x +
 			// ",diffx:" + diffx + ", diffy:" + diffy);
-			if (spriteBmp.bmpIndex == 0 && velx != 0 && diffx >= 2.0f) {
+			if (spriteBmp.bmpIndex == 0 && velx != 0 && (diffx >= diffxMax || diffy >= diffxMax)) {
+				System.out.println("SuddenChangeInDirection detected! diffx:" + diffx + ", diffy:" + diffy);
 				FADE_LIFE = 0;
 			} else {
 				velx = getBody().getLinearVelocity().x;

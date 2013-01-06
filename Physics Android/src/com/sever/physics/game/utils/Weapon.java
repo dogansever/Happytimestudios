@@ -2,16 +2,19 @@ package com.sever.physics.game.utils;
 
 public class Weapon {
 
-	WeaponTypes type;
-	int lifeTimeInFPS;
-	boolean available;
-	boolean explodes;
-	boolean implodes;
-	int loadingTimeInFPS;
-	int damageLife;
-	int explosionRadius;
+	public WeaponTypes type;
+	public int lifeTimeInFPS;
+	public boolean available;
+	public boolean explodes;
+	public boolean implodes;
+	public boolean automatic;
+	public boolean fireAtMaxSpeed;
+	public int loadingTimeInFPS;
+	public int damageLife;
+	public int explosionRadius;
 
-	public Weapon(WeaponTypes type, int lifeTimeInFPS, boolean available, boolean explodes, boolean implodes, int loadingTimeInFPS, int damageLife, int explosionRadius) {
+	public Weapon(WeaponTypes type, int lifeTimeInFPS, boolean available, boolean explodes, boolean implodes, int loadingTimeInFPS, int damageLife, int explosionRadius, boolean automatic,
+			boolean fireAtMaxSpeed) {
 		super();
 		this.type = type;
 		this.lifeTimeInFPS = lifeTimeInFPS;
@@ -21,6 +24,8 @@ public class Weapon {
 		this.loadingTimeInFPS = loadingTimeInFPS;
 		this.damageLife = damageLife;
 		this.explosionRadius = explosionRadius;
+		this.automatic = automatic;
+		this.fireAtMaxSpeed = fireAtMaxSpeed;
 	}
 
 	public WeaponTypes getType() {

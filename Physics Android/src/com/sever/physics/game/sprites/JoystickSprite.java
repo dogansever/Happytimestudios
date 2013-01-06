@@ -45,6 +45,10 @@ public class JoystickSprite extends FreeSprite {
 				return;
 			}
 
+			float range = spacing(xn - x, yn - y);
+			if (range < width / 2) {
+
+			}
 			this.xstick = xn;
 			this.ystick = yn;
 			if (x - xstick < -width * 0.2f) {
@@ -73,14 +77,24 @@ public class JoystickSprite extends FreeSprite {
 			return;
 		}
 
+		if (invisible)
+			return;
+
 		spriteBmp.currentRow = 0;
 		spriteBmp.currentFrame = 0;
 		draw(canvas);
 
 		float xtemp = x;
 		float ytemp = y;
-		x = Math.abs(xstick - x) < width / 2 ? xstick : x + (xstick - x < 0 ? -1 : 1) * width / 2;
-		y = Math.abs(ystick - y) < height / 2 ? ystick : y + (ystick - y < 0 ? -1 : 1) * height / 2;
+		float tan = (ystick - y) / (xstick - x);
+		float r = width / 2;
+		x = (float) Math.sqrt(r * r / (1 + tan * tan));
+		y = ytemp + (xstick - xtemp < 0 ? -1 : 1) * x * tan;
+		x = xtemp + (xstick - xtemp < 0 ? -1 : 1) * x;
+		// x = Math.abs(xstick - x) < width / 2 ? xstick : x + (xstick - x < 0 ?
+		// -1 : 1) * width / 2;
+		// y = Math.abs(ystick - y) < height / 2 ? ystick : y + (ystick - y < 0
+		// ? -1 : 1) * height / 2;
 		spriteBmp.currentFrame = 1;
 		draw(canvas);
 		x = xtemp;
