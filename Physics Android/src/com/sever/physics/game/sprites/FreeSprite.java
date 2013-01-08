@@ -92,12 +92,7 @@ public class FreeSprite {
 
 	public void killSprite() {
 		// System.out.println("Killing:" + this);
-		if (this instanceof EnemySprite) {
-			Constants.enemyKilledCount++;
-			boolean cont = gameView.updateScore(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
-			if (cont)
-				gameView.addEnemy(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
-		}
+		
 
 		if (!(this instanceof PlayerSprite)) {
 			releaseShiftLockOnMe();

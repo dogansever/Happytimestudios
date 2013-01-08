@@ -9,6 +9,10 @@ public class StageManager {
 
 	static {
 		stageList = new ArrayList<ArrayList<Integer>>();
+		stageList.add(prepareStage(1, 0, 0, 0, 0, 0, 0, 0, 100));
+		stageList.add(prepareStage(1, 1, 0, 0, 0, 0, 0, 0, 100));
+		stageList.add(prepareStage(1, 0, 0, 1, 0, 0, 0, 0, 100));
+		stageList.add(prepareStage(1, 1, 0, 1, 0, 0, 0, 0, 100));
 		stageList.add(prepareStage(1, 0, 0, 2, 0, 0, 0, 0, 100));
 		stageList.add(prepareStage(1, 0, 0, 2, 0, 1, 0, 0, 100));
 		stageList.add(prepareStage(2, 0, 0, 1, 1, 1, 0, 0, 100));

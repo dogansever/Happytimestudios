@@ -1,5 +1,7 @@
 package com.sever.physics.game.utils;
 
+import android.telephony.TelephonyManager;
+
 import com.sever.physic.PhysicsApplication;
 
 public class Constants {
@@ -32,7 +34,11 @@ public class Constants {
 
 	public static float upperBoundyScreen = PhysicsApplication.deviceHeight + extraHeight;
 	public static int enemyKilledCount;
-	public static int score;
+	public static int scoreStage;
+	public static int scoreTotal;
+	public static int scoreTimeBonus;
+	public static int scoreLifeBonus;
+	public static int scoreStageBonus;
 	public static int scorePass;
 	public static int playerKilledCount;
 	public static final float upperBoundy = upperBoundyScreen / pixelpermeter;

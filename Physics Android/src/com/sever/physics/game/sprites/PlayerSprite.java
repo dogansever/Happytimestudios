@@ -49,6 +49,16 @@ public class PlayerSprite extends ActiveSprite {
 		addPowerBar();
 		addFireArrow();
 		FADE_LIFE = 80;
+		velocity_MAX = 80;
+	}
+
+	public float getBonusScoreLife() {
+		return life;
+	}
+
+	public void collectBonusLife() {
+		life += ((BonusLifeBarSprite) gameView.getBonusLifeBarSprite()).getBonusLifePercentage() * life_MAX;
+		life = life > life_MAX ? life_MAX : life;
 	}
 
 	public WeaponTypes getWt() {
@@ -227,7 +237,7 @@ public class PlayerSprite extends ActiveSprite {
 
 	public void fireGrenadeImploding() {
 		try {
-			FreeSprite bullet = gameView.addGrenadeImploding(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
+			FreeSprite bullet = gameView.addGrenadeImploding(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f);
 			bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBomb));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -236,7 +246,7 @@ public class PlayerSprite extends ActiveSprite {
 
 	public void fireGrenadeTriple() {
 		try {
-			FreeSprite bullet = gameView.addGrenadeTriple(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
+			FreeSprite bullet = gameView.addGrenadeTriple(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f);
 			bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBomb, firePowerOld));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -245,7 +255,7 @@ public class PlayerSprite extends ActiveSprite {
 
 	public void fireMissile() {
 		try {
-			FreeSprite bullet = gameView.addMissile(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f, facingRigth);
+			FreeSprite bullet = gameView.addMissile(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f, facingRigth);
 			bullet.setAngle((float) Math.toRadians(!facingRigth ? fireArrowSprite.getAngle() : 360 - fireArrowSprite.getAngle()));
 			bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissile));
 		} catch (Exception e) {
@@ -256,7 +266,7 @@ public class PlayerSprite extends ActiveSprite {
 
 	public void fireMissileLight() {
 		try {
-			FreeSprite bullet = gameView.addMissileLight(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f, facingRigth);
+			FreeSprite bullet = gameView.addMissileLight(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f, facingRigth);
 			bullet.setAngle((float) Math.toRadians(!facingRigth ? fireArrowSprite.getAngle() : 360 - fireArrowSprite.getAngle()));
 			bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissile));
 		} catch (Exception e) {
@@ -267,7 +277,7 @@ public class PlayerSprite extends ActiveSprite {
 
 	public void fireGrenadeSmall() {
 		try {
-			FreeSprite bullet = gameView.addGrenadeSmall(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
+			FreeSprite bullet = gameView.addGrenadeSmall(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f);
 			bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBomb));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -276,7 +286,7 @@ public class PlayerSprite extends ActiveSprite {
 
 	public void fireGrenade() {
 		try {
-			FreeSprite bullet = gameView.addGrenade(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f);
+			FreeSprite bullet = gameView.addGrenade(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f);
 			bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBomb));
 		} catch (Exception e) {
 			e.printStackTrace();

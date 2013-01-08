@@ -11,8 +11,13 @@ import org.jbox2d.dynamics.Body;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
 
+import com.sever.physic.IntroActivity;
 import com.sever.physic.PhysicsActivity;
+import com.sever.physic.PhysicsApplication;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
@@ -28,6 +33,10 @@ public class EnemySprite extends ActiveSprite {
 	public int fuel_AGG = +1;
 	public final int fuel_MAX = 100;
 	public EnemyPointerSprite enemyPointerSprite;
+	private boolean killed;
+	private int alpha = 255;
+	private float killpointx = 0;
+	private float killpointy = 0;
 
 	public EnemySprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
@@ -40,6 +49,8 @@ public class EnemySprite extends ActiveSprite {
 		this.facingRigth = gameView.getPlayerSprite().x > x;
 		this.BULLET_FIRE_WAIT_TIME = BULLET_FIRE_WAIT_TIME_MAX;
 		FADE_LIFE = 50;
+		life_MAX = 50;
+		life = life_MAX;
 		this.spriteList = spriteList;
 		addSprite(x, y);
 		addLifeBarSprite();
@@ -65,28 +76,28 @@ public class EnemySprite extends ActiveSprite {
 	}
 
 	public void fireMissile() {
-		FreeSprite bullet = gameView.addMissile(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f, isMissileFacingRight(gameView.getPlayerSprite()));
+		FreeSprite bullet = gameView.addMissile(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f, isMissileFacingRight(gameView.getPlayerSprite()));
 		bullet.aimAt(gameView.getPlayerSprite());
 		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissile, gameView.getPlayerSprite()));
 		// bullet.shiftLockOnME();
 	}
 
 	public void fireMissileLocking() {
-		FreeSprite bullet = gameView.addMissileLocking(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f, isMissileFacingRight(gameView.getPlayerSprite()));
+		FreeSprite bullet = gameView.addMissileLocking(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f, isMissileFacingRight(gameView.getPlayerSprite()));
 		bullet.aimAt(gameView.getPlayerSprite());
 		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissileLocking, gameView.getPlayerSprite()));
 		// bullet.shiftLockOnME();
 	}
 
 	public void fireMissileLight() {
-		FreeSprite bullet = gameView.addMissileLight(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.9f, isMissileFacingRight(gameView.getPlayerSprite()));
+		FreeSprite bullet = gameView.addMissileLight(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f, isMissileFacingRight(gameView.getPlayerSprite()));
 		bullet.aimAt(gameView.getPlayerSprite());
 		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissile, gameView.getPlayerSprite()));
 		// bullet.shiftLockOnME();
 	}
 
 	public void fireGrenade() {
-		float yt = (getBody().getLinearVelocity().y < 0 ? 1 : -1) * height * 1.5f;
+		float yt = (getBody().getLinearVelocity().y < 0 ? 1 : -1) * height * 0.0f;
 		float xt = (facingRigth ? 1 : -1) * width * 1.5f;
 		FreeSprite bullet = gameView.addGrenade(x + xt, y + yt);
 		// applyForce(bullet,
@@ -96,7 +107,7 @@ public class EnemySprite extends ActiveSprite {
 	}
 
 	public void fireGrenadeSmall() {
-		float yt = (getBody().getLinearVelocity().y < 0 ? 1 : -1) * height * 1.5f;
+		float yt = (getBody().getLinearVelocity().y < 0 ? 1 : -1) * height * 0.0f;
 		float xt = (facingRigth ? 1 : -1) * width * 1.5f;
 		FreeSprite bullet = gameView.addGrenadeSmall(x + xt, y + yt);
 		// applyForce(bullet,
@@ -141,8 +152,29 @@ public class EnemySprite extends ActiveSprite {
 		createShape();
 	}
 
+	private void drawText(String text, Canvas canvas, float x, float y) {
+		Paint paint = new Paint();
+		paint.setColor(Color.WHITE);
+		paint.setStyle(Style.FILL);
+		paint.setTypeface(IntroActivity.tf);
+		paint.setColor(Color.WHITE);
+		alpha -= 5;
+		paint.setAlpha(alpha <= 0 ? 0 : alpha);
+		paint.setTextSize(20);
+		canvas.drawText(text, x, y, paint);
+	}
+
 	public void onDraw(Canvas canvas) {
 		if (life <= 0) {
+			if (!killed) {
+				killed = true;
+				Constants.enemyKilledCount++;
+				killpointx = gameView.getPlayerSprite().x;
+				killpointy = gameView.getPlayerSprite().y;
+				boolean cont = gameView.updateScore(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
+				if (cont)
+					gameView.addEnemy(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
+			}
 			freefallAndExplodeAndDie();
 		} else {
 			BULLET_FIRE_WAIT_TIME--;
@@ -155,6 +187,11 @@ public class EnemySprite extends ActiveSprite {
 			enemyPointerSprite.onDraw(canvas);
 		}
 		// throttleLeave();
+		if (killed) {
+			Integer bonus = gameView.getBonusScore(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
+			drawText("+" + bonus, canvas, killpointx - Constants.extraWidthOffset, PhysicsApplication.deviceHeight - killpointy + Constants.extraHeightOffset - gameView.getPlayerSprite().height
+					- (255 - alpha));
+		}
 		super.onDraw(canvas);
 	}
 

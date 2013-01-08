@@ -56,6 +56,7 @@ public class PhysicsActivity extends Activity {
 	public static Bitmap bomb2;
 	public static Bitmap powerBar;
 	public static Bitmap lifeBar;
+	public static Bitmap lifeBarBonus;
 	public static Bitmap fuelBar;
 	public static Bitmap joystick;
 	public static Bitmap fireButton;
@@ -91,6 +92,7 @@ public class PhysicsActivity extends Activity {
 		bomb2 = createScaledBitmap(R.drawable.bombx4x1, 120, 30);
 		powerBar = createScaledBitmap(R.drawable.powerbar, 45, 60);
 		lifeBar = createScaledBitmap(R.drawable.powerbar, 45, 60);
+		lifeBarBonus = createScaledBitmap(R.drawable.powerbar, 135, 180);
 		fuelBar = createScaledBitmap(R.drawable.fuelbar, 60, 45);
 		joystick = createScaledBitmap(R.drawable.joystick, 0, 0);
 		fireButton = createScaledBitmap(R.drawable.buttonred, 400, 200);
@@ -112,7 +114,8 @@ public class PhysicsActivity extends Activity {
 	}
 
 	private void clearScore() {
-		Constants.score = 0;
+		Constants.scoreStage = 0;
+		Constants.scoreTotal = 0;
 		Constants.scorePass = 0;
 		Constants.enemyKilledCount = 0;
 		Constants.playerKilledCount = 0;

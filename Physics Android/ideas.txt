@@ -15,7 +15,6 @@ multi touch support
 when destroyed, enemy will fly burning and explode if hits ground or somewhere
 
 secondary:
-Weapon reloading
 hook gun for player(revolt joint)
 survival in seconds and in enemy counts (score points)
 picking carrying releasing objects
@@ -23,7 +22,9 @@ weapon shortcuts
 
 primary:
 explode effect on player
-main page design (survival and stage modes)
+Weapon reloading
+main page design
+global ranking page design
 info page design (weapon infos and locked weapons)
 
 

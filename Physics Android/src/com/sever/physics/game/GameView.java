@@ -16,13 +16,16 @@ import android.graphics.Paint.Style;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.sever.physic.IntroActivity;
 import com.sever.physic.PhysicsActivity;
 import com.sever.physic.PhysicsApplication;
 import com.sever.physic.StageEndActivity;
+import com.sever.physics.game.sprites.BonusLifeBarSprite;
 import com.sever.physics.game.sprites.BoxSprite;
 import com.sever.physics.game.sprites.BulletSprite;
 import com.sever.physics.game.sprites.ButtonFireSprite;
@@ -76,6 +79,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	private boolean buttonSwapEnabled;
 	private boolean buttonFireEnabled;
 	public static boolean success;
+
+	public FreeSprite getBonusLifeBarSprite() {
+		return (FreeSprite) this.nophysicsSprite.toArray()[3];
+	}
 
 	public FreeSprite getSwapWeaponButtonSprite() {
 		return (FreeSprite) this.nophysicsSprite.toArray()[2];
@@ -319,6 +326,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		return sprite;
 	}
 
+	public void addBonusLifeBarSprite(float x, float y) {
+		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
+		bmp.add(PhysicsActivity.lifeBarBonus);
+		ArrayList<int[]> colsrows = new ArrayList<int[]>();
+		colsrows.add(new int[] { 1, 10 });
+		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
+		FreeSprite sprite = new BonusLifeBarSprite(this, spriteBmp, x, y);
+		nophysicsSprite.add(sprite);
+	}
+
 	public void addPlayer(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
 		bmp.add(PhysicsActivity.player);
@@ -373,6 +390,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		createJointStuff();
 		createNophysicSprites();
 		sendEnemies();
+		((BonusLifeBarSprite) getBonusLifeBarSprite()).resetTimer();
 	}
 
 	public void createJoint2Player(float x, float y) {
@@ -421,6 +439,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		addJoystick(120, 60);
 		addFireButton(900, 150);
 		addSwapWeaponButton(950, 500);
+		addBonusLifeBarSprite(800, 500);
 	}
 
 	@Override
@@ -491,43 +510,64 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 				t = System.currentTimeMillis();
 				drawBackground(canvas);
-				drawText("drawBackground:" + (System.currentTimeMillis() - t), canvas, 10, 200);
-				drawText(updateStr, canvas, 10, 175);
+				String drawBackground = "drawBackground:" + (System.currentTimeMillis() - t);
 
 				// draw statics, pull frees
 				t = System.currentTimeMillis();
 				draw(canvas, staticSprites);
-				drawText("staticSprites:" + (System.currentTimeMillis() - t), canvas, 10, 225);
+				String staticSprites = "staticSprites:" + (System.currentTimeMillis() - t);
 
 				// draw player
 				t = System.currentTimeMillis();
 				getPlayerSprite().onDraw(canvas);
-				drawText("PlayerSprite:" + (System.currentTimeMillis() - t), canvas, 10, 250);
+				String PlayerSprite = "PlayerSprite:" + (System.currentTimeMillis() - t);
 
 				// draw explosives, push enemies
 				t = System.currentTimeMillis();
 				draw(canvas, explosiveSprites);
-				drawText("explosiveSprites:" + (System.currentTimeMillis() - t), canvas, 10, 275);
+				String explosiveSprites = "explosiveSprites:" + (System.currentTimeMillis() - t);
 
 				// draw frees, push pull frees
 				t = System.currentTimeMillis();
 				draw(canvas, freeSprites);
-				drawText("freeSprites:" + (System.currentTimeMillis() - t), canvas, 10, 300);
+				String freeSprites = "freeSprites:" + (System.currentTimeMillis() - t);
 
 				// draw enemies
 				t = System.currentTimeMillis();
 				draw(canvas, enemySprites);
-				drawText("enemySprites:" + (System.currentTimeMillis() - t), canvas, 10, 325);
+				String enemySprites = "enemySprites:" + (System.currentTimeMillis() - t);
 
 				t = System.currentTimeMillis();
 				draw(canvas, nophysicsSprite);
-				drawText("nophysicsSprite:" + (System.currentTimeMillis() - t), canvas, 10, 350);
+				String nophysicsSprite = "nophysicsSprite:" + (System.currentTimeMillis() - t);
 
-				drawText("total:" + (System.currentTimeMillis() - tstart), canvas, 10, 375);
-				drawText("FPS:" + GameLoopThread.framesCountAvg, canvas, 10, 400);
-				drawText("score:" + Constants.score, canvas, 10, 450);
-				drawText("scorePass:" + Constants.scorePass, canvas, 10, 475);
-				drawText("Stage:" + (StageManager.getManager().currentStage + 1), canvas, 10, 500);
+				drawText("Stage:" + (StageManager.getManager().currentStage + 1), canvas, 10, 25);
+				drawText("scoreTotal:" + Constants.scoreTotal, canvas, 10, 50);
+				drawText("score:" + Constants.scoreStage, canvas, 10, 75);
+				drawText("scorePass:" + Constants.scorePass, canvas, 10, 100);
+
+				int xd = 125;
+				drawText(staticSprites, canvas, 10, xd = xd + 25);
+				drawText(nophysicsSprite, canvas, 10, xd = xd + 25);
+				drawText(drawBackground, canvas, 10, xd = xd + 25);
+				drawText(updateStr, canvas, 10, xd = xd + 25);
+				drawText(PlayerSprite, canvas, 10, xd = xd + 25);
+				drawText(explosiveSprites, canvas, 10, xd = xd + 25);
+				drawText(freeSprites, canvas, 10, xd = xd + 25);
+				drawText(enemySprites, canvas, 10, xd = xd + 25);
+				drawText("total:" + (System.currentTimeMillis() - tstart), canvas, 10, xd = xd + 25);
+				drawText("FPS:" + GameLoopThread.framesCountAvg, canvas, 10, xd = xd + 25);
+
+				drawText("+" + Constants.scoreLifeBonus, canvas, newStagePointx - Constants.extraWidthOffset, PhysicsApplication.deviceHeight - newStagePointy + Constants.extraHeightOffset
+						- getPlayerSprite().height - (255 - alphaBonusLife), alphaBonusLife);
+				drawText("+" + Constants.scoreTimeBonus, canvas, 20 + newStagePointx - Constants.extraWidthOffset, -20 + PhysicsApplication.deviceHeight - newStagePointy + Constants.extraHeightOffset
+						- getPlayerSprite().height - (255 - alphaBonusTime), alphaBonusTime - 20);
+				drawText("+" + Constants.scoreStageBonus, canvas, 40 + newStagePointx - Constants.extraWidthOffset, -40 + PhysicsApplication.deviceHeight - newStagePointy
+						+ Constants.extraHeightOffset - getPlayerSprite().height - (255 - alphaBonusStage), alphaBonusStage - 40);
+
+				alphaBonusStage -= 5;
+				alphaBonusTime -= 5;
+				alphaBonusLife -= 5;
 
 			}
 		} catch (Exception e) {
@@ -535,7 +575,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		}
 	}
 
-	private void drawText(String text, Canvas canvas, float x, float y) {
+	float newStagePointx = 0;
+	float newStagePointy = 0;
+	private int alphaBonusLife = 0;
+	private int alphaBonusTime = 0;
+	private int alphaBonusStage = 0;
+
+	private void drawText(String text, Canvas canvas, float x, float y, int alpha) {
+		if (alpha <= 0)
+			return;
+
 		Paint paint = new Paint();
 		paint.setColor(Color.WHITE);
 		paint.setStyle(Style.FILL);
@@ -543,6 +592,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		// Typeface.createFromAsset(PhysicsActivity.context.getAssets(),
 		// "FEASFBRG.TTF");
 		// paint.setTypeface(chops);
+		paint.setTypeface(IntroActivity.tf);
+		paint.setColor(Color.WHITE);
+		paint.setAlpha(alpha <= 0 ? 0 : alpha);
+		paint.setTextSize(20);
+		canvas.drawText(text, x, y, paint);
+	}
+
+	private void drawText(String text, Canvas canvas, float x, float y) {
+		Paint paint = new Paint();
+		paint.setColor(Color.WHITE);
+		paint.setStyle(Style.FILL);
+		paint.setTypeface(IntroActivity.tf);
 		paint.setColor(Color.WHITE);
 		paint.setTextSize(20);
 		canvas.drawText(text, x, y, paint);
@@ -734,7 +795,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			PhysicsActivity.context.mWorld.update();
 			checkPhysicalEffects();
 			checkSpaceTrash();
-			checkGameEnd();
+			checkGameStatus();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -833,12 +894,32 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		addEnemy(50 + new Random().nextInt((int) Constants.upperBoundxScreen - 50), Constants.upperBoundyScreen, wt, fly);
 	}
 
-	private void checkGameEnd() {
+	private void checkGameStatus() {
 		if (!((PlayerSprite) getPlayerSprite()).isAlive()) {
-			// success = true;
 			idleGame();
-		} else if (Constants.scorePass <= Constants.score) {
+		} else if (Constants.scorePass <= Constants.scoreStage) {
+			Constants.scoreLifeBonus = (int) (((PlayerSprite) getPlayerSprite()).getBonusScoreLife() * 10);
+			Constants.scoreTimeBonus = (int) (((BonusLifeBarSprite) getBonusLifeBarSprite()).getBonusScoreSeconds() * 1);
+			Constants.scoreStageBonus = (StageManager.getManager().currentStage + 1) * 1000;
+			newStagePointx = getPlayerSprite().x;
+			newStagePointy = getPlayerSprite().y;
+			alphaBonusLife = 255;
+			alphaBonusStage = 255;
+			alphaBonusTime = 255;
+			Constants.scoreTotal += Constants.scoreStage;
+			Constants.scoreTotal += Constants.scoreTimeBonus;
+			Constants.scoreTotal += Constants.scoreLifeBonus;
+			Constants.scoreTotal += Constants.scoreStageBonus;
+
+			IntroActivity.dbDBWriteUtil.addScore("" + Constants.scoreTotal, "" + new Date().getTime(), "" + (StageManager.getManager().currentStage + 1));
 			nextStage();
+			// Toast.makeText(context, "Going to next Stage " +
+			// (StageManager.getManager().currentStage + 1),
+			// Toast.LENGTH_SHORT).show();
+
+			((PlayerSprite) getPlayerSprite()).collectBonusLife();
+			((BonusLifeBarSprite) getBonusLifeBarSprite()).resetTimer();
+
 		} else if (finishGame) {
 			finishGame();
 		}
@@ -851,7 +932,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 		StageManager.getManager().currentStage++;// to do set stage
 		addStageEnemies();
-		Constants.score = 0;
+		Constants.scoreStage = 0;
 	}
 
 	public void idleGame() {
@@ -921,18 +1002,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		}
 	}
 
-	public boolean updateScore(WeaponTypes wt, boolean fly) {
+	public Integer getBonusScore(WeaponTypes wt, boolean fly) {
+		Integer bonus = 0;
 		if (wt == WeaponTypes.BOMB) {
-			Constants.score += 10;
+			bonus = 10;
 		} else if (wt == WeaponTypes.BOMB_BIG) {
-			Constants.score += 20;
+			bonus = 20;
 		} else if (wt == WeaponTypes.MISSILE_LIGHT) {
-			Constants.score += fly ? 30 : 15;
+			bonus = fly ? 30 : 15;
 		} else if (wt == WeaponTypes.MISSILE) {
-			Constants.score += fly ? 40 : 20;
+			bonus = fly ? 40 : 20;
 		} else if (wt == WeaponTypes.MISSILE_LOCKING) {
-			Constants.score += fly ? 50 : 25;
+			bonus = fly ? 50 : 25;
 		}
-		return Constants.scorePass > Constants.score;
+		return bonus;
+	}
+
+	public boolean updateScore(WeaponTypes wt, boolean fly) {
+		Constants.scoreStage += getBonusScore(wt, fly);
+		return Constants.scorePass > Constants.scoreStage;
 	}
 }

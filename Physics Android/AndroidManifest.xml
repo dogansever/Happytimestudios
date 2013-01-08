@@ -6,6 +6,11 @@
 
     <uses-sdk android:minSdkVersion="10" />
 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".PhysicsApplication"
         android:icon="@drawable/ic_launcher"
@@ -29,7 +34,8 @@
             android:configChanges="orientation"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustUnspecified" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

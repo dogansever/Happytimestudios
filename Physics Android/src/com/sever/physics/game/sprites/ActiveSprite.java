@@ -17,7 +17,7 @@ public class ActiveSprite extends FreeSprite {
 
 	public int velocity_MAX = 50;
 	public int life_AGG = +1;
-	public final int life_MAX = 100;
+	public int life_MAX = 100;
 	public int life = life_MAX;
 	public LifeBarSprite lifeBarSprite;
 	public FuelBarSprite fuelBarSprite;
@@ -44,6 +44,7 @@ public class ActiveSprite extends FreeSprite {
 	public void setFly(boolean fly) {
 		this.fly = fly;
 	}
+
 	public boolean getFly() {
 		return fly;
 	}
@@ -213,8 +214,6 @@ public class ActiveSprite extends FreeSprite {
 	}
 
 	public void throttleDown() {
-		if (!fly)
-			return;
 		throttle(1);
 	}
 
