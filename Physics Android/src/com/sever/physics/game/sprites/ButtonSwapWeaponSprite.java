@@ -42,6 +42,10 @@ public class ButtonSwapWeaponSprite extends FreeSprite {
 	}
 
 	public boolean checkButtonTouch(float xn, float yn) {
+		if (PlayerSprite.loadingTimeInFPS > 0) {
+			return false;
+		}
+
 		if (active)
 			return true;
 
@@ -75,10 +79,11 @@ public class ButtonSwapWeaponSprite extends FreeSprite {
 	}
 
 	private void draw(Canvas canvas) {
+		float percentage = ((PlayerSprite) gameView.getPlayerSprite()).getLoadingTimePercentage();
 		int srcX = (int) (spriteBmp.currentFrame * width);
 		int srcY = (int) (spriteBmp.currentRow * height);
-		Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height));
-		spriteBmp.bmpFrame = Bitmap.createBitmap(PhysicsActivity.weaponSwapButton, src.left, src.top, (int) width, (int) height);
+		Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height * percentage));
+		spriteBmp.bmpFrame = Bitmap.createBitmap(PhysicsActivity.weaponSwapButton, src.left, src.top, (int) width, (int) (height * percentage));
 
 		Matrix m = new Matrix();
 		Vec2 translate = getBitmapDrawingXY();

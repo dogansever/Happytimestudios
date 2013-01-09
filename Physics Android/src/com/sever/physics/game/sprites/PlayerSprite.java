@@ -30,7 +30,7 @@ public class PlayerSprite extends ActiveSprite {
 	public boolean scatter;
 	public boolean alive = true;
 	public FreeSprite sprite;
-	private int loadingTimeInFPS;
+	public static int loadingTimeInFPS;
 
 	public PlayerSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
@@ -96,6 +96,9 @@ public class PlayerSprite extends ActiveSprite {
 			shiftCheck();
 			hoverCheck();
 			fireTry();
+			if (loadingTimeInFPS > 0) {
+				loadingTimeInFPS--;
+			}
 		}
 		if (gameView.idle && fades && FADE_LIFE > 0) {
 			super.onDraw(canvas);
@@ -206,6 +209,10 @@ public class PlayerSprite extends ActiveSprite {
 		triggerOn = false;
 	}
 
+	public float getLoadingTimePercentage() {
+		return 1.0f - ((float) loadingTimeInFPS) / ((float) WeaponsManager.getManager().getWeaponByType(weapon.getType()).loadingTimeInFPS);
+	}
+
 	public void fireTry() {
 		if (triggerOn && loadingTimeInFPS-- <= 0) {
 			fire();
@@ -216,6 +223,11 @@ public class PlayerSprite extends ActiveSprite {
 	public void fire() {
 		if (gameView.idle) {
 			return;
+		}
+		if (loadingTimeInFPS > 0) {
+			return;
+		} else {
+			loadingTimeInFPS = WeaponsManager.getManager().getWeaponByType(weapon.getType()).loadingTimeInFPS;
 		}
 
 		if (weapon.getType() == WeaponTypes.BULLET) {
