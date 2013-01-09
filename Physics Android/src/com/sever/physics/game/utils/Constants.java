@@ -1,20 +1,18 @@
 package com.sever.physics.game.utils;
 
-import android.telephony.TelephonyManager;
-
 import com.sever.physic.PhysicsApplication;
 
 public class Constants {
 
-	public static float extraHeight = PhysicsApplication.deviceHeight * 0.75f;
-	public static float extraWidth = PhysicsApplication.deviceWidth * 0.75f;
+	public static float extraHeight = PhysicsApplication.deviceHeight * 0.95f;
+	public static float extraWidth = PhysicsApplication.deviceWidth * 0.95f;
 	public static float extraWidthOffset = 0;
 	public static float extraHeightOffset = 0;
 	public static int quakePower = 0;
 	public static int quakePowerMax = 10;
 	public static boolean quakePending = false;
 	public static final int FPS_Intro = 24;
-	public static final int FPS = 30;
+	public static final int FPS = 20;
 	public static float timeStep = 1.0f / (1000 / Constants.FPS);
 	public static int iterations = 20;
 
@@ -23,7 +21,7 @@ public class Constants {
 	public static final float boundhxyScreen = 500.0f;
 	public static final float boundhxy = boundhxyScreen / pixelpermeter;
 
-	public static final float lowerBoundyScreen = 0f;
+	public static final float lowerBoundyScreen = 50f;
 	public static final float lowerBoundy = lowerBoundyScreen / pixelpermeter;
 
 	public static final float lowerBoundxScreen = 0f;
@@ -39,7 +37,7 @@ public class Constants {
 	public static int scoreTimeBonus;
 	public static int scoreLifeBonus;
 	public static int scoreStageBonus;
-	public static int scorePass;
+	public static int scoreToPassTheStage;
 	public static int playerKilledCount;
 	public static final float upperBoundy = upperBoundyScreen / pixelpermeter;
 

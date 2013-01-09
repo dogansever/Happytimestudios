@@ -102,8 +102,8 @@ public class FreeSprite {
 			destroyShape();
 			freeBitmaps();
 		} else if (this instanceof PlayerSprite && !gameView.idle) {
-			((PlayerSprite) this).setAlive(false);
-			Constants.playerKilledCount++;
+//			((PlayerSprite) this).setAlive(false);
+//			Constants.playerKilledCount++;
 			// PhysicsActivity.mWorld.bodies.remove(body);
 			// PhysicsActivity.mWorld.world.destroyBody(body);
 			// destroyShape();
@@ -184,16 +184,16 @@ public class FreeSprite {
 		}
 	}
 
-	protected void kickout(Vec2 positionSrc) {
-		Body body = getBody();
-		Vec2 positionTarget = body.getPosition();
-		Vec2 force = new Vec2(positionSrc.x / Constants.pixelpermeter - positionTarget.x, positionTarget.y - positionSrc.y / Constants.pixelpermeter);
-		force.normalize(); // force direction always point to source
-		force.set(force.mul((float) (body.getMass() * -10.0 * Constants.gravityy)));
-		body.applyImpulse(force, body.getWorldCenter());
-		// System.out.println("!!!Kicked it!!!:" + index + ", force:x:" +
-		// force.x + ", y:" + force.y);
-	}
+//	protected void kickout(Vec2 positionSrc) {
+//		Body body = getBody();
+//		Vec2 positionTarget = body.getPosition();
+//		Vec2 force = new Vec2(positionSrc.x / Constants.pixelpermeter - positionTarget.x, positionTarget.y - positionSrc.y / Constants.pixelpermeter);
+//		force.normalize(); // force direction always point to source
+//		force.set(force.mul((float) (body.getMass() * -10.0 * Constants.gravityy)));
+//		body.applyImpulse(force, body.getWorldCenter());
+//		// System.out.println("!!!Kicked it!!!:" + index + ", force:x:" +
+//		// force.x + ", y:" + force.y);
+//	}
 
 	public void onDraw(Canvas canvas) {
 		updatePosition();

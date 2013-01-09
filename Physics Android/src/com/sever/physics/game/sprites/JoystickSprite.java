@@ -45,22 +45,19 @@ public class JoystickSprite extends FreeSprite {
 				return;
 			}
 
-			float range = spacing(xn - x, yn - y);
-			if (range < width / 2) {
-
-			}
+			float range = spacing(xn - x, yn - y) * 0.0f;
 			this.xstick = xn;
 			this.ystick = yn;
-			if (x - xstick < -width * 0.2f) {
+			if (x - xstick < -range) {
 				((PlayerSprite) gameView.getPlayerSprite()).throttleRight();
 			}
-			if (x - xstick > width * 0.2f) {
+			if (x - xstick > range) {
 				((PlayerSprite) gameView.getPlayerSprite()).throttleLeft();
 			}
-			if (y - ystick < -width * 0.2f) {
+			if (y - ystick < -range) {
 				((PlayerSprite) gameView.getPlayerSprite()).throttleUp();
 			}
-			if (y - ystick > width * 0.2f) {
+			if (y - ystick > range) {
 				((PlayerSprite) gameView.getPlayerSprite()).throttleDown();
 			}
 		} catch (Exception e) {

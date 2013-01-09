@@ -9,19 +9,19 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Paint.Style;
+import android.graphics.Rect;
 
 import com.sever.physic.IntroActivity;
-import com.sever.physic.PhysicsActivity;
 import com.sever.physics.game.GameView;
+import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
 
 public class BonusLifeBarSprite extends FreeSprite {
 
 	private long time;
 	private long timeStart;
-	private long time_MAX = 60 * 10 * 1000;
+	private long time_MAX = 3 * 60 * 1000;
 
 	public BonusLifeBarSprite(GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
@@ -52,22 +52,53 @@ public class BonusLifeBarSprite extends FreeSprite {
 		time = time <= 0 ? 0 : time;
 		long sec = (time / 1000) % 60;
 		long min = time / (1000 * 60);
-		spriteBmp.currentFrame = 0;
-		spriteBmp.currentRow = (int) (spriteBmp.BMP_ROWS * (time) / time_MAX);
-		spriteBmp.currentRow = spriteBmp.currentRow == spriteBmp.BMP_ROWS ? spriteBmp.currentRow - 1 : spriteBmp.currentRow;
+		// spriteBmp.currentFrame = 0;
+		// spriteBmp.currentRow = (int) (spriteBmp.BMP_ROWS * (time) /
+		// time_MAX);
+		// spriteBmp.currentRow = spriteBmp.currentRow == spriteBmp.BMP_ROWS ?
+		// spriteBmp.currentRow - 1 : spriteBmp.currentRow;
 		Vec2 translate = getBitmapDrawingXY();
 		drawText("" + min + ":" + String.format("%02d", (int) sec), canvas, translate.x, translate.y);
 		draw(canvas);
 	}
 
 	private void draw(Canvas canvas) {
+		// int srcX = (int) (spriteBmp.currentFrame * width);
+		// int srcY = (int) (spriteBmp.currentRow * height);
+		// Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY +
+		// height));
+		// spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(),
+		// src.left, src.top, (int) width, (int) height);
+		//
+		// Matrix m = new Matrix();
+		// Vec2 translate = getBitmapDrawingXY();
+		// m.postTranslate(translate.x, translate.y);
+		// canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
+
+		spriteBmp.currentRow = 0;
+
+		float percentage = ((float) time) / ((float) time_MAX);
+		// percentage = 0.5f;
+
+		spriteBmp.currentFrame = 0;
 		int srcX = (int) (spriteBmp.currentFrame * width);
 		int srcY = (int) (spriteBmp.currentRow * height);
 		Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height));
-		spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) width, (int) height);
+		spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) (width), (int) height);
 
 		Matrix m = new Matrix();
 		Vec2 translate = getBitmapDrawingXY();
+		m.postTranslate(translate.x, translate.y);
+		canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
+
+		spriteBmp.currentFrame = 1;
+		srcX = (int) (spriteBmp.currentFrame * width);
+		srcY = (int) (spriteBmp.currentRow * height);
+		src = new Rect(srcX, srcY, (int) (srcX + percentage * width), (int) (srcY + height));
+		spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) (percentage * width), (int) height);
+
+		m = new Matrix();
+		translate = getBitmapDrawingXY();
 		m.postTranslate(translate.x, translate.y);
 		canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
 	}

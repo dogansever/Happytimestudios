@@ -11,11 +11,9 @@ import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
 
-public class LifeBarSprite extends FreeSprite {
+public class StagePassBarSprite extends FreeSprite {
 
-	private ActiveSprite activeSprite;
-
-	public LifeBarSprite(ActiveSprite activeSprite, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+	public StagePassBarSprite(GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
@@ -24,23 +22,13 @@ public class LifeBarSprite extends FreeSprite {
 		this.y = y;
 		this.noRotation = true;
 		this.manualFrameSet = true;
-		this.activeSprite = activeSprite;
 	}
 
 	public void onDraw(Canvas canvas) {
-		// spriteBmp.currentFrame = 0;
-		// spriteBmp.currentRow = spriteBmp.BMP_ROWS * activeSprite.life /
-		// activeSprite.life_MAX;
-		// spriteBmp.currentRow = spriteBmp.currentRow == spriteBmp.BMP_ROWS ?
-		// spriteBmp.currentRow - 1 : spriteBmp.currentRow;
-		x = activeSprite.x - activeSprite.width * 0.0f;
-		y = activeSprite.y + activeSprite.height * 0.75f;
-		super.onDraw(canvas);
-
 		spriteBmp.currentRow = 0;
 
-		float percentage = ((float) activeSprite.life) / ((float) activeSprite.life_MAX);
-		// percentage = 0.5f;
+		float percentage = ((float) Constants.scoreStage) / ((float) Constants.scoreToPassTheStage);
+//		percentage = 0.5f;
 
 		spriteBmp.currentFrame = 0;
 		int srcX = (int) (spriteBmp.currentFrame * width);
@@ -50,13 +38,7 @@ public class LifeBarSprite extends FreeSprite {
 
 		Matrix m = new Matrix();
 		Vec2 translate = getBitmapDrawingXY();
-		if (Constants.checkForQuake()) {
-			m.postTranslate(translate.x - Constants.extraWidthOffset + Constants.getQuakePower(), translate.y + Constants.extraHeightOffset + Constants.getQuakePower());
-		} else {
-			Constants.endQuake();
-			m.postTranslate(translate.x - Constants.extraWidthOffset, translate.y + Constants.extraHeightOffset);
-		}
-		// m.postTranslate(translate.x, translate.y);
+		m.postTranslate(translate.x, translate.y);
 		canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
 
 		spriteBmp.currentFrame = 1;
@@ -67,14 +49,9 @@ public class LifeBarSprite extends FreeSprite {
 
 		m = new Matrix();
 		translate = getBitmapDrawingXY();
-		if (Constants.checkForQuake()) {
-			m.postTranslate(translate.x - Constants.extraWidthOffset + Constants.getQuakePower(), translate.y + Constants.extraHeightOffset + Constants.getQuakePower());
-		} else {
-			Constants.endQuake();
-			m.postTranslate(translate.x - Constants.extraWidthOffset, translate.y + Constants.extraHeightOffset);
-		}
-		// m.postTranslate(translate.x, translate.y);
+		m.postTranslate(translate.x, translate.y);
 		canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
+
 	}
 
 }

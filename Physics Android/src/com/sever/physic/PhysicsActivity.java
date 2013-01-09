@@ -57,6 +57,7 @@ public class PhysicsActivity extends Activity {
 	public static Bitmap powerBar;
 	public static Bitmap lifeBar;
 	public static Bitmap lifeBarBonus;
+	public static Bitmap stagePassBar;
 	public static Bitmap fuelBar;
 	public static Bitmap joystick;
 	public static Bitmap fireButton;
@@ -91,8 +92,8 @@ public class PhysicsActivity extends Activity {
 		bombexploding = createScaledBitmap(R.drawable.bombexplodingx4x1, 0, 0);
 		bomb2 = createScaledBitmap(R.drawable.bombx4x1, 120, 30);
 		powerBar = createScaledBitmap(R.drawable.powerbar, 45, 60);
-		lifeBar = createScaledBitmap(R.drawable.powerbar, 45, 60);
-		lifeBarBonus = createScaledBitmap(R.drawable.powerbar, 135, 180);
+		lifeBar = createScaledBitmap(R.drawable.progresslife, (int) (225 * 0.5f), (int) (20 * 0.5f));
+		lifeBarBonus = createScaledBitmap(R.drawable.progressbonustime, (int) (394 * 0.5f), (int) (44 * 0.5f));
 		fuelBar = createScaledBitmap(R.drawable.fuelbar, 60, 45);
 		joystick = createScaledBitmap(R.drawable.joystick, 0, 0);
 		fireButton = createScaledBitmap(R.drawable.buttonred, 400, 200);
@@ -100,6 +101,7 @@ public class PhysicsActivity extends Activity {
 		hook = createScaledBitmap(R.drawable.hook, 0, 0);
 		enemypointer = createScaledBitmap(R.drawable.enemypointer, 0, 0);
 		weaponSwapButton = context.createScaledBitmap(R.drawable.buttongun2, 100, 100);
+		stagePassBar = createScaledBitmap(R.drawable.progress, (int) (394 * 0.5f), (int) (44 * 0.5f));
 
 		createWorld();
 		setContentView(R.layout.main);
@@ -116,7 +118,7 @@ public class PhysicsActivity extends Activity {
 	private void clearScore() {
 		Constants.scoreStage = 0;
 		Constants.scoreTotal = 0;
-		Constants.scorePass = 0;
+		Constants.scoreToPassTheStage = 0;
 		Constants.enemyKilledCount = 0;
 		Constants.playerKilledCount = 0;
 	}

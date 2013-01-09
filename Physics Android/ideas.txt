@@ -13,6 +13,10 @@ locking missiles locking on player
 leaving behind baits for incoming missiles
 multi touch support
 when destroyed, enemy will fly burning and explode if hits ground or somewhere
+explode effect on player
+main page design
+global ranking page design
+info page design (weapon infos and locked weapons)
 
 secondary:
 hook gun for player(revolt joint)
@@ -21,10 +25,6 @@ picking carrying releasing objects
 weapon shortcuts
 
 primary:
-explode effect on player
 Weapon reloading
-main page design
-global ranking page design
-info page design (weapon infos and locked weapons)
 
 

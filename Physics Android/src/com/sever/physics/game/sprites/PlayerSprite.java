@@ -73,6 +73,7 @@ public class PlayerSprite extends ActiveSprite {
 		life = life_MAX;
 		this.x = x;
 		this.y = y;
+		noPositionUpdate = false;
 		addSprite(x, y);
 		gameView.resumeIdleGame();
 		this.shiftLockOnME();
@@ -80,22 +81,26 @@ public class PlayerSprite extends ActiveSprite {
 
 	public void onDraw(Canvas canvas) {
 		if (!gameView.idle && life <= 0) {
-			killSprite();
+			((PlayerSprite) this).setAlive(false);
+			explodeBmp();
+			// killSprite();
 			return;
 		}
 
-		if (gameView.idle) {
-			return;
+		if (!gameView.idle) {
+			super.onDraw(canvas);
+			lifeBarSprite.onDraw(canvas);
+			fuelBarSprite.onDraw(canvas);
+			powerBarSprite.onDraw(canvas);
+			fireArrowSprite.onDraw(canvas);
+			shiftCheck();
+			hoverCheck();
+			fireTry();
+		}
+		if (gameView.idle && fades && FADE_LIFE > 0) {
+			super.onDraw(canvas);
 		}
 
-		super.onDraw(canvas);
-		lifeBarSprite.onDraw(canvas);
-		fuelBarSprite.onDraw(canvas);
-		powerBarSprite.onDraw(canvas);
-		fireArrowSprite.onDraw(canvas);
-		shiftCheck();
-		hoverCheck();
-		fireTry();
 	}
 
 	private void hoverCheck() {
@@ -321,9 +326,9 @@ public class PlayerSprite extends ActiveSprite {
 		playerDef.density = 10.0f;
 
 		// Assign shape to Body
-		getBody().createShape(playerDef);
+		// getBody().createShape(playerDef);
 
-		// getBody().createShape(circle);
+		getBody().createShape(circle);
 		getBody().setMassFromShapes();
 		getBody().setBullet(true);
 

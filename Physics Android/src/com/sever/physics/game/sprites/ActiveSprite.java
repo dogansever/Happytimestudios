@@ -118,7 +118,7 @@ public class ActiveSprite extends FreeSprite {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
 		bmp.add(PhysicsActivity.lifeBar);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
-		colsrows.add(new int[] { 1, 10 });
+		colsrows.add(new int[] { 2, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		lifeBarSprite = new LifeBarSprite(this, gameView, spriteBmp, x, y);
 	}

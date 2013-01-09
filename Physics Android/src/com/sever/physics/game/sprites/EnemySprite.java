@@ -169,8 +169,8 @@ public class EnemySprite extends ActiveSprite {
 			if (!killed) {
 				killed = true;
 				Constants.enemyKilledCount++;
-				killpointx = gameView.getPlayerSprite().x;
-				killpointy = gameView.getPlayerSprite().y;
+				killpointx = (float) (gameView.getPlayerSprite().x + Math.random() * 20);
+				killpointy = (float) (gameView.getPlayerSprite().y + Math.random() * 20);
 				boolean cont = gameView.updateScore(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
 				if (cont)
 					gameView.addEnemy(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
@@ -307,9 +307,9 @@ public class EnemySprite extends ActiveSprite {
 		playerDef.density = 10.0f;
 
 		// Assign shape to Body
-		getBody().createShape(playerDef);
+		// getBody().createShape(playerDef);
 
-		// getBody().createShape(circle);
+		getBody().createShape(circle);
 		getBody().setMassFromShapes();
 		getBody().setBullet(true);
 
