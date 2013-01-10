@@ -16,12 +16,13 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
 import com.sever.physic.IntroActivity;
-import com.sever.physic.PhysicsActivity;
 import com.sever.physic.PhysicsApplication;
 import com.sever.physics.game.GameView;
+import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.WeaponTypes;
+import com.sever.physics.game.utils.WeaponsManager;
 
 public class EnemySprite extends ActiveSprite {
 
@@ -60,20 +61,20 @@ public class EnemySprite extends ActiveSprite {
 
 	public void addEnemyPointerSprite() {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.enemypointer);
+		bmp.add(BitmapManager.enemypointer);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 1, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		enemyPointerSprite = new EnemyPointerSprite(this, gameView, spriteBmp, x, y);
 	}
 
-	public void activateBomb() {
-		wt = WeaponTypes.BOMB_BIG;
-	}
-
-	public void activateMissile() {
-		wt = WeaponTypes.MISSILE;
-	}
+//	public void activateBomb() {
+//		wt = WeaponTypes.BOMB_BIG;
+//	}
+//
+//	public void activateMissile() {
+//		wt = WeaponTypes.MISSILE;
+//	}
 
 	public void fireMissile() {
 		FreeSprite bullet = gameView.addMissile(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f, isMissileFacingRight(gameView.getPlayerSprite()));
@@ -188,7 +189,7 @@ public class EnemySprite extends ActiveSprite {
 		}
 		// throttleLeave();
 		if (killed) {
-			Integer bonus = gameView.getBonusScore(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
+			Integer bonus = WeaponsManager.getManager().getBonusByEnemyWT(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
 			drawText("+" + bonus, canvas, killpointx - Constants.extraWidthOffset, PhysicsApplication.deviceHeight - killpointy + Constants.extraHeightOffset - gameView.getPlayerSprite().height
 					- (255 - alpha));
 		}

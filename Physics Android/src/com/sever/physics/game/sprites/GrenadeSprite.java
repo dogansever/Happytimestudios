@@ -7,6 +7,7 @@ import org.jbox2d.common.Vec2;
 
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
+import com.sever.physics.game.utils.SoundEffectsManager;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.WeaponTypes;
 import com.sever.physics.game.utils.WeaponsManager;
@@ -80,11 +81,13 @@ public class GrenadeSprite extends FreeSprite {
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
 		angle = 0;
+		SoundEffectsManager.getManager().playEXPLODE_BOMB();
 	}
 
 	void addSprite(float x, float y) {
 		createDynamicBody(x, y);
 		createShape();
+		getBody().setAngularVelocity((float) (Math.random()*180));
 	}
 
 	public void createShape() {

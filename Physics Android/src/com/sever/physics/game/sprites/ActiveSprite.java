@@ -7,8 +7,9 @@ import org.jbox2d.dynamics.Body;
 
 import android.graphics.Bitmap;
 
-import com.sever.physic.PhysicsActivity;
+import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.Constants;
+import com.sever.physics.game.utils.SoundEffectsManager;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.WeaponTypes;
 import com.sever.physics.game.utils.WeaponsManager;
@@ -85,11 +86,12 @@ public class ActiveSprite extends FreeSprite {
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
 		angle = 180;
+		SoundEffectsManager.getManager().playEXPLODE_ROBOT();
 	}
 
 	public void addFireArrow() {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.fireArrow);
+		bmp.add(BitmapManager.fireArrow);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 10, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
@@ -98,7 +100,7 @@ public class ActiveSprite extends FreeSprite {
 
 	public void addFuelBar() {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.fuelBar);
+		bmp.add(BitmapManager.fuelBar);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 10, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
@@ -107,7 +109,7 @@ public class ActiveSprite extends FreeSprite {
 
 	public void addPowerBar() {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.powerBar);
+		bmp.add(BitmapManager.powerBar);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 1, 10 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
@@ -116,7 +118,7 @@ public class ActiveSprite extends FreeSprite {
 
 	public void addLifeBarSprite() {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.lifeBar);
+		bmp.add(BitmapManager.lifeBar);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 2, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);

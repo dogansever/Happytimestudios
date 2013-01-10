@@ -23,7 +23,7 @@ import com.sever.physics.game.utils.WeaponsManager;
 
 public class PlayerSprite extends ActiveSprite {
 
-	public Weapon weapon = WeaponsManager.getManager().firstWeapon();
+	public Weapon weapon = WeaponsManager.getManager().firstAvailableWeapon();
 	public boolean hoverOn;
 	public boolean powerOn;
 	public boolean powerPush;
@@ -74,6 +74,7 @@ public class PlayerSprite extends ActiveSprite {
 		this.x = x;
 		this.y = y;
 		noPositionUpdate = false;
+		weapon = WeaponsManager.getManager().firstAvailableWeapon();
 		addSprite(x, y);
 		gameView.resumeIdleGame();
 		this.shiftLockOnME();

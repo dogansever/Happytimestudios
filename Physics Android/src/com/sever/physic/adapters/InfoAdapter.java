@@ -8,10 +8,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.sever.physic.IntroActivity;
 import com.sever.physic.R;
+import com.sever.physics.game.utils.WeaponTypes;
+import com.sever.physics.game.utils.WeaponsManager;
 
 public class InfoAdapter extends BaseAdapter {
-	private int MAX_PAGE = 20;
+	private int MAX_PAGE = WeaponsManager.getManager().getWTListForPlayer().size();;
 	private Context myContext;
 
 	public InfoAdapter(Context c) {
@@ -19,12 +22,14 @@ public class InfoAdapter extends BaseAdapter {
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
-
+		WeaponTypes wt = WeaponsManager.getManager().getWTListForPlayer().get(position);
 		LinearLayout contentListLayout = (LinearLayout) ((android.app.Activity) myContext).getLayoutInflater().inflate(R.layout.introsubinfolistitem, null);
 		TextView t = (TextView) contentListLayout.findViewById(R.id.textView1);
-//		t.setText("infoinfoinfo..."+position);
+		t.setTypeface(IntroActivity.tf);
+		t.setTextSize(20);
+		t.setText(WeaponsManager.getManager().getWTInfo(wt) + ". Unlock at Stage#" + WeaponsManager.getManager().getWTUnlockLevel(wt));
 		ImageView iw = (ImageView) contentListLayout.findViewById(R.id.imageView1);
-//		iw.setImageResource(R.drawable.buttongun);
+		iw.setImageResource(WeaponsManager.getWTBitmap(wt));
 		return contentListLayout;
 	}
 

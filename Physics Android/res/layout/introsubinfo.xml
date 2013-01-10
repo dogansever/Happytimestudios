@@ -10,7 +10,7 @@
 
         <ListView
             android:id="@+id/listView1"
-            android:layout_width="400px"
+            android:layout_width="500px"
             android:layout_height="300px" >
         </ListView>
     </RelativeLayout>

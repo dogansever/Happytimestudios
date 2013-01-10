@@ -87,6 +87,8 @@ public class ButtonFireSprite extends FreeSprite {
 				return;
 			}
 
+			if (Math.abs(xstick - xn) > 20)
+				gameView.getPlayerSprite().facingRigth = xstick < xn;
 			// this.xstick = xn;
 			this.ystick = yn;
 			((PlayerSprite) gameView.getPlayerSprite()).fireHold();

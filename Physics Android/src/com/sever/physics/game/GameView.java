@@ -23,10 +23,8 @@ import android.view.SurfaceView;
 import com.sever.physic.IntroActivity;
 import com.sever.physic.PhysicsActivity;
 import com.sever.physic.PhysicsApplication;
-import com.sever.physic.StageEndActivity;
 import com.sever.physics.game.sprites.BonusLifeBarSprite;
 import com.sever.physics.game.sprites.BoxSprite;
-import com.sever.physics.game.sprites.BulletSprite;
 import com.sever.physics.game.sprites.ButtonFireSprite;
 import com.sever.physics.game.sprites.ButtonSwapWeaponSprite;
 import com.sever.physics.game.sprites.EnemySprite;
@@ -41,8 +39,10 @@ import com.sever.physics.game.sprites.PlanetSprite;
 import com.sever.physics.game.sprites.PlayerSprite;
 import com.sever.physics.game.sprites.StagePassBarSprite;
 import com.sever.physics.game.sprites.StaticBoxSprite;
+import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.Joint;
+import com.sever.physics.game.utils.SoundEffectsManager;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.StageManager;
 import com.sever.physics.game.utils.WeaponTypes;
@@ -77,6 +77,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	public int GAMEOVER_ALPHA_INCREMENT = 5;
 	public int GAMEOVER_ALPHA_MIN = 55;
 	public int GAMEOVER_ALPHA_MAX = 255;
+	public int GAMEOVER_WAIT_TIME = Constants.FPS * 5;
 	public int NEXT_STAGE_WAIT_TIME = 100;
 	public int NEXT_STAGE_WAIT_TIME_MAX = Constants.FPS * 5;
 	public boolean idle;
@@ -133,7 +134,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	public FreeSprite addJoystick(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.joystick);
+		bmp.add(BitmapManager.joystick);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 2, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
@@ -144,7 +145,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	public FreeSprite addFireButton(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.fireButton);
+		bmp.add(BitmapManager.fireButton);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 2, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
@@ -155,7 +156,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	public FreeSprite addSwapWeaponButton(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.weaponSwapButton);
+		bmp.add(BitmapManager.weaponSwapButton);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 1, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
@@ -166,109 +167,119 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	public FreeSprite addMissileLocking(float x, float y, boolean facingRight) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.missileLight);
-		bmp.add(PhysicsActivity.bombexploding);
+		bmp.add(BitmapManager.missileLight);
+		bmp.add(BitmapManager.bombexploding);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 4, 1 });
 		colsrows.add(new int[] { 4, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new MissileLockingSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.MISSILE_LOCKING, facingRight);
 		explosiveSprites.add(sprite);
+		SoundEffectsManager.getManager().playLAUNCH_ROCKET();
 		return sprite;
 	}
 
 	public FreeSprite addMissileLight(float x, float y, boolean facingRight) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.missileLight);
-		bmp.add(PhysicsActivity.bombexploding);
+		bmp.add(BitmapManager.missileLight);
+		bmp.add(BitmapManager.bombexploding);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 4, 1 });
 		colsrows.add(new int[] { 4, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new MissileSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.MISSILE_LIGHT, facingRight);
 		explosiveSprites.add(sprite);
+		SoundEffectsManager.getManager().playLAUNCH_ROCKET();
 		return sprite;
 	}
 
 	public FreeSprite addMissile(float x, float y, boolean facingRight) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.missile);
-		bmp.add(PhysicsActivity.bombexploding);
+		bmp.add(BitmapManager.missile);
+		bmp.add(BitmapManager.bombexploding);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 4, 1 });
 		colsrows.add(new int[] { 4, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new MissileSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.MISSILE, facingRight);
 		explosiveSprites.add(sprite);
+		SoundEffectsManager.getManager().playLAUNCH_ROCKET();
 		return sprite;
 	}
 
 	public FreeSprite addBullet(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.bmpBall);
+		bmp.add(BitmapManager.bmpBall);
+		bmp.add(BitmapManager.bombexploding);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 1, 1 });
+		colsrows.add(new int[] { 4, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
-		FreeSprite sprite = new BulletSprite(freeSprites, this, spriteBmp, x, y, WeaponTypes.BULLET);
-		freeSprites.add(sprite);
+		FreeSprite sprite = new GrenadeSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.BULLET);
+		explosiveSprites.add(sprite);
+		SoundEffectsManager.getManager().playTHROW_BOMB();
 		return sprite;
 	}
 
 	public FreeSprite addGrenadeTriple(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.bombtriple);
-		bmp.add(PhysicsActivity.bombexploding);
+		bmp.add(BitmapManager.bombtriple);
+		bmp.add(BitmapManager.bombexploding);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 2, 1 });
 		colsrows.add(new int[] { 4, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new GrenadeSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.BOMB_TRIPLE);
 		explosiveSprites.add(sprite);
+		SoundEffectsManager.getManager().playTHROW_BOMB();
 		return sprite;
 	}
 
 	public FreeSprite addGrenadeSmall(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.bombsmall);
-		bmp.add(PhysicsActivity.bombexploding);
+		bmp.add(BitmapManager.bombsmall);
+		bmp.add(BitmapManager.bombexploding);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 2, 1 });
 		colsrows.add(new int[] { 4, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new GrenadeSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.BOMB);
 		explosiveSprites.add(sprite);
+		SoundEffectsManager.getManager().playTHROW_BOMB();
 		return sprite;
 	}
 
 	public FreeSprite addGrenade(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.bomb);
-		bmp.add(PhysicsActivity.bombexploding);
+		bmp.add(BitmapManager.bomb);
+		bmp.add(BitmapManager.bombexploding);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 2, 1 });
 		colsrows.add(new int[] { 4, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new GrenadeSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.BOMB_BIG);
 		explosiveSprites.add(sprite);
+		SoundEffectsManager.getManager().playTHROW_BOMB();
 		return sprite;
 	}
 
 	public FreeSprite addGrenadeImploding(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.bomb2);
-		bmp.add(PhysicsActivity.bombexploding);
+		bmp.add(BitmapManager.bomb2);
+		bmp.add(BitmapManager.bombexploding);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 4, 1 });
 		colsrows.add(new int[] { 4, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new GrenadeImplodeSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.BOMB_IMPLODING);
 		explosiveSprites.add(sprite);
+		SoundEffectsManager.getManager().playTHROW_BOMB();
 		return sprite;
 	}
 
 	public FreeSprite addBox(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.bmpBox);
+		bmp.add(BitmapManager.bmpBox);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 1, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
@@ -279,7 +290,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	public void addBox2(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.bmpBox2);
+		bmp.add(BitmapManager.bmpBox2);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 1, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
@@ -288,7 +299,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	public void addBarrel(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.barrel);
+		bmp.add(BitmapManager.barrel);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 1, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
@@ -297,7 +308,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	public void addPlanetStatic(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.planet1);
+		bmp.add(BitmapManager.planet1);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 1, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
@@ -306,7 +317,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	public FreeSprite addHookStatic(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.hook);
+		bmp.add(BitmapManager.hook);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 1, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
@@ -316,7 +327,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	public FreeSprite addBoxStatic(float x, float y, int w, int h) {
-		Bitmap bmpx = PhysicsActivity.context.createScaledBitmap(PhysicsActivity.ground, w, h);
+		Bitmap bmpx = BitmapManager.getManager().createScaledBitmap(BitmapManager.ground, w, h);
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
 		bmp.add(bmpx);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
@@ -335,7 +346,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	public void addBonusLifeBarSprite(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.lifeBarBonus);
+		bmp.add(BitmapManager.lifeBarBonus);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 2, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
@@ -345,7 +356,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	public void addStagePassBarSprite(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.stagePassBar);
+		bmp.add(BitmapManager.stagePassBar);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 2, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
@@ -355,25 +366,25 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	public void addPlayer(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.player);
-		bmp.add(PhysicsActivity.playerThrottle);
-		bmp.add(PhysicsActivity.enemyexploding);
+		bmp.add(BitmapManager.player);
+		bmp.add(BitmapManager.playerThrottle);
+		bmp.add(BitmapManager.playerexploding);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 2, 2 });
 		colsrows.add(new int[] { 2, 2 });
 		colsrows.add(new int[] { 3, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		playerSprite.add(new PlayerSprite(playerSprite, this, spriteBmp, x, y));
-		((PlayerSprite) getPlayerSprite()).weapon = WeaponsManager.getManager().nextWeapon();
+		((PlayerSprite) getPlayerSprite()).weapon = WeaponsManager.getManager().firstAvailableWeapon();
 		((PlayerSprite) getPlayerSprite()).setFly(true);
 	}
 
 	public void addEnemy(float x, float y, WeaponTypes wt, Boolean fly) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(PhysicsActivity.enemy);
-		bmp.add(PhysicsActivity.enemyThrottle);
-		bmp.add(PhysicsActivity.enemyexploding);
-		bmp.add(PhysicsActivity.enemyBurning);
+		bmp.add(WeaponsManager.getManager().getEnemyBitmapByWT(wt, fly));
+		bmp.add(WeaponsManager.getManager().getEnemyThrottleBitmapByWT(wt, fly));
+		bmp.add(WeaponsManager.getManager().getEnemyExplodingBitmapByWT(wt, fly));
+		bmp.add(WeaponsManager.getManager().getEnemyBurningBitmapByWT(wt, fly));
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 2, 1 });
 		colsrows.add(new int[] { 2, 2 });
@@ -624,7 +635,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		paint.setTextSize(50);
 		canvas.drawText("GAME OVER", 400, 300, paint);
 		paint.setTextSize(20);
-		canvas.drawText("(Touch to Go to Main Menu)", 400, 350, paint);
+		if (GAMEOVER_WAIT_TIME-- <= 0) {
+			GAMEOVER_WAIT_TIME = 0;
+			canvas.drawText("(Touch to Go to Main Menu)", 400, 350, paint);
+		}
 	}
 
 	private void drawTextStageStart(Canvas canvas) {
@@ -716,15 +730,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	private void drawBackground(Canvas canvas) {
 
-		Rect src = new Rect(shiftWidth, 0, PhysicsActivity.bmpBack.getWidth(), PhysicsActivity.bmpBack.getHeight());
+		Rect src = new Rect(shiftWidth, 0, BitmapManager.bmpBack.getWidth(), BitmapManager.bmpBack.getHeight());
 		Rect dst = new Rect(0, 0, getWidth() - shiftWidth, getHeight());
-		canvas.drawBitmap(PhysicsActivity.bmpBack, src, dst, null);
+		canvas.drawBitmap(BitmapManager.bmpBack, src, dst, null);
 
-		src = new Rect(0, 0, shiftWidth, PhysicsActivity.bmpBack.getHeight());
+		src = new Rect(0, 0, shiftWidth, BitmapManager.bmpBack.getHeight());
 		dst = new Rect(getWidth() - shiftWidth, 0, getWidth(), getHeight());
-		canvas.drawBitmap(PhysicsActivity.bmpBack, src, dst, null);
+		canvas.drawBitmap(BitmapManager.bmpBack, src, dst, null);
 		shiftWidth++;
-		if (PhysicsActivity.bmpBack.getWidth() == shiftWidth) {
+		if (BitmapManager.bmpBack.getWidth() == shiftWidth) {
 			shiftWidth = 0;
 		}
 	}
@@ -813,7 +827,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				actionString = "UP";
 			case MotionEvent.ACTION_POINTER_UP:
 				actionString = "UP PNTR";
-				if (idle) {
+				if (idle && GAMEOVER_WAIT_TIME == 0) {
 					finishGame = true;
 					// ((PlayerSprite) getPlayerSprite()).setAlive(true);
 					// ((PlayerSprite) getPlayerSprite()).restartSprite(x +
@@ -933,31 +947,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	private void addStageEnemies() {
 		ArrayList<Integer> stageData = StageManager.getManager().getStage();
-		for (int i = 0; i < stageData.get(0); i++) {
-			addEnemy(WeaponTypes.MISSILE_LIGHT, false);
+		int enemyLevel;
+		for (int i = 0; i < stageData.size() - 1; i++) {
+			enemyLevel = i + 1;
+			for (int j = 0; j < stageData.get(i); j++) {
+				addEnemy(WeaponsManager.getManager().getWTByEnemyLevel(enemyLevel), WeaponsManager.getManager().getFlyByEnemyLevel(enemyLevel));
+			}
 		}
-		for (int i = 0; i < stageData.get(1); i++) {
-			addEnemy(WeaponTypes.MISSILE, false);
-		}
-		for (int i = 0; i < stageData.get(2); i++) {
-			addEnemy(WeaponTypes.MISSILE_LOCKING, false);
-		}
-		for (int i = 0; i < stageData.get(3); i++) {
-			addEnemy(WeaponTypes.BOMB, true);
-		}
-		for (int i = 0; i < stageData.get(4); i++) {
-			addEnemy(WeaponTypes.BOMB_BIG, true);
-		}
-		for (int i = 0; i < stageData.get(5); i++) {
-			addEnemy(WeaponTypes.MISSILE_LIGHT, true);
-		}
-		for (int i = 0; i < stageData.get(6); i++) {
-			addEnemy(WeaponTypes.MISSILE, true);
-		}
-		for (int i = 0; i < stageData.get(7); i++) {
-			addEnemy(WeaponTypes.MISSILE_LOCKING, true);
-		}
-		Constants.scoreToPassTheStage = stageData.get(8);
+		Constants.scoreToPassTheStage = stageData.get(stageData.size() - 1);
 
 	}
 
@@ -968,6 +965,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	private void checkGameStatus() {
 		if (!idle && !((PlayerSprite) getPlayerSprite()).isAlive()) {
 			alphaStageEndGameOver = 255;
+			GAMEOVER_WAIT_TIME = 100;
 			newStagePointx = (float) (getPlayerSprite().x + +Math.random() * 20);
 			newStagePointy = (float) (getPlayerSprite().y + +Math.random() * 20);
 			idleGame();
@@ -1079,24 +1077,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		}
 	}
 
-	public Integer getBonusScore(WeaponTypes wt, boolean fly) {
-		Integer bonus = 0;
-		if (wt == WeaponTypes.BOMB) {
-			bonus = 10;
-		} else if (wt == WeaponTypes.BOMB_BIG) {
-			bonus = 20;
-		} else if (wt == WeaponTypes.MISSILE_LIGHT) {
-			bonus = fly ? 30 : 15;
-		} else if (wt == WeaponTypes.MISSILE) {
-			bonus = fly ? 40 : 20;
-		} else if (wt == WeaponTypes.MISSILE_LOCKING) {
-			bonus = fly ? 50 : 25;
-		}
-		return bonus;
-	}
-
 	public boolean updateScore(WeaponTypes wt, boolean fly) {
-		Constants.scoreStage += getBonusScore(wt, fly);
+		Constants.scoreStage += WeaponsManager.getManager().getBonusByEnemyWT(wt, fly);
 		return Constants.scoreToPassTheStage > Constants.scoreStage;
 	}
 }

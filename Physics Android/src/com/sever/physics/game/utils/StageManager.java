@@ -9,6 +9,7 @@ public class StageManager {
 
 	static {
 		stageList = new ArrayList<ArrayList<Integer>>();
+		// grML,gtM,grMLo,flyB,flyBBig,flyML,flyM,flyMLo
 		stageList.add(prepareStage(1, 0, 0, 0, 0, 0, 0, 0, 100));
 		stageList.add(prepareStage(1, 1, 0, 0, 0, 0, 0, 0, 100));
 		stageList.add(prepareStage(1, 0, 0, 1, 0, 0, 0, 0, 100));

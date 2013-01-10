@@ -17,14 +17,18 @@ explode effect on player
 main page design
 global ranking page design
 info page design (weapon infos and locked weapons)
+Weapon reloading
+implement explosive mines
 
 secondary:
 hook gun for player(revolt joint)
 survival in seconds and in enemy counts (score points)
 picking carrying releasing objects
 weapon shortcuts
+put some explosive things around
 
 primary:
-Weapon reloading
+implement sounds(robot sounds,explosions,firing,throttle,next stage,gameover,game start,weapon swap)
+draw graphics
 
 

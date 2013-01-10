@@ -9,9 +9,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 
-import com.sever.physic.PhysicsActivity;
-import com.sever.physic.PhysicsApplication;
 import com.sever.physics.game.GameView;
+import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.WeaponsManager;
 
@@ -31,6 +30,7 @@ public class ButtonSwapWeaponSprite extends FreeSprite {
 		this.noRotation = true;
 		this.manualFrameSet = true;
 		this.spriteList = spriteList;
+		WeaponsManager.refreshSwapWeaponButtonBitmap();
 	}
 
 	private void deactivate() {
@@ -60,8 +60,8 @@ public class ButtonSwapWeaponSprite extends FreeSprite {
 
 		activate();
 
-		((PlayerSprite) gameView.getPlayerSprite()).weapon = WeaponsManager.getManager().nextWeapon();
-		PhysicsActivity.refreshSwapWeaponButtonBitmap();
+		((PlayerSprite) gameView.getPlayerSprite()).weapon = WeaponsManager.getManager().nextAvailableWeapon();
+		WeaponsManager.refreshSwapWeaponButtonBitmap();
 	}
 
 	public void onUp(float xn, float yn) {
@@ -83,7 +83,7 @@ public class ButtonSwapWeaponSprite extends FreeSprite {
 		int srcX = (int) (spriteBmp.currentFrame * width);
 		int srcY = (int) (spriteBmp.currentRow * height);
 		Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height * percentage));
-		spriteBmp.bmpFrame = Bitmap.createBitmap(PhysicsActivity.weaponSwapButton, src.left, src.top, (int) width, (int) (height * percentage));
+		spriteBmp.bmpFrame = Bitmap.createBitmap(BitmapManager.weaponSwapButton, src.left, src.top, (int) width, (int) (height * percentage));
 
 		Matrix m = new Matrix();
 		Vec2 translate = getBitmapDrawingXY();
