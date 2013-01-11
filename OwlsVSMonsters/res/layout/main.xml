@@ -670,8 +670,8 @@
 
             <Button
                 android:id="@+id/button3"
-                android:layout_width="30px"
-                android:layout_height="30px"
+                android:layout_width="50px"
+                android:layout_height="50px"
                 android:background="@drawable/pause"
                 android:onClick="doPauseClick" />
 

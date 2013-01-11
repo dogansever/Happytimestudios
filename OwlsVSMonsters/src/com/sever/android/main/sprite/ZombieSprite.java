@@ -3,17 +3,17 @@ package com.sever.android.main.sprite;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.sever.android.main.GameGameActivity;
-import com.sever.android.main.GameLoopThread;
-import com.sever.android.main.GameView;
-import com.sever.android.main.StartActivity;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Rect;
-import android.media.MediaPlayer;
+
+import com.sever.android.main.GameGameActivity;
+import com.sever.android.main.GameLoopThread;
+import com.sever.android.main.GameView;
+import com.sever.android.main.StartActivity;
 
 public class ZombieSprite {
 	// direction = 0 up, 1 left, 2 down, 3 right,
@@ -54,7 +54,7 @@ public class ZombieSprite {
 
 	public void killed() {
 		if (--resurrect > 0) {
-			x -= xSpeed * 10;
+			x -= xSpeed * 50;
 			currentFrame = 0;
 			return;
 		}
@@ -63,7 +63,8 @@ public class ZombieSprite {
 			return;
 		GameGameActivity.RIGHTCOUNT++;
 		gameView.incrementScore(index);
-		GameGameActivity.context.showPointText(index);
+		alpha = 255;
+		// GameGameActivity.context.showPointText(index);
 		GameGameActivity.context.updateScore();
 		killed = true;
 		this.bmp = bmpDie;
@@ -157,11 +158,11 @@ public class ZombieSprite {
 		return this;
 	}
 
-	public ZombieSprite makeFallBack() {
-		x -= xSpeed * 20;
-		// currentFrame = 0;
-		return this;
-	}
+//	public ZombieSprite makeFallBack() {
+//		x -= xSpeed * 200;
+//		// currentFrame = 0;
+//		return this;
+//	}
 
 	public ZombieSprite makeZombieRun() {
 		walking = false;
@@ -172,7 +173,7 @@ public class ZombieSprite {
 	public ZombieSprite makeZombieTough() {
 		walking = true;
 		xSpeed *= 1;
-		resurrect = 3;
+		resurrect = 2;
 		return this;
 	}
 
@@ -224,6 +225,7 @@ public class ZombieSprite {
 	}
 
 	private float bmpPercentage = (float) (StartActivity.deviceHeight / 800.0f);
+	private int alpha = 0;
 
 	public void onDraw(Canvas canvas) {
 		update();
@@ -234,6 +236,8 @@ public class ZombieSprite {
 		Paint p = new Paint();
 		canvas.drawColor(Color.TRANSPARENT);
 		canvas.drawBitmap(bmp, src, dst, null);
+		alpha -= alpha / 10;
+		drawText("+" + (GameGameActivity.context.getGameView().getPoint()), canvas, x + width * bmpPercentage * 0.5f, y + height * bmpPercentage * 0.5f - (255 - alpha) / 5, alpha);
 	}
 
 	private int getAnimationRow() {
@@ -244,5 +248,23 @@ public class ZombieSprite {
 
 	public boolean isCollision(float x2, float y2) {
 		return x2 > x && x2 < x + width * bmpPercentage && y2 > y && y2 < y + height * bmpPercentage;
+	}
+
+	private void drawText(String text, Canvas canvas, float x, float y, int alpha) {
+		if (alpha <= 0)
+			return;
+
+		Paint paint = new Paint();
+		paint.setColor(Color.WHITE);
+		paint.setStyle(Style.FILL);
+		// Typeface chops =
+		// Typeface.createFromAsset(PhysicsActivity.context.getAssets(),
+		// "FEASFBRG.TTF");
+		// paint.setTypeface(chops);
+		paint.setTypeface(StartActivity.context.face);
+		paint.setColor(Color.WHITE);
+		paint.setAlpha(alpha <= 0 ? 0 : alpha);
+		paint.setTextSize(20);
+		canvas.drawText(text, x, y, paint);
 	}
 }

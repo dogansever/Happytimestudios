@@ -493,7 +493,7 @@ public class GameGameActivity extends Activity {
 		layout05.setVisibility(View.GONE);
 	}
 
-	private GameView getGameView() {
+	public GameView getGameView() {
 		RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout3);
 		return (GameView) relativeLayout.getChildAt(0);
 	}

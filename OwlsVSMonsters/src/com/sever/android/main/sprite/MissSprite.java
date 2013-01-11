@@ -32,7 +32,7 @@ public class MissSprite extends FreeSprite {
 		this.sprites = sprites;
 		this.gameView = gameView;
 		this.x = (int) (700.0f * StartActivity.deviceWidth / 1200.0f);
-		int rowY = gameView.rowQueue.get(index);
+		int rowY = (int) (gameView.rowQueue.get(index) - Math.random() * StartActivity.deviceHeight * 0.1f);
 		this.y = (int) (rowY - height * bmpPercentage);
 	}
 
