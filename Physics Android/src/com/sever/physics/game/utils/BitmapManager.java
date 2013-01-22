@@ -81,7 +81,7 @@ public class BitmapManager {
 		bomb2 = createScaledBitmap(R.drawable.bombx4x1, 120, 30);
 		powerBar = createScaledBitmap(R.drawable.powerbar, 45, 60);
 		lifeBar = createScaledBitmap(R.drawable.progresslife, (int) (225 * 0.4f), (int) (20 * 0.4f));
-		lifeBarBonus = createScaledBitmap(R.drawable.progressbonustime, (int) (394 * 0.5f), (int) (44 * 0.5f));
+		lifeBarBonus = createScaledBitmap(R.drawable.progressbonustime, (int) (394 * 0.75f), (int) (44 * 0.75f));
 		fuelBar = createScaledBitmap(R.drawable.fuelbar, 60, 45);
 		joystick = createScaledBitmap(R.drawable.joystick, 0, 0);
 		fireButton = createScaledBitmap(R.drawable.buttonred, 400, 200);
@@ -89,7 +89,7 @@ public class BitmapManager {
 		hook = createScaledBitmap(R.drawable.hook, 0, 0);
 		enemypointer = createScaledBitmap(R.drawable.enemypointer, 0, 0);
 		weaponSwapButton = createScaledBitmap(R.drawable.buttongun2, 100, 100);
-		stagePassBar = createScaledBitmap(R.drawable.progress, (int) (394 * 0.5f), (int) (44 * 0.5f));
+		stagePassBar = createScaledBitmap(R.drawable.progress, (int) (394 * 0.75f), (int) (44 * 0.75f));
 	}
 
 	public Bitmap createScaledBitmap(Bitmap bmp, float scale) {

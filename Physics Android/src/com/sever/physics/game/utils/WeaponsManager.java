@@ -11,10 +11,10 @@ import com.sever.physics.game.sprites.PlayerSprite;
 
 public class WeaponsManager {
 
-	private static final int DAMAGE_LOW = 10;
-	private static final int DAMAGE_MEDIUM = 20;
-	private static final int DAMAGE_HIGH = 30;
-	private static final int DAMAGE_VERYHIGH = 100;
+	private static final int DAMAGE_LOW = 15;
+	private static final int DAMAGE_MEDIUM = 25;
+	private static final int DAMAGE_HIGH = 40;
+	private static final int DAMAGE_VERYHIGH = 50;
 	private static final int RADIUS_NARROW = 30;
 	private static final int RADIUS_MEDIUM = 30;
 	private static final int RADIUS_WIDE = 60;
@@ -45,7 +45,7 @@ public class WeaponsManager {
 	// return currentWeapon.isAvailable();
 	// }
 
-	public float getPercentageByType(WeaponTypes wt, Boolean fly) {
+	public float getBitmapPercentageByType(WeaponTypes wt, Boolean fly) {
 		if (wt == WeaponTypes.MISSILE) {
 			return fly ? 0.7f : 0.9f;
 		}
@@ -163,7 +163,7 @@ public class WeaponsManager {
 			resId = R.drawable.enemy2x1;
 		}
 
-		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getPercentageByType(wt, fly));
+		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getBitmapPercentageByType(wt, fly));
 	}
 
 	public Bitmap getEnemyThrottleBitmapByWT(WeaponTypes wt, Boolean fly) {
@@ -184,7 +184,7 @@ public class WeaponsManager {
 			resId = R.drawable.enemythrottlex2x2;
 		}
 
-		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getPercentageByType(wt, fly));
+		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getBitmapPercentageByType(wt, fly));
 	}
 
 	public Bitmap getEnemyBurningBitmapByWT(WeaponTypes wt, Boolean fly) {
@@ -205,7 +205,7 @@ public class WeaponsManager {
 			resId = R.drawable.enemyburningx2x2;
 		}
 
-		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getPercentageByType(wt, fly));
+		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getBitmapPercentageByType(wt, fly));
 	}
 
 	public Bitmap getEnemyExplodingBitmapByWT(WeaponTypes wt, Boolean fly) {
@@ -226,7 +226,7 @@ public class WeaponsManager {
 			resId = R.drawable.enemyexplosionx3x1;
 		}
 
-		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getPercentageByType(wt, fly));
+		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getBitmapPercentageByType(wt, fly));
 	}
 
 	public static void refreshSwapWeaponButtonBitmap() {
@@ -299,7 +299,7 @@ public class WeaponsManager {
 			unlockLevel = 6;
 		}
 		if (wt == WeaponTypes.MISSILE_LIGHT) {
-			unlockLevel = 1;
+			unlockLevel = 0;
 		}
 		if (wt == WeaponTypes.BOMB_TRIPLE) {
 			unlockLevel = 4;
@@ -308,15 +308,26 @@ public class WeaponsManager {
 			unlockLevel = 10;
 		}
 		if (wt == WeaponTypes.BOMB) {
-			unlockLevel = 1;
+			unlockLevel = 0;
 		}
 		if (wt == WeaponTypes.BOMB_BIG) {
 			unlockLevel = 7;
 		}
 		if (wt == WeaponTypes.BULLET) {
-			unlockLevel = 1;
+			unlockLevel = 0;
 		}
 		return unlockLevel;
+	}
+
+	public boolean isNewWeaponUnlocked(boolean b) {
+		int level = Integer.parseInt((String) IntroActivity.dbDBWriteUtil.getBestScore(1));
+		ArrayList<WeaponTypes> list = getWTListForPlayer();
+		for (WeaponTypes weaponTypes : list) {
+			if (getWTUnlockLevel(weaponTypes) == level && b) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public ArrayList<WeaponTypes> getWTListForPlayer() {

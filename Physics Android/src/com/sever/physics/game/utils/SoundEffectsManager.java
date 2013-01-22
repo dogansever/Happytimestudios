@@ -17,6 +17,8 @@ public class SoundEffectsManager {
 	private static final Integer EXPLODE_ROBOT = 2;
 	private static final Integer LAUNCH_ROCKET = 3;
 	private static final Integer THROW_BOMB = 4;
+	private static final Integer PLAYER_THROW_BOMB = 5;
+	private static final Integer ROBOT_THROTTLE = 6;
 	private SoundPool soundPool;
 	private HashMap<Integer, Integer> soundPoolMap;
 	private static MediaPlayer mp1;
@@ -42,6 +44,8 @@ public class SoundEffectsManager {
 		soundPoolMap.put(EXPLODE_ROBOT, soundPool.load(PhysicsActivity.context, R.raw.robot_explode, 1));
 		soundPoolMap.put(LAUNCH_ROCKET, soundPool.load(PhysicsActivity.context, R.raw.rocketlaunching01, 1));
 		soundPoolMap.put(THROW_BOMB, soundPool.load(PhysicsActivity.context, R.raw.throwbomb, 1));
+		soundPoolMap.put(PLAYER_THROW_BOMB, soundPool.load(PhysicsActivity.context, R.raw.robotthrowing, 1));
+		soundPoolMap.put(ROBOT_THROTTLE, soundPool.load(PhysicsActivity.context, R.raw.robot, 1));
 	}
 
 	public void stopSound(int sound) {
@@ -93,5 +97,13 @@ public class SoundEffectsManager {
 
 	public void playTHROW_BOMB() {
 		playSound(this.THROW_BOMB);
+	}
+
+	public void playROBOT_THROTTLE() {
+		playSound(this.ROBOT_THROTTLE);
+	}
+
+	public void playPLAYER_THROW_BOMB() {
+		playSound(this.PLAYER_THROW_BOMB);
 	}
 }

@@ -13,6 +13,8 @@ import com.sever.physics.game.utils.SpriteBmp;
 
 public class StagePassBarSprite extends FreeSprite {
 
+	private float percentagePrev;
+
 	public StagePassBarSprite(GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
 		this.width = spriteBmp.getWidth();
@@ -28,7 +30,15 @@ public class StagePassBarSprite extends FreeSprite {
 		spriteBmp.currentRow = 0;
 
 		float percentage = ((float) Constants.scoreStage) / ((float) Constants.scoreToPassTheStage);
-//		percentage = 0.5f;
+		if (percentage == 0) {
+			percentagePrev = 0;
+		}
+		if (percentage <= percentagePrev) {
+			percentagePrev = percentage;
+		} else {
+			percentage = percentagePrev + (percentage - percentagePrev) * 0.1f;
+			percentagePrev = percentage;
+		}
 
 		spriteBmp.currentFrame = 0;
 		int srcX = (int) (spriteBmp.currentFrame * width);

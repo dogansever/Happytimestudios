@@ -162,6 +162,7 @@ public class EnemySprite extends ActiveSprite {
 		alpha -= 5;
 		paint.setAlpha(alpha <= 0 ? 0 : alpha);
 		paint.setTextSize(20);
+		paint.setTextAlign(Paint.Align.CENTER);
 		canvas.drawText(text, x, y, paint);
 	}
 

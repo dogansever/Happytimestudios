@@ -118,7 +118,7 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 
 	}
 
-	public void addScore(String scoreColumn, String dateColumn, String stageColumn) {
+	public void updateScoreIfNewBestAchieved(String scoreColumn, String dateColumn, String stageColumn) {
 		String username = (String) getBestScore(2);
 		String score = (String) getBestScore(0);
 		if (Integer.parseInt(score) < Integer.parseInt(scoreColumn)) {

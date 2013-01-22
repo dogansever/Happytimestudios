@@ -14,14 +14,13 @@ import android.graphics.Rect;
 
 import com.sever.physic.IntroActivity;
 import com.sever.physics.game.GameView;
-import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
 
 public class BonusLifeBarSprite extends FreeSprite {
 
 	private long time;
 	private long timeStart;
-	private long time_MAX = 3 * 60 * 1000;
+	private long time_MAX = 10 * 60 * 1000;
 
 	public BonusLifeBarSprite(GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
@@ -110,6 +109,7 @@ public class BonusLifeBarSprite extends FreeSprite {
 		paint.setTypeface(IntroActivity.tf);
 		paint.setColor(Color.WHITE);
 		paint.setTextSize(20);
+		paint.setTextAlign(Paint.Align.CENTER);
 		canvas.drawText(text, x, y, paint);
 	}
 }
