@@ -45,6 +45,7 @@ public class BitmapManager {
 	public static Bitmap portalButton;
 	public static Bitmap fireArrow;
 	public static Bitmap hook;
+	public static Bitmap smoke;
 	static {
 
 	}
@@ -74,7 +75,7 @@ public class BitmapManager {
 		bombtriple = createScaledBitmap(R.drawable.ammobombtriplex2x1, 50, 25);
 		bombtimer = createScaledBitmap(R.drawable.ammobombtimerx2x1, 120, 30);
 		bombexploding = createScaledBitmap(R.drawable.explosion01x4x1, 0, 0);
-		powerBar = createScaledBitmap(R.drawable.powerbar, 45, 60);
+		powerBar = createScaledBitmap(R.drawable.powerbar, (int) (225 * 0.4f), (int) (20 * 0.4f));
 		lifeBar = createScaledBitmap(R.drawable.progressbarslife, (int) (225 * 0.4f), (int) (20 * 0.4f));
 		fuelBar = createScaledBitmap(R.drawable.fuelbar, 60, 45);
 		joystick = createScaledBitmap(R.drawable.joystick, 0, 0);
@@ -86,6 +87,7 @@ public class BitmapManager {
 		portalButton = createScaledBitmap(R.drawable.buttonsportal, 100, 100);
 		stagePassBar = createScaledBitmap(R.drawable.progressbarsstage, (int) (394 * 0.75f), (int) (44 * 0.75f));
 		lifeBarBonus = createScaledBitmap(R.drawable.progressbarstime, (int) (394 * 0.75f), (int) (44 * 0.75f));
+		smoke = createScaledBitmap(R.drawable.smokex2x1, 0, 0);
 	}
 
 	public Bitmap createScaledBitmap(Bitmap bmp, float scale) {

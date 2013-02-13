@@ -205,6 +205,8 @@ public class EnemySprite extends ActiveSprite {
 				BULLET_FIRE_WAIT_TIME = BULLET_FIRE_WAIT_TIME_MAX + new Random().nextInt(BULLET_FIRE_WAIT_TIME_MAX);
 				fire();
 			}
+
+			throttleLeave();
 			moveToPlayer();
 			lifeBarSprite.onDraw(canvas);
 			enemyPointerSprite.onDraw(canvas);
@@ -285,12 +287,12 @@ public class EnemySprite extends ActiveSprite {
 
 	public void throttleLeave() {
 		throttleOffBmp();
-		fuel_AGG = 3;
-		fuel = fuel + fuel_AGG;
-		if (fuel >= fuel_MAX) {
-			fuel = fuel_MAX;
-			return;
-		}
+//		fuel_AGG = 3;
+//		fuel = fuel + fuel_AGG;
+//		if (fuel >= fuel_MAX) {
+//			fuel = fuel_MAX;
+//			return;
+//		}
 	}
 
 	public void throttlexBmp() {

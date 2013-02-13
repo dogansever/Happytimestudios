@@ -111,7 +111,7 @@ public class ActiveSprite extends FreeSprite {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
 		bmp.add(BitmapManager.powerBar);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
-		colsrows.add(new int[] { 1, 10 });
+		colsrows.add(new int[] { 2, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		powerBarSprite = new PowerBarSprite(this, gameView, spriteBmp, x, y);
 	}
@@ -213,6 +213,7 @@ public class ActiveSprite extends FreeSprite {
 		if (!fly)
 			return;
 		throttle(0);
+		FreeSprite smoke = gameView.addSmoke(x, y - height * 0.4f);
 	}
 
 	public void throttleDown() {

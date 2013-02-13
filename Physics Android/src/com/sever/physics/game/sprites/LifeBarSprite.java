@@ -59,22 +59,25 @@ public class LifeBarSprite extends FreeSprite {
 		// m.postTranslate(translate.x, translate.y);
 		canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
 
-		spriteBmp.currentFrame = 1;
-		srcX = (int) (spriteBmp.currentFrame * width);
-		srcY = (int) (spriteBmp.currentRow * height);
-		src = new Rect(srcX, srcY, (int) (srcX + percentage * width), (int) (srcY + height));
-		spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) (percentage * width), (int) height);
+		if ((int) (percentage * width) > 0) {
 
-		m = new Matrix();
-		translate = getBitmapDrawingXY();
-		if (Constants.checkForQuake()) {
-			m.postTranslate(translate.x - Constants.extraWidthOffset + Constants.getQuakePower(), translate.y + Constants.extraHeightOffset + Constants.getQuakePower());
-		} else {
-			Constants.endQuake();
-			m.postTranslate(translate.x - Constants.extraWidthOffset, translate.y + Constants.extraHeightOffset);
+			spriteBmp.currentFrame = 1;
+			srcX = (int) (spriteBmp.currentFrame * width);
+			srcY = (int) (spriteBmp.currentRow * height);
+			src = new Rect(srcX, srcY, (int) (srcX + percentage * width), (int) (srcY + height));
+			spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) (percentage * width), (int) height);
+
+			m = new Matrix();
+			translate = getBitmapDrawingXY();
+			if (Constants.checkForQuake()) {
+				m.postTranslate(translate.x - Constants.extraWidthOffset + Constants.getQuakePower(), translate.y + Constants.extraHeightOffset + Constants.getQuakePower());
+			} else {
+				Constants.endQuake();
+				m.postTranslate(translate.x - Constants.extraWidthOffset, translate.y + Constants.extraHeightOffset);
+			}
+			// m.postTranslate(translate.x, translate.y);
+			canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
 		}
-		// m.postTranslate(translate.x, translate.y);
-		canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
 	}
 
 }

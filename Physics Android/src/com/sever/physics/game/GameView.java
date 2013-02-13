@@ -39,6 +39,7 @@ import com.sever.physics.game.sprites.MissileLockingSprite;
 import com.sever.physics.game.sprites.MissileSprite;
 import com.sever.physics.game.sprites.PlanetSprite;
 import com.sever.physics.game.sprites.PlayerSprite;
+import com.sever.physics.game.sprites.SmokeSprite;
 import com.sever.physics.game.sprites.StagePassBarSprite;
 import com.sever.physics.game.sprites.StaticBoxSprite;
 import com.sever.physics.game.utils.BitmapManager;
@@ -59,6 +60,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	public ConcurrentLinkedQueue<FreeSprite> enemySprites = new ConcurrentLinkedQueue<FreeSprite>();
 	public ConcurrentLinkedQueue<FreeSprite> playerSprite = new ConcurrentLinkedQueue<FreeSprite>();
 	public ConcurrentLinkedQueue<FreeSprite> nophysicsSprite = new ConcurrentLinkedQueue<FreeSprite>();
+	public ConcurrentLinkedQueue<FreeSprite> effectsSprite = new ConcurrentLinkedQueue<FreeSprite>();
 	public int score = 0;
 	public int point = 0;
 	private int scoreHigh = 0;
@@ -245,6 +247,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		FreeSprite sprite = new GrenadeSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.BULLET);
 		explosiveSprites.add(sprite);
 		SoundEffectsManager.getManager().playTHROW_BOMB();
+		return sprite;
+	}
+
+	public FreeSprite addSmoke(float x, float y) {
+		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
+		bmp.add(BitmapManager.smoke);
+		ArrayList<int[]> colsrows = new ArrayList<int[]>();
+		colsrows.add(new int[] { 2, 1 });
+		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
+		FreeSprite sprite = new SmokeSprite(effectsSprite, this, spriteBmp, x, y);
+		effectsSprite.add(sprite);
 		return sprite;
 	}
 
@@ -498,7 +511,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		addSwapWeaponButton(PhysicsApplication.deviceWidth - 50 * perc, 300 * perc);
 		addBonusLifeBarSprite(PhysicsApplication.deviceWidth - 100 * perc, PhysicsApplication.deviceHeight - 50 * perc);
 		addStagePassBarSprite(PhysicsApplication.deviceWidth - 250 * perc, PhysicsApplication.deviceHeight - 50 * perc);
-		addPortalButton(PhysicsApplication.deviceWidth - 50 * perc, 400 * perc);
+		addPortalButton(PhysicsApplication.deviceWidth - 50 * perc, 450 * perc);
 	}
 
 	@Override
@@ -557,6 +570,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	protected void onDraw(Canvas canvas) {
 		try {
 			synchronized (getHolder()) {
+				if(canvas == null)
+					return;
+				
 				long tstart = System.currentTimeMillis();
 				long t = System.currentTimeMillis();
 
@@ -596,6 +612,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				draw(canvas, explosiveSprites);
 				String explosiveSprites = "explosiveSprites:" + (System.currentTimeMillis() - t);
 
+				t = System.currentTimeMillis();
+				draw(canvas, effectsSprite);
+				String effectsSprite = "effectsSprite:" + (System.currentTimeMillis() - t);
+				
 				t = System.currentTimeMillis();
 				draw(canvas, nophysicsSprite);
 				String nophysicsSprite = "nophysicsSprite:" + (System.currentTimeMillis() - t);

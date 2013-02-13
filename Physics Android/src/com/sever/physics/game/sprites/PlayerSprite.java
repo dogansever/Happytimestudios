@@ -105,8 +105,10 @@ public class PlayerSprite extends ActiveSprite {
 		if (!gameView.idle) {
 			super.onDraw(canvas);
 			lifeBarSprite.onDraw(canvas);
-			fuelBarSprite.onDraw(canvas);
-			powerBarSprite.onDraw(canvas);
+//			fuelBarSprite.onDraw(canvas);
+			if (!WeaponsManager.getManager().getWeaponByType(weapon.getType()).fireAtMaxSpeed){				
+				powerBarSprite.onDraw(canvas);
+			}
 			fireArrowSprite.onDraw(canvas);
 			shiftCheck();
 			hoverCheck();
@@ -184,24 +186,24 @@ public class PlayerSprite extends ActiveSprite {
 	}
 
 	public boolean throttleHold() {
-		fuel_AGG = -1;
-		fuel = fuel + fuel_AGG;
-		if (fuel <= 0) {
-			fuel = 0;
-			throttleOffBmp();
-			return false;
-		}
+//		fuel_AGG = -1;
+//		fuel = fuel + fuel_AGG;
+//		if (fuel <= 0) {
+//			fuel = 0;
+//			throttleOffBmp();
+//			return false;
+//		}
 		return true;
 	}
 
 	public void throttleLeave() {
 		throttleOffBmp();
-		fuel_AGG = 5;
-		fuel = fuel + fuel_AGG;
-		if (fuel >= fuel_MAX) {
-			fuel = fuel_MAX;
-			return;
-		}
+//		fuel_AGG = 5;
+//		fuel = fuel + fuel_AGG;
+//		if (fuel >= fuel_MAX) {
+//			fuel = fuel_MAX;
+//			return;
+//		}
 	}
 
 	public void fireHold() {

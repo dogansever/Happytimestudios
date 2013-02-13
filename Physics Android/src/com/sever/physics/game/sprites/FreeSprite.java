@@ -41,6 +41,8 @@ public class FreeSprite {
 	public boolean facingRigth = false;
 	public boolean manualFrameSet = false;
 	public boolean manualAngleSet = false;
+	public boolean dynamic;
+	public boolean hasbody = false;
 	public SpriteBmp spriteBmp;
 	public WeaponTypes wt;
 
@@ -84,15 +86,17 @@ public class FreeSprite {
 	}
 
 	public void createStaticBody(float x, float y) {
+		dynamic = false;
+		hasbody = true;
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(x / Constants.pixelpermeter, y / Constants.pixelpermeter);
 		this.body = PhysicsActivity.mWorld.world.createStaticBody(bodyDef);
-		PhysicsActivity.mWorld.bodies.add(body);
+		if (body != null)
+			PhysicsActivity.mWorld.bodies.add(body);
 	}
 
 	public void killSprite() {
 		// System.out.println("Killing:" + this);
-		
 
 		if (!(this instanceof PlayerSprite)) {
 			releaseShiftLockOnMe();
@@ -102,8 +106,8 @@ public class FreeSprite {
 			destroyShape();
 			freeBitmaps();
 		} else if (this instanceof PlayerSprite && !gameView.idle) {
-//			((PlayerSprite) this).setAlive(false);
-//			Constants.playerKilledCount++;
+			// ((PlayerSprite) this).setAlive(false);
+			// Constants.playerKilledCount++;
 			// PhysicsActivity.mWorld.bodies.remove(body);
 			// PhysicsActivity.mWorld.world.destroyBody(body);
 			// destroyShape();
@@ -125,10 +129,13 @@ public class FreeSprite {
 
 	public void createDynamicBody(float x, float y) {
 		try {
+			dynamic = true;
+			hasbody = true;
 			BodyDef bodyDef = new BodyDef();
 			bodyDef.position.set(x / Constants.pixelpermeter, y / Constants.pixelpermeter);
 			this.body = PhysicsActivity.mWorld.world.createDynamicBody(bodyDef);
-			PhysicsActivity.mWorld.bodies.add(body);
+			if (body != null)
+				PhysicsActivity.mWorld.bodies.add(body);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -152,7 +159,11 @@ public class FreeSprite {
 	}
 
 	public Body getBody() {
-		if (body == null) {
+		if (body == null && hasbody) {
+			if (dynamic)
+				createDynamicBody(x, y);
+			else
+				createStaticBody(x, y);
 			// System.out.println("getBody():" + body + " " +
 			// this.getClass().getName());
 		}
@@ -162,15 +173,19 @@ public class FreeSprite {
 	}
 
 	private void updateBitmap() {
-		if (!manualFrameSet && ++spriteBmp.BMP_FPS_CURRENT % spriteBmp.BMP_FPS == 0)
-			spriteBmp.currentFrame = ++spriteBmp.currentFrame % spriteBmp.BMP_COLUMNS;
+		try {
+			if (!manualFrameSet && ++spriteBmp.BMP_FPS_CURRENT % spriteBmp.BMP_FPS == 0)
+				spriteBmp.currentFrame = ++spriteBmp.currentFrame % spriteBmp.BMP_COLUMNS;
 
-		int srcX = (int) (spriteBmp.currentFrame * width);
-		int srcY = (int) (spriteBmp.currentRow * height);
-		Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height));
-		Rect dst = new Rect((int) (x), (int) (y), (int) (x + width), (int) (y + height));
-		Paint p = new Paint();
-		spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) width, (int) height);
+			int srcX = (int) (spriteBmp.currentFrame * width);
+			int srcY = (int) (spriteBmp.currentRow * height);
+			Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height));
+			Rect dst = new Rect((int) (x), (int) (y), (int) (x + width), (int) (y + height));
+			Paint p = new Paint();
+			spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) width, (int) height);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		// bmpFrame = bmp;
 	}
 
@@ -184,16 +199,19 @@ public class FreeSprite {
 		}
 	}
 
-//	protected void kickout(Vec2 positionSrc) {
-//		Body body = getBody();
-//		Vec2 positionTarget = body.getPosition();
-//		Vec2 force = new Vec2(positionSrc.x / Constants.pixelpermeter - positionTarget.x, positionTarget.y - positionSrc.y / Constants.pixelpermeter);
-//		force.normalize(); // force direction always point to source
-//		force.set(force.mul((float) (body.getMass() * -10.0 * Constants.gravityy)));
-//		body.applyImpulse(force, body.getWorldCenter());
-//		// System.out.println("!!!Kicked it!!!:" + index + ", force:x:" +
-//		// force.x + ", y:" + force.y);
-//	}
+	// protected void kickout(Vec2 positionSrc) {
+	// Body body = getBody();
+	// Vec2 positionTarget = body.getPosition();
+	// Vec2 force = new Vec2(positionSrc.x / Constants.pixelpermeter -
+	// positionTarget.x, positionTarget.y - positionSrc.y /
+	// Constants.pixelpermeter);
+	// force.normalize(); // force direction always point to source
+	// force.set(force.mul((float) (body.getMass() * -10.0 *
+	// Constants.gravityy)));
+	// body.applyImpulse(force, body.getWorldCenter());
+	// // System.out.println("!!!Kicked it!!!:" + index + ", force:x:" +
+	// // force.x + ", y:" + force.y);
+	// }
 
 	public void onDraw(Canvas canvas) {
 		updatePosition();
