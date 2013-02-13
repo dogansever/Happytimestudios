@@ -100,33 +100,6 @@ public class IntroView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 
-	private void drawBackground2(Canvas canvas) {
-		Rect src = new Rect(shiftWidth2, 0, IntroActivity.bmpIntro2.getWidth(), IntroActivity.bmpIntro2.getHeight());
-		Rect dst = new Rect(0, getHeight() - 50, getWidth() - shiftWidth2, getHeight());
-		canvas.drawBitmap(IntroActivity.bmpIntro2, src, dst, null);
-		src = new Rect(0, 0, shiftWidth2, IntroActivity.bmpIntro2.getHeight());
-		dst = new Rect(getWidth() - shiftWidth2, getHeight() - 50, getWidth(), getHeight());
-		canvas.drawBitmap(IntroActivity.bmpIntro2, src, dst, null);
-		shiftWidth2 += 3;
-		if (IntroActivity.bmpIntro2.getWidth() <= shiftWidth2) {
-			shiftWidth2 = 0;
-		}
-
-	}
-
-	private void drawBackground3(Canvas canvas) {
-		Rect src = new Rect(shiftWidth3, 0, IntroActivity.bmpIntro2.getWidth(), IntroActivity.bmpIntro2.getHeight());
-		Rect dst = new Rect(0, 0, getWidth() - shiftWidth3, 50);
-		canvas.drawBitmap(IntroActivity.bmpIntro2, src, dst, null);
-		src = new Rect(0, 0, shiftWidth3, IntroActivity.bmpIntro2.getHeight());
-		dst = new Rect(getWidth() - shiftWidth3, 0, getWidth(), 50);
-		canvas.drawBitmap(IntroActivity.bmpIntro2, src, dst, null);
-		shiftWidth3 += 2;
-		if (IntroActivity.bmpIntro2.getWidth() <= shiftWidth3) {
-			shiftWidth3 = 0;
-		}
-	}
-
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		float x2 = event.getX();

@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
@@ -26,6 +27,7 @@ import com.sever.physic.PhysicsApplication;
 import com.sever.physics.game.sprites.BonusLifeBarSprite;
 import com.sever.physics.game.sprites.BoxSprite;
 import com.sever.physics.game.sprites.ButtonFireSprite;
+import com.sever.physics.game.sprites.ButtonPortalSprite;
 import com.sever.physics.game.sprites.ButtonSwapWeaponSprite;
 import com.sever.physics.game.sprites.EnemySprite;
 import com.sever.physics.game.sprites.FreeSprite;
@@ -72,6 +74,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	public SurfaceHolder holder;
 	private FreeSprite victim;
 	public boolean finishGame;
+	public boolean endOfGame;
 	public boolean waitingForNextStage;
 	public int GAMEOVER_ALPHA = 0;
 	public int GAMEOVER_ALPHA_INCREMENT = 5;
@@ -88,8 +91,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	private boolean buttonFireEnabled;
 	public static boolean success;
 
+	float newStagePointx = 0;
+	float newStagePointy = 0;
+	private int alphaBonusLife = 0;
+	private int alphaBonusTime = 0;
+	private int alphaBonusStage = 0;
+	private int alphaStageEndGameOver = 0;
+	private String newWeaponUnlockedMessage = "";
+	private String newStageUpMessage = "";
+
 	public FreeSprite getBonusLifeBarSprite() {
 		return (FreeSprite) this.nophysicsSprite.toArray()[3];
+	}
+
+	public FreeSprite getPortalButtonSprite() {
+		return (FreeSprite) this.nophysicsSprite.toArray()[5];
 	}
 
 	public FreeSprite getSwapWeaponButtonSprite() {
@@ -165,12 +181,23 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		return sprite;
 	}
 
+	public FreeSprite addPortalButton(float x, float y) {
+		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
+		bmp.add(BitmapManager.portalButton);
+		ArrayList<int[]> colsrows = new ArrayList<int[]>();
+		colsrows.add(new int[] { 1, 1 });
+		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
+		FreeSprite sprite = new ButtonPortalSprite(nophysicsSprite, this, spriteBmp, x, y);
+		nophysicsSprite.add(sprite);
+		return sprite;
+	}
+
 	public FreeSprite addMissileLocking(float x, float y, boolean facingRight) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(BitmapManager.missileLight);
+		bmp.add(BitmapManager.missileLocking);
 		bmp.add(BitmapManager.bombexploding);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
-		colsrows.add(new int[] { 4, 1 });
+		colsrows.add(new int[] { 2, 1 });
 		colsrows.add(new int[] { 4, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new MissileLockingSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.MISSILE_LOCKING, facingRight);
@@ -184,7 +211,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		bmp.add(BitmapManager.missileLight);
 		bmp.add(BitmapManager.bombexploding);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
-		colsrows.add(new int[] { 4, 1 });
+		colsrows.add(new int[] { 2, 1 });
 		colsrows.add(new int[] { 4, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new MissileSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.MISSILE_LIGHT, facingRight);
@@ -198,7 +225,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		bmp.add(BitmapManager.missile);
 		bmp.add(BitmapManager.bombexploding);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
-		colsrows.add(new int[] { 4, 1 });
+		colsrows.add(new int[] { 2, 1 });
 		colsrows.add(new int[] { 4, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new MissileSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.MISSILE, facingRight);
@@ -265,7 +292,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	public FreeSprite addGrenadeImploding(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
-		bmp.add(BitmapManager.bomb2);
+		bmp.add(BitmapManager.bombtimer);
 		bmp.add(BitmapManager.bombexploding);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 4, 1 });
@@ -466,10 +493,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	private void createNophysicSprites() {
 		addJoystick(120, 60);
-		addFireButton(PhysicsApplication.deviceWidth - 100, 100);
-		addSwapWeaponButton(PhysicsApplication.deviceWidth - 50, 300);
-		addBonusLifeBarSprite(PhysicsApplication.deviceWidth - 100, PhysicsApplication.deviceHeight - 50);
-		addStagePassBarSprite(PhysicsApplication.deviceWidth - 250, PhysicsApplication.deviceHeight - 50);
+		float perc = BitmapManager.getManager().getPerc();
+		addFireButton(PhysicsApplication.deviceWidth - 100 * perc, 120 * perc);
+		addSwapWeaponButton(PhysicsApplication.deviceWidth - 50 * perc, 300 * perc);
+		addBonusLifeBarSprite(PhysicsApplication.deviceWidth - 100 * perc, PhysicsApplication.deviceHeight - 50 * perc);
+		addStagePassBarSprite(PhysicsApplication.deviceWidth - 250 * perc, PhysicsApplication.deviceHeight - 50 * perc);
+		addPortalButton(PhysicsApplication.deviceWidth - 50 * perc, 400 * perc);
 	}
 
 	@Override
@@ -552,11 +581,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				getPlayerSprite().onDraw(canvas);
 				String PlayerSprite = "PlayerSprite:" + (System.currentTimeMillis() - t);
 
-				// draw explosives, push enemies
-				t = System.currentTimeMillis();
-				draw(canvas, explosiveSprites);
-				String explosiveSprites = "explosiveSprites:" + (System.currentTimeMillis() - t);
-
 				// draw frees, push pull frees
 				t = System.currentTimeMillis();
 				draw(canvas, freeSprites);
@@ -567,18 +591,23 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				draw(canvas, enemySprites);
 				String enemySprites = "enemySprites:" + (System.currentTimeMillis() - t);
 
+				// draw explosives, push enemies
+				t = System.currentTimeMillis();
+				draw(canvas, explosiveSprites);
+				String explosiveSprites = "explosiveSprites:" + (System.currentTimeMillis() - t);
+
 				t = System.currentTimeMillis();
 				draw(canvas, nophysicsSprite);
 				String nophysicsSprite = "nophysicsSprite:" + (System.currentTimeMillis() - t);
 
-				drawText("Stage:" + (StageManager.getManager().currentStage + 1), canvas, 10, 25);
-				drawText("scoreTotal:" + Constants.scoreTotal, canvas, 10, 50);
-				drawText(newWeaponUnlockedMessage, canvas, 10, 75, 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX <= 0 ? 0 : 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX, Color.GREEN);
+				drawText("STAGE: " + (StageManager.getManager().currentStage + 1), canvas, 10, 25);
+				drawText("SCORE: " + Constants.scoreTotal, canvas, 10, 50);
+				drawText(newWeaponUnlockedMessage, canvas, 10, 75, 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX <= 0 ? 0 : 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX,
+						Paint.Align.LEFT, Color.GREEN);
+				drawText(newStageUpMessage, canvas, 10, 100, 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX <= 0 ? 0 : 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX, Paint.Align.LEFT,
+						Color.YELLOW);
 
-				// drawText("scorePass:" + Constants.scoreToPassTheStage,
-				// canvas, 10, 100);
-
-				int xd = 75;
+				int xd = 100;
 				// drawText(staticSprites, canvas, 10, xd = xd + 25);
 				// drawText(nophysicsSprite, canvas, 10, xd = xd + 25);
 				// drawText(drawBackground, canvas, 10, xd = xd + 25);
@@ -592,13 +621,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				drawText("FPS:" + GameLoopThread.framesCountAvg, canvas, 10, xd = xd + 25);
 
 				drawText("+" + Constants.scoreLifeBonus, canvas, newStagePointx - Constants.extraWidthOffset, -25 + PhysicsApplication.deviceHeight - newStagePointy + Constants.extraHeightOffset
-						- getPlayerSprite().height - (255 - alphaBonusLife), alphaBonusLife);
+						- getPlayerSprite().height - (255 - alphaBonusLife), alphaBonusLife, Paint.Align.CENTER);
 				drawText("+" + Constants.scoreTimeBonus, canvas, 25 + newStagePointx - Constants.extraWidthOffset, -50 + PhysicsApplication.deviceHeight - newStagePointy + Constants.extraHeightOffset
-						- getPlayerSprite().height - (255 - alphaBonusTime), alphaBonusTime - 20);
+						- getPlayerSprite().height - (255 - alphaBonusTime), alphaBonusTime - 20, Paint.Align.CENTER);
 				drawText("+" + Constants.scoreStageBonus, canvas, 50 + newStagePointx - Constants.extraWidthOffset, -75 + PhysicsApplication.deviceHeight - newStagePointy
-						+ Constants.extraHeightOffset - getPlayerSprite().height - (255 - alphaBonusStage), alphaBonusStage - 40);
-				drawText("Total Score " + Constants.scoreTotal, canvas, newStagePointx - Constants.extraWidthOffset, -25 + PhysicsApplication.deviceHeight - newStagePointy
-						+ Constants.extraHeightOffset - getPlayerSprite().height - (255 - alphaStageEndGameOver), alphaStageEndGameOver);
+						+ Constants.extraHeightOffset - getPlayerSprite().height - (255 - alphaBonusStage), alphaBonusStage - 40, Paint.Align.CENTER);
+				drawText("Total Score " + Constants.scoreTotal, canvas, newStagePointx - Constants.extraWidthOffset, 0 + PhysicsApplication.deviceHeight - newStagePointy + Constants.extraHeightOffset
+						- getPlayerSprite().height - (255 - alphaStageEndGameOver), alphaStageEndGameOver, Paint.Align.CENTER);
 
 				drawTextStageStart(canvas);
 				drawTextStageGameOver(canvas);
@@ -661,15 +690,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		canvas.drawText("Stage:" + (StageManager.getManager().currentStage + 2), PhysicsApplication.deviceWidth * 0.5f, PhysicsApplication.deviceHeight * 0.5f, paint);
 	}
 
-	float newStagePointx = 0;
-	float newStagePointy = 0;
-	private int alphaBonusLife = 0;
-	private int alphaBonusTime = 0;
-	private int alphaBonusStage = 0;
-	private int alphaStageEndGameOver = 0;
-	private String newWeaponUnlockedMessage = "";
-
-	private void drawText(String text, Canvas canvas, float x, float y, int alpha, int... color) {
+	private void drawText(String text, Canvas canvas, float x, float y, int alpha, Align align, int... color) {
 		if (alpha <= 0)
 			return;
 
@@ -679,7 +700,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		paint.setColor(color.length == 0 ? Color.WHITE : color[0]);
 		paint.setAlpha(alpha <= 0 ? 0 : alpha);
 		paint.setTextSize(20);
-		paint.setTextAlign(Paint.Align.CENTER);
+		paint.setTextAlign(align);
 		canvas.drawText(text, x, y, paint);
 	}
 
@@ -690,7 +711,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		paint.setTypeface(IntroActivity.tf);
 		paint.setColor(Color.WHITE);
 		paint.setTextSize(25);
-		paint.setTextAlign(Paint.Align.CENTER);
+		// paint.setTextAlign(Paint.Align.CENTER);
 		canvas.drawText(text, x, y, paint);
 	}
 
@@ -754,43 +775,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		// return handleTouch(event);
 	}
 
-	private boolean handleTouch(MotionEvent event) {
-		try {
-			// event.getPointerCount();
-			float x2 = event.getX();
-			float y2 = event.getY();
-			switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN:
-				// case MotionEvent.ACTION_POINTER_1_DOWN:
-				((ButtonFireSprite) getFireButtonSprite()).onDown(x2, PhysicsApplication.deviceHeight - y2);
-				// ((JoystickSprite) getJoystickSprite()).onDown(x2,
-				// PhysicsApplication.deviceHeight - y2);
-				break;
-			case MotionEvent.ACTION_MOVE:
-				((ButtonFireSprite) getFireButtonSprite()).onMove(x2, PhysicsApplication.deviceHeight - y2);
-				// ((JoystickSprite) getJoystickSprite()).onMove(x2,
-				// PhysicsApplication.deviceHeight - y2);
-				break;
-			case MotionEvent.ACTION_UP:
-				// case MotionEvent.ACTION_POINTER_1_UP:
-			case MotionEvent.ACTION_CANCEL:
-				if (idle) {
-					((PlayerSprite) getPlayerSprite()).setAlive(true);
-					((PlayerSprite) getPlayerSprite()).restartSprite(x2 + Constants.extraWidthOffset, PhysicsApplication.deviceHeight - y2 + Constants.extraHeightOffset);
-				}
-				((ButtonFireSprite) getFireButtonSprite()).onUp(x2, PhysicsApplication.deviceHeight - y2);
-				// ((JoystickSprite) getJoystickSprite()).onUp(x2,
-				// PhysicsApplication.deviceHeight - y2);
-				break;
-
-			default:
-				break;
-			}
-		} catch (Exception e) {
-		}
-		return true;
-	}
-
 	private boolean tester(MotionEvent m) {
 		int pointerCount = m.getPointerCount();
 
@@ -813,6 +797,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 					buttonSwapWeaponPointerId = id;
 					// buttonFirePointerId = -1;
 					((ButtonSwapWeaponSprite) getSwapWeaponButtonSprite()).onDown(x, PhysicsApplication.deviceHeight - y);
+				} else if (((ButtonPortalSprite) getPortalButtonSprite()).checkButtonTouch(x, PhysicsApplication.deviceHeight - y)) {
+					actionString = "DOWN ButtonSwapWeaponSprite";
+					buttonSwapEnabled = true;
+					buttonSwapWeaponPointerId = id;
+					((ButtonPortalSprite) getPortalButtonSprite()).onDown(x, PhysicsApplication.deviceHeight - y);
 				} else if (((ButtonFireSprite) getFireButtonSprite()).checkButtonTouch(x, PhysicsApplication.deviceHeight - y)) {
 					actionString = "DOWN ButtonFireSprite";
 					buttonFireEnabled = true;
@@ -848,6 +837,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				} else if (buttonSwapEnabled && id == buttonSwapWeaponPointerId) {
 					actionString = "UP ButtonSwapWeaponSprite";
 					((ButtonSwapWeaponSprite) getSwapWeaponButtonSprite()).onUp(x, PhysicsApplication.deviceHeight - y);
+					((ButtonPortalSprite) getPortalButtonSprite()).onUp(x, PhysicsApplication.deviceHeight - y);
 					buttonSwapEnabled = false;
 					// buttonSwapWeaponPointerId = -1;
 				} else if (joystickEnabled && (actionIndex == 0)) {
@@ -945,7 +935,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	private void sendEnemies() {
-		StageManager.getManager().currentStage = 0;// to do set stage
+		StageManager.getManager().currentStage = Integer.parseInt((String) IntroActivity.dbDBWriteUtil.getBestScore(1));
+		Constants.scoreTotal = Integer.parseInt((String) IntroActivity.dbDBWriteUtil.getBestScore(0));
 		addStageEnemies();
 	}
 
@@ -967,7 +958,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	private void checkGameStatus() {
-		if (!idle && !((PlayerSprite) getPlayerSprite()).isAlive()) {
+
+		if (!idle && endOfGame) {
+			// ((ButtonSwapWeaponSprite)
+			// getSwapWeaponButtonSprite()).deactivate();
+			// ((ButtonFireSprite) getFireButtonSprite()).deactivate();
+		} else if (!idle && !((PlayerSprite) getPlayerSprite()).isAlive()) {
 			alphaStageEndGameOver = 255;
 			GAMEOVER_WAIT_TIME = 100;
 			newStagePointx = (float) (getPlayerSprite().x + +Math.random() * 20);
@@ -983,14 +979,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			Constants.scoreLifeBonus = (int) (((PlayerSprite) getPlayerSprite()).getBonusScoreLife() * 10);
 			Constants.scoreTimeBonus = (int) (((BonusLifeBarSprite) getBonusLifeBarSprite()).getBonusScoreSeconds() * 1);
 			Constants.scoreStageBonus = (StageManager.getManager().currentStage + 1) * 1000;
-			Constants.scoreTotal += Constants.scoreStage + Constants.scoreTimeBonus + Constants.scoreLifeBonus + Constants.scoreStageBonus;
+			Constants.scoreTotal += Constants.scoreTimeBonus + Constants.scoreLifeBonus + Constants.scoreStageBonus;
 
 			int levelPrev = Integer.parseInt((String) IntroActivity.dbDBWriteUtil.getBestScore(1));
 			IntroActivity.dbDBWriteUtil.updateScoreIfNewBestAchieved("" + Constants.scoreTotal, "" + new Date().getTime(), "" + (StageManager.getManager().currentStage + 1));
 			((PlayerSprite) getPlayerSprite()).collectBonusLife();
 			newWeaponUnlockedMessage = "";
 			if (WeaponsManager.getManager().isNewWeaponUnlocked((StageManager.getManager().currentStage + 1) > levelPrev)) {
-				newWeaponUnlockedMessage = "Weapon Unlocked!";
+				newWeaponUnlockedMessage = "NEW WEAPON UNLOCKED!";
+			}
+			newStageUpMessage = "";
+			if ((StageManager.getManager().currentStage + 1) > levelPrev) {
+				newStageUpMessage = "STAGE UP!";
 			}
 
 		} else if (waitingForNextStage) {
@@ -1011,8 +1011,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			enmy.destroySprite();
 		}
 
-		if (StageManager.getManager().incrementStage()) {
-			finishGame = true;
+		if (!StageManager.getManager().incrementStage()) {
+			endOfGame = true;
 			return;
 		}
 		addStageEnemies();
@@ -1087,7 +1087,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	public boolean updateScore(WeaponTypes wt, boolean fly) {
-		Constants.scoreStage += WeaponsManager.getManager().getBonusByEnemyWT(wt, fly);
+		int bns = WeaponsManager.getManager().getBonusByEnemyWT(wt, fly);
+		Constants.scoreTotal += bns;
+		Constants.scoreStage += bns;
 		return Constants.scoreToPassTheStage > Constants.scoreStage;
 	}
 }

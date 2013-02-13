@@ -146,84 +146,84 @@ public class WeaponsManager {
 	}
 
 	public Bitmap getEnemyBitmapByWT(WeaponTypes wt, Boolean fly) {
-		int resId = R.drawable.enemy2x1;
+		int resId = R.drawable.enemy02x2x1;
 		if (wt == WeaponTypes.MISSILE) {
-			resId = R.drawable.enemy2_2x1;
+			resId = R.drawable.enemy01x2x1;
 		}
 		if (wt == WeaponTypes.MISSILE_LIGHT) {
-			resId = R.drawable.enemy2_2x1;
+			resId = R.drawable.enemy01x2x1;
 		}
 		if (wt == WeaponTypes.MISSILE_LOCKING) {
-			resId = R.drawable.enemy2_2x1;
+			resId = R.drawable.enemy01x2x1;
 		}
 		if (wt == WeaponTypes.BOMB) {
-			resId = R.drawable.enemy2x1;
+			resId = R.drawable.enemy02x2x1;
 		}
 		if (wt == WeaponTypes.BOMB_BIG) {
-			resId = R.drawable.enemy2x1;
+			resId = R.drawable.enemy03x2x1;
 		}
 
 		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getBitmapPercentageByType(wt, fly));
 	}
 
 	public Bitmap getEnemyThrottleBitmapByWT(WeaponTypes wt, Boolean fly) {
-		int resId = R.drawable.enemythrottlex2x2;
+		int resId = R.drawable.enemy02throttlex2x2;
 		if (wt == WeaponTypes.MISSILE) {
-			resId = R.drawable.enemy2throttlex2x2;
+			resId = R.drawable.enemy01throttlex2x2;
 		}
 		if (wt == WeaponTypes.MISSILE_LIGHT) {
-			resId = R.drawable.enemy2throttlex2x2;
+			resId = R.drawable.enemy01throttlex2x2;
 		}
 		if (wt == WeaponTypes.MISSILE_LOCKING) {
-			resId = R.drawable.enemy2throttlex2x2;
+			resId = R.drawable.enemy01throttlex2x2;
 		}
 		if (wt == WeaponTypes.BOMB) {
-			resId = R.drawable.enemythrottlex2x2;
+			resId = R.drawable.enemy02throttlex2x2;
 		}
 		if (wt == WeaponTypes.BOMB_BIG) {
-			resId = R.drawable.enemythrottlex2x2;
+			resId = R.drawable.enemy03throttlex2x2;
 		}
 
 		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getBitmapPercentageByType(wt, fly));
 	}
 
 	public Bitmap getEnemyBurningBitmapByWT(WeaponTypes wt, Boolean fly) {
-		int resId = R.drawable.enemyburningx2x2;
+		int resId = R.drawable.enemy02burningx2x2;
 		if (wt == WeaponTypes.MISSILE) {
-			resId = R.drawable.enemy2burningx2x2;
+			resId = R.drawable.enemy01burningx2x2;
 		}
 		if (wt == WeaponTypes.MISSILE_LIGHT) {
-			resId = R.drawable.enemy2burningx2x2;
+			resId = R.drawable.enemy01burningx2x2;
 		}
 		if (wt == WeaponTypes.MISSILE_LOCKING) {
-			resId = R.drawable.enemy2burningx2x2;
+			resId = R.drawable.enemy01burningx2x2;
 		}
 		if (wt == WeaponTypes.BOMB) {
-			resId = R.drawable.enemyburningx2x2;
+			resId = R.drawable.enemy02burningx2x2;
 		}
 		if (wt == WeaponTypes.BOMB_BIG) {
-			resId = R.drawable.enemyburningx2x2;
+			resId = R.drawable.enemy03burningx2x2;
 		}
 
 		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getBitmapPercentageByType(wt, fly));
 	}
 
 	public Bitmap getEnemyExplodingBitmapByWT(WeaponTypes wt, Boolean fly) {
-		int resId = R.drawable.enemyexplosionx3x1;
+		int resId = R.drawable.explosion02x3x1;
 		if (wt == WeaponTypes.MISSILE) {
-			resId = R.drawable.enemyexplosionx3x1;
+			resId = R.drawable.explosion02x3x1;
 		}
 		if (wt == WeaponTypes.MISSILE_LIGHT) {
-			resId = R.drawable.enemyexplosionx3x1;
+			resId = R.drawable.explosion02x3x1;
 		}
 		if (wt == WeaponTypes.MISSILE_LOCKING) {
-			resId = R.drawable.enemyexplosionx3x1;
+			resId = R.drawable.explosion02x3x1;
 		}
 		if (wt == WeaponTypes.BOMB) {
-			resId = R.drawable.enemyexplosionx3x1;
+			resId = R.drawable.explosion02x3x1;
 		}
 		if (wt == WeaponTypes.BOMB_BIG) {
-			resId = R.drawable.enemyexplosionx3x1;
+			resId = R.drawable.explosion02x3x1;
 		}
 
 		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getBitmapPercentageByType(wt, fly));
@@ -237,49 +237,49 @@ public class WeaponsManager {
 		int w = 100;
 		if (type == WeaponTypes.BULLET) {
 			if (weapon.isAvailable())
-				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.buttongun2, w, h);
+				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.weaponsmine, w, h);
 			// else
 			// PhysicsActivity.weaponSwapButton =
 			// PhysicsActivity.context.createScaledBitmap(R.drawable.buttongun,
 			// w, h);
 		} else if (type == WeaponTypes.BOMB) {
 			if (weapon.isAvailable())
-				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.bombsmall, w, h);
+				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.weaponsbomb, w, h);
 			// else
 			// BitmapManager.weaponSwapButton =
 			// PhysicsActivity.context.createScaledBitmap(R.drawable.bombsmall2,
 			// w, h);
 		} else if (type == WeaponTypes.BOMB_TRIPLE) {
 			if (weapon.isAvailable())
-				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.bombtriple, w, h);
+				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.weaponsbombtriple, w, h);
 			// else
 			// BitmapManager.weaponSwapButton =
 			// BitmapManager.getManager().createScaledBitmap(R.drawable.bombtriple2,
 			// w, h);
 		} else if (type == WeaponTypes.BOMB_BIG) {
 			if (weapon.isAvailable())
-				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.buttonbomb2, w, h);
+				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.weaponsbombbig, w, h);
 			// else
 			// BitmapManager.weaponSwapButton =
 			// BitmapManager.getManager().createScaledBitmap(R.drawable.buttonbomb,
 			// w, h);
 		} else if (type == WeaponTypes.BOMB_IMPLODING) {
 			if (weapon.isAvailable())
-				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.buttonbombimploding2, w, h);
+				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.weaponsbombtimer, w, h);
 			// else
 			// BitmapManager.weaponSwapButton =
 			// BitmapManager.getManager().createScaledBitmap(R.drawable.buttonbombimploding,
 			// w, h);
 		} else if (type == WeaponTypes.MISSILE) {
 			if (weapon.isAvailable())
-				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.buttonmissile2, w, h);
+				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.weaponsmissile, w, h);
 			// else
 			// BitmapManager.weaponSwapButton =
 			// BitmapManager.getManager().createScaledBitmap(R.drawable.buttonmissile,
 			// w, h);
 		} else if (type == WeaponTypes.MISSILE_LIGHT) {
 			if (weapon.isAvailable())
-				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.buttonmissilelight2, w, h);
+				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.weaponsmissilelight, w, h);
 			// else
 			// BitmapManager.weaponSwapButton =
 			// BitmapManager.getManager().createScaledBitmap(R.drawable.buttonmissilelight,
@@ -316,6 +316,9 @@ public class WeaponsManager {
 		if (wt == WeaponTypes.BULLET) {
 			unlockLevel = 0;
 		}
+		if (wt == WeaponTypes.MISSILE_LOCKING) {
+			unlockLevel = 1000;
+		}
 		return unlockLevel;
 	}
 
@@ -339,24 +342,27 @@ public class WeaponsManager {
 		wtList.add(WeaponTypes.MISSILE);
 		wtList.add(WeaponTypes.BOMB_BIG);
 		wtList.add(WeaponTypes.BOMB_IMPLODING);
+		wtList.add(WeaponTypes.MISSILE_LOCKING);
 		return wtList;
 	}
 
 	public static int getWTBitmap(WeaponTypes type) {
 		if (type == WeaponTypes.BULLET) {
-			return R.drawable.bullet;
+			return R.drawable.weaponsmine;
 		} else if (type == WeaponTypes.BOMB) {
-			return R.drawable.bombsmall;
+			return R.drawable.weaponsbomb;
 		} else if (type == WeaponTypes.BOMB_TRIPLE) {
-			return R.drawable.bombtriple;
+			return R.drawable.weaponsbombtriple;
 		} else if (type == WeaponTypes.BOMB_BIG) {
-			return R.drawable.buttonbomb2;
+			return R.drawable.weaponsbombbig;
 		} else if (type == WeaponTypes.BOMB_IMPLODING) {
-			return R.drawable.buttonbombimploding2;
+			return R.drawable.weaponsbombtimer;
 		} else if (type == WeaponTypes.MISSILE) {
-			return R.drawable.buttonmissile2;
+			return R.drawable.weaponsmissile;
 		} else if (type == WeaponTypes.MISSILE_LIGHT) {
-			return R.drawable.buttonmissilelight2;
+			return R.drawable.weaponsmissilelight;
+		} else if (type == WeaponTypes.MISSILE_LOCKING) {
+			return R.drawable.weaponsmissilelocking;
 		}
 		return 0;
 	}
@@ -376,6 +382,8 @@ public class WeaponsManager {
 			return "Missile (Damage:High Radius:Narrow)";
 		} else if (type == WeaponTypes.MISSILE_LIGHT) {
 			return "Missile Light (Damage:Low Radius:Narrow)";
+		} else if (type == WeaponTypes.MISSILE_LOCKING) {
+			return "Missile Locking (Enemy Weapon)";
 		}
 		return "";
 	}

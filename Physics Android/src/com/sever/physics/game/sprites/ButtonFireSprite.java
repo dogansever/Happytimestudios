@@ -34,11 +34,11 @@ public class ButtonFireSprite extends FreeSprite {
 		this.spriteList = spriteList;
 	}
 
-	private void deactivate() {
+	public void deactivate() {
 		active = false;
 	}
 
-	private void activate() {
+	public void activate() {
 		active = true;
 	}
 
@@ -70,7 +70,7 @@ public class ButtonFireSprite extends FreeSprite {
 
 		// this.x = xn;
 		// this.y = yn;
-		// this.xstick = xn;
+		this.xstick = xn;
 		this.ystick = yn;
 		// makeVisible();
 
@@ -87,9 +87,9 @@ public class ButtonFireSprite extends FreeSprite {
 				return;
 			}
 
-			if (Math.abs(xstick - xn) > 20)
-				gameView.getPlayerSprite().facingRigth = xstick < xn;
-			// this.xstick = xn;
+			this.xstick = xn;
+			if (Math.abs(xstick - x) > 20)
+				gameView.getPlayerSprite().facingRigth = xstick > x;
 			this.ystick = yn;
 			((PlayerSprite) gameView.getPlayerSprite()).fireHold();
 			((FireArrowSprite) gameView.getFireArrowSprite()).onMove(xn, PhysicsApplication.deviceHeight - yn);
@@ -114,6 +114,9 @@ public class ButtonFireSprite extends FreeSprite {
 			return;
 		}
 
+		// if (gameView.endOfGame) {
+		// return;
+		// }
 		spriteBmp.currentRow = 0;
 		spriteBmp.currentFrame = 0;
 		draw(canvas);
@@ -123,7 +126,7 @@ public class ButtonFireSprite extends FreeSprite {
 		x = Math.abs(xstick - x) < width * 0.25f ? xstick : x + (xstick - x < 0 ? -1 : 1) * width * 0.25f;
 		y = Math.abs(ystick - y) < height * 0.25f ? ystick : y + (ystick - y < 0 ? -1 : 1) * height * 0.25f;
 		spriteBmp.currentFrame = 1;
-		draw(canvas);
+		draw2(canvas);
 		x = xtemp;
 		y = ytemp;
 	}
@@ -134,6 +137,18 @@ public class ButtonFireSprite extends FreeSprite {
 		Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height));
 		spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) width, (int) height);
 
+		Matrix m = new Matrix();
+		Vec2 translate = getBitmapDrawingXY();
+		m.postTranslate(translate.x, translate.y);
+		canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
+	}
+	
+	private void draw2(Canvas canvas) {
+		int srcX = (int) (spriteBmp.currentFrame * width);
+		int srcY = (int) (spriteBmp.currentRow * height);
+		Rect src = new Rect(srcX+1, srcY, (int) (srcX + width), (int) (srcY + height));
+		spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) width, (int) height);
+		
 		Matrix m = new Matrix();
 		Vec2 translate = getBitmapDrawingXY();
 		m.postTranslate(translate.x, translate.y);

@@ -33,11 +33,11 @@ public class ButtonSwapWeaponSprite extends FreeSprite {
 		WeaponsManager.refreshSwapWeaponButtonBitmap();
 	}
 
-	private void deactivate() {
+	public void deactivate() {
 		active = false;
 	}
 
-	private void activate() {
+	public void activate() {
 		active = true;
 	}
 
@@ -72,6 +72,9 @@ public class ButtonSwapWeaponSprite extends FreeSprite {
 		if (gameView.idle) {
 			return;
 		}
+//		if (gameView.endOfGame) {
+//			return;
+//		}
 
 		spriteBmp.currentRow = 0;
 		spriteBmp.currentFrame = 0;

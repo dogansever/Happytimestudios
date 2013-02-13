@@ -22,7 +22,6 @@ implement explosive mines
 
 secondary:
 hook gun for player(revolt joint)
-survival in seconds and in enemy counts (score points)
 picking carrying releasing objects
 weapon shortcuts
 put some explosive things around

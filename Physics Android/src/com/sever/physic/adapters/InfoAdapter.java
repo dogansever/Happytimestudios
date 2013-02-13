@@ -27,7 +27,7 @@ public class InfoAdapter extends BaseAdapter {
 		TextView t = (TextView) contentListLayout.findViewById(R.id.textView1);
 		t.setTypeface(IntroActivity.tf);
 		t.setTextSize(20);
-		t.setText(WeaponsManager.getManager().getWTInfo(wt) + ". Unlock at Stage#" + WeaponsManager.getManager().getWTUnlockLevel(wt));
+		t.setText(WeaponsManager.getManager().getWTInfo(wt) + (WeaponsManager.getManager().getWTUnlockLevel(wt) > 0 ? ". Unlock at Stage#" + WeaponsManager.getManager().getWTUnlockLevel(wt) : ""));
 		ImageView iw = (ImageView) contentListLayout.findViewById(R.id.imageView1);
 		iw.setImageResource(WeaponsManager.getWTBitmap(wt));
 		return contentListLayout;

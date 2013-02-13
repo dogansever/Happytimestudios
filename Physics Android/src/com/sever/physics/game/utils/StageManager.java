@@ -14,17 +14,17 @@ public class StageManager {
 		stageList.add(prepareStage(1, 1, 0, 0, 0, 0, 0, 0, 80));
 		stageList.add(prepareStage(1, 0, 0, 1, 0, 0, 0, 0, 100));
 		stageList.add(prepareStage(1, 1, 0, 1, 0, 0, 0, 0, 200));
-		stageList.add(prepareStage(1, 0, 0, 2, 0, 0, 0, 0, 250));
+		stageList.add(prepareStage(1, 0, 0, 1, 1, 0, 0, 0, 250));
 		stageList.add(prepareStage(1, 0, 0, 2, 0, 1, 0, 0, 250));
 		stageList.add(prepareStage(2, 0, 0, 1, 1, 1, 0, 0, 300));
 		stageList.add(prepareStage(2, 0, 0, 0, 1, 2, 0, 0, 300));
 		stageList.add(prepareStage(0, 0, 0, 0, 1, 1, 1, 0, 350));
-		stageList.add(prepareStage(0, 0, 0, 0, 1, 2, 1, 0, 350));
-		stageList.add(prepareStage(0, 0, 0, 2, 0, 0, 0, 1, 400));
-		stageList.add(prepareStage(0, 0, 0, 0, 0, 1, 2, 0, 400));
-		stageList.add(prepareStage(0, 0, 0, 0, 0, 0, 1, 2, 450));
-		stageList.add(prepareStage(0, 0, 0, 0, 0, 1, 0, 3, 500));
-		stageList.add(prepareStage(0, 0, 0, 0, 0, 0, 1, 4, 1000));
+		stageList.add(prepareStage(0, 0, 0, 0, 1, 2, 1, 0, 1350));
+		stageList.add(prepareStage(0, 0, 0, 2, 0, 0, 0, 1, 1400));
+		stageList.add(prepareStage(0, 0, 0, 0, 0, 1, 2, 0, 1400));
+		stageList.add(prepareStage(0, 0, 0, 0, 0, 0, 1, 2, 1450));
+		stageList.add(prepareStage(0, 0, 0, 0, 0, 1, 0, 3, 1500));
+		stageList.add(prepareStage(0, 0, 0, 0, 0, 0, 1, 4, 5000));
 	}
 
 	private static ArrayList<Integer> prepareStage(int i, int j, int k, int l, int m, int n, int o, int p, int q) {

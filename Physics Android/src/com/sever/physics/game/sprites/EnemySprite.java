@@ -68,51 +68,72 @@ public class EnemySprite extends ActiveSprite {
 		enemyPointerSprite = new EnemyPointerSprite(this, gameView, spriteBmp, x, y);
 	}
 
-//	public void activateBomb() {
-//		wt = WeaponTypes.BOMB_BIG;
-//	}
-//
-//	public void activateMissile() {
-//		wt = WeaponTypes.MISSILE;
-//	}
+	// public void activateBomb() {
+	// wt = WeaponTypes.BOMB_BIG;
+	// }
+	//
+	// public void activateMissile() {
+	// wt = WeaponTypes.MISSILE;
+	// }
 
 	public void fireMissile() {
-		FreeSprite bullet = gameView.addMissile(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f, isMissileFacingRight(gameView.getPlayerSprite()));
+		// FreeSprite bullet = gameView.addMissile(x + (facingRigth ? 1 : -1) *
+		// width * 0.9f, y + height * 0.0f,
+		// isMissileFacingRight(gameView.getPlayerSprite()));
+		Vec2 fireOriginPos = getPositionVecNormalized(gameView.getPlayerSprite());
+		FreeSprite bullet = gameView.addMissile(x + fireOriginPos.x * width, y + fireOriginPos.y * height, isMissileFacingRight(gameView.getPlayerSprite()));
 		bullet.aimAt(gameView.getPlayerSprite());
 		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissile, gameView.getPlayerSprite()));
 		// bullet.shiftLockOnME();
 	}
 
 	public void fireMissileLocking() {
-		FreeSprite bullet = gameView.addMissileLocking(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f, isMissileFacingRight(gameView.getPlayerSprite()));
+		Vec2 fireOriginPos = getPositionVecNormalized(gameView.getPlayerSprite());
+		FreeSprite bullet = gameView.addMissileLocking(x + fireOriginPos.x * width, y + fireOriginPos.y * height, isMissileFacingRight(gameView.getPlayerSprite()));
+		// FreeSprite bullet = gameView.addMissileLocking(x + (facingRigth ? 1 :
+		// -1) * width * 0.9f, y + height * 0.0f,
+		// isMissileFacingRight(gameView.getPlayerSprite()));
 		bullet.aimAt(gameView.getPlayerSprite());
 		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissileLocking, gameView.getPlayerSprite()));
 		// bullet.shiftLockOnME();
 	}
 
 	public void fireMissileLight() {
-		FreeSprite bullet = gameView.addMissileLight(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f, isMissileFacingRight(gameView.getPlayerSprite()));
+		Vec2 fireOriginPos = getPositionVecNormalized(gameView.getPlayerSprite());
+		FreeSprite bullet = gameView.addMissileLight(x + fireOriginPos.x * width, y + fireOriginPos.y * height, isMissileFacingRight(gameView.getPlayerSprite()));
+		// FreeSprite bullet = gameView.addMissileLight(x + (facingRigth ? 1 :
+		// -1) * width * 0.9f, y + height * 0.0f,
+		// isMissileFacingRight(gameView.getPlayerSprite()));
 		bullet.aimAt(gameView.getPlayerSprite());
 		bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissile, gameView.getPlayerSprite()));
 		// bullet.shiftLockOnME();
 	}
 
 	public void fireGrenade() {
-		float yt = (getBody().getLinearVelocity().y < 0 ? 1 : -1) * height * 0.0f;
-		float xt = (facingRigth ? 1 : -1) * width * 1.5f;
-		FreeSprite bullet = gameView.addGrenade(x + xt, y + yt);
+
+		Vec2 fireOriginPos = getPositionVecNormalized(gameView.getPlayerSprite());
+		// float yt = (getBody().getLinearVelocity().y < 0 ? 1 : -1) * height *
+		// 0.0f;
+		// float xt = (facingRigth ? 1 : -1) * width * 1.5f;
+		FreeSprite bullet = gameView.addGrenade(x + fireOriginPos.x * width, y + fireOriginPos.y * height);
 		// applyForce(bullet,
 		// gameView.getPlayerSprite().getBody().getPosition(), 500);
+		// Vec2 v = getVelocityVec(fireMultiplierBomb,
+		// gameView.getPlayerSprite());
 		Vec2 v = getFireVec();
 		bullet.getBody().setLinearVelocity(v);
 	}
 
 	public void fireGrenadeSmall() {
-		float yt = (getBody().getLinearVelocity().y < 0 ? 1 : -1) * height * 0.0f;
-		float xt = (facingRigth ? 1 : -1) * width * 1.5f;
-		FreeSprite bullet = gameView.addGrenadeSmall(x + xt, y + yt);
+		Vec2 fireOriginPos = getPositionVecNormalized(gameView.getPlayerSprite());
+		// float yt = (getBody().getLinearVelocity().y < 0 ? 1 : -1) * height *
+		// 0.0f;
+		// float xt = (facingRigth ? 1 : -1) * width * 1.5f;
+		FreeSprite bullet = gameView.addGrenadeSmall(x + fireOriginPos.x * width, y + fireOriginPos.y * height);
 		// applyForce(bullet,
 		// gameView.getPlayerSprite().getBody().getPosition(), 500);
+		// Vec2 v = getVelocityVec(fireMultiplierBomb,
+		// gameView.getPlayerSprite());
 		Vec2 v = getFireVec();
 		bullet.getBody().setLinearVelocity(v);
 	}
@@ -220,7 +241,7 @@ public class EnemySprite extends ActiveSprite {
 		// }
 
 		float minDistanceBetweenx = 150;
-		float minDistanceBetweeny = 250;
+		float minDistanceBetweeny = 50;
 		float targetx = gameView.getPlayerSprite().x;
 		float targety = gameView.getPlayerSprite().y;
 		// System.out.println("targetx:" + targetx + ",x:" + x + "    targety:"

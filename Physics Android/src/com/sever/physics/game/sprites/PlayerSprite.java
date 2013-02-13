@@ -23,7 +23,7 @@ import com.sever.physics.game.utils.WeaponsManager;
 
 public class PlayerSprite extends ActiveSprite {
 
-	public Weapon weapon = WeaponsManager.getManager().firstAvailableWeapon();
+	public static Weapon weapon = WeaponsManager.getManager().firstAvailableWeapon();
 	public boolean hoverOn;
 	public boolean powerOn;
 	public boolean powerPush;
@@ -31,6 +31,8 @@ public class PlayerSprite extends ActiveSprite {
 	public boolean alive = true;
 	public FreeSprite sprite;
 	public static int loadingTimeInFPS;
+	public static int portalTimeInFPS;
+	public static int portalTimeInFPSMax = Constants.FPS * 20;
 
 	public PlayerSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
@@ -80,6 +82,18 @@ public class PlayerSprite extends ActiveSprite {
 		this.shiftLockOnME();
 	}
 
+	public void portalSprite() {
+		PhysicsActivity.mWorld.bodies.remove(body);
+		PhysicsActivity.mWorld.world.destroyBody(body);
+		destroyShape();
+		this.x = Constants.upperBoundxScreen - x;
+		this.y = Constants.upperBoundyScreen - y;
+		noPositionUpdate = false;
+		addSprite(x, y);
+		this.shiftLockOnME();
+		portalTimeInFPS = portalTimeInFPSMax;
+	}
+
 	public void onDraw(Canvas canvas) {
 		if (!gameView.idle && life <= 0) {
 			((PlayerSprite) this).setAlive(false);
@@ -99,6 +113,9 @@ public class PlayerSprite extends ActiveSprite {
 			fireTry();
 			if (loadingTimeInFPS > 0) {
 				loadingTimeInFPS--;
+			}
+			if (portalTimeInFPS > 0) {
+				portalTimeInFPS--;
 			}
 		}
 		if (gameView.idle && fades && FADE_LIFE > 0) {
@@ -148,6 +165,8 @@ public class PlayerSprite extends ActiveSprite {
 				Constants.extraWidthOffset = 0;
 			if (Constants.extraWidthOffset > Constants.extraWidth)
 				Constants.extraWidthOffset = Constants.extraWidth;
+		} else {
+			Constants.extraWidthOffset = 0;
 		}
 		if (sprite.y > PhysicsApplication.deviceHeight * 0.5) {
 			Constants.extraHeightOffset = sprite.y - PhysicsApplication.deviceHeight * 0.5f;
@@ -155,6 +174,8 @@ public class PlayerSprite extends ActiveSprite {
 				Constants.extraHeightOffset = 0;
 			if (Constants.extraHeightOffset > Constants.extraHeight)
 				Constants.extraHeightOffset = Constants.extraHeight;
+		} else {
+			Constants.extraHeightOffset = 0;
 		}
 		// System.out.println("shiftCheck ending...x:" + this.x +
 		// ",extraWidthOffset:" + Constants.extraWidthOffset);
@@ -212,6 +233,10 @@ public class PlayerSprite extends ActiveSprite {
 
 	public float getLoadingTimePercentage() {
 		return 1.0f - ((float) loadingTimeInFPS) / ((float) WeaponsManager.getManager().getWeaponByType(weapon.getType()).loadingTimeInFPS);
+	}
+
+	public float getPortalTimePercentage() {
+		return 1.0f - ((float) portalTimeInFPS) / ((float) portalTimeInFPSMax);
 	}
 
 	public void fireTry() {

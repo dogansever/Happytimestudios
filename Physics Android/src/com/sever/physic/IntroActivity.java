@@ -30,7 +30,6 @@ public class IntroActivity extends Activity {
 	private IntroView introView;
 	public static Typeface tf;
 	public static Bitmap bmpIntro;
-	public static Bitmap bmpIntro2;
 	public static DBWriteUtil dbDBWriteUtil;
 
 	public static String uniqueID;
@@ -45,7 +44,6 @@ public class IntroActivity extends Activity {
 		tf = Typeface.createFromAsset(getAssets(), "FEASFBRG.TTF");
 		dbDBWriteUtil = new DBWriteUtil(this);
 		bmpIntro = GeneralUtil.createScaledBitmap(this, R.drawable.space, (int) PhysicsApplication.deviceWidth, (int) PhysicsApplication.deviceHeight);
-		bmpIntro2 = GeneralUtil.createScaledBitmap(this, R.drawable.introsub1, (int) PhysicsApplication.deviceWidth, (int) (PhysicsApplication.deviceHeight * 0.125f));
 
 		setContentView(R.layout.intro);
 		RelativeLayout root = (RelativeLayout) findViewById(R.id.introViewRelativeLayout);
@@ -77,7 +75,7 @@ public class IntroActivity extends Activity {
 					Toast.makeText(IntroActivity.this, "Please enter your name...", Toast.LENGTH_SHORT);
 				} else {
 					String usernameColumn = username.getText().toString().trim();
-					dbDBWriteUtil.addScore("" + 0, "" + new Date().getTime(), "" + 1, usernameColumn);
+					dbDBWriteUtil.addScore("" + 0, "" + new Date().getTime(), "" + 0, usernameColumn);
 					prepareMain();
 				}
 			}

@@ -47,6 +47,10 @@ public class BonusLifeBarSprite extends FreeSprite {
 	}
 
 	public void onDraw(Canvas canvas) {
+		if (gameView.endOfGame) {
+			return;
+		}
+
 		time = time_MAX - (new Date().getTime() - timeStart);
 		time = time <= 0 ? 0 : time;
 		long sec = (time / 1000) % 60;
@@ -109,7 +113,7 @@ public class BonusLifeBarSprite extends FreeSprite {
 		paint.setTypeface(IntroActivity.tf);
 		paint.setColor(Color.WHITE);
 		paint.setTextSize(20);
-		paint.setTextAlign(Paint.Align.CENTER);
+		paint.setTextAlign(Paint.Align.LEFT);
 		canvas.drawText(text, x, y, paint);
 	}
 }

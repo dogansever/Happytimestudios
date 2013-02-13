@@ -31,7 +31,8 @@
                 android:id="@+id/Button03"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="&lt;&lt; To Main" />
+                android:background="@drawable/buttonsmain05" />
+
         </LinearLayout>
     </RelativeLayout>
 

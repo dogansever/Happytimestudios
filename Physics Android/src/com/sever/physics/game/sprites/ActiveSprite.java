@@ -33,9 +33,9 @@ public class ActiveSprite extends FreeSprite {
 	public int firePower_AGG = +1;
 	public final int firePower_MAX = 50;
 	public final int fireMultiplierBullet = 150;
-	public static final int fireMultiplierMissile = 150;
-	public static final int fireMultiplierMissileLocking = 60;
-	public final int fireMultiplierBomb = 50;
+	public static final int fireMultiplierMissile = 180;
+	public static final int fireMultiplierMissileLocking = 100;
+	public final int fireMultiplierBomb = 80;
 
 	public boolean triggerOn;
 	public boolean freeFalling;
@@ -233,6 +233,15 @@ public class ActiveSprite extends FreeSprite {
 		Vec2 positionTarget = target.getBody().getPosition();
 		Vec2 positionSrc = body.getPosition();
 		return positionTarget.x > positionSrc.x;
+	}
+
+	public Vec2 getPositionVecNormalized(FreeSprite target) {
+		Vec2 positionTarget = target.getBody().getPosition();
+		Vec2 positionSrc = body.getPosition();
+		Vec2 force = new Vec2(positionTarget.x - positionSrc.x, positionTarget.y - positionSrc.y);
+		force.normalize();
+
+		return force;
 	}
 
 	public Vec2 getVelocityVec(int fireMultiplier, FreeSprite target) {

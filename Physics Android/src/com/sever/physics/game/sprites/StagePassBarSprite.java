@@ -27,6 +27,10 @@ public class StagePassBarSprite extends FreeSprite {
 	}
 
 	public void onDraw(Canvas canvas) {
+		if (gameView.endOfGame) {
+			return;
+		}
+
 		spriteBmp.currentRow = 0;
 
 		float percentage = ((float) Constants.scoreStage) / ((float) Constants.scoreToPassTheStage);

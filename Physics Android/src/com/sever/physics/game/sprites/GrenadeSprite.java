@@ -87,7 +87,7 @@ public class GrenadeSprite extends FreeSprite {
 	void addSprite(float x, float y) {
 		createDynamicBody(x, y);
 		createShape();
-		getBody().setAngularVelocity((float) (Math.random()*180));
+		getBody().setAngularVelocity((float) (Math.random() * 90));
 	}
 
 	public void createShape() {
