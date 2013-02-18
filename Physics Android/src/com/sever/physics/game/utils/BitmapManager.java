@@ -14,14 +14,18 @@ public class BitmapManager {
 	public static Bitmap bmpBack;
 	public static Bitmap bmpBall;
 	public static Bitmap bmpBox;
+	public static Bitmap bmpFirstAidKit;
 	public static Bitmap bmpBox2;
 	public static Bitmap planet1;
 	public static Bitmap barrel;
 	public static Bitmap player;
 	public static Bitmap playerThrottle;
 	public static Bitmap playerexploding;
+	public static Bitmap playerportalin;
+	public static Bitmap playerportalout;
 	// public static Bitmap enemy;
 	public static Bitmap enemypointer;
+	public static Bitmap firstAidKitpointer;
 	// public static Bitmap enemyThrottle;
 	// public static Bitmap enemyexploding;
 	// public static Bitmap enemyBurning;
@@ -58,36 +62,40 @@ public class BitmapManager {
 
 	public void initBitmaps() {
 		bmpBack = createScaledBitmap(R.drawable.space, (int) PhysicsApplication.deviceWidth, (int) PhysicsApplication.deviceHeight);
-		bmpBall = createScaledBitmap(R.drawable.ammominex1x1, 40, 40);
+		bmpBall = createScaledBitmap(R.drawable.ammominex1x1, 0, 0);
 		bmpBox = createScaledBitmap(R.drawable.crate, 40, 40);
 		bmpBox2 = createScaledBitmap(R.drawable.crate, 40, 40);
 		planet1 = createScaledBitmap(R.drawable.planet200x200, 50, 50);
-		barrel = createScaledBitmap(R.drawable.barrel, 45, 75);
-		player = createScaledBitmap(R.drawable.playerx2x2, (int) (200 * 0.8f), (int) (200 * 0.8f));
-		playerThrottle = createScaledBitmap(R.drawable.playerthrottlex2x2, (int) (200 * 0.8f), (int) (200 * 0.8f));
+		barrel = createScaledBitmap(R.drawable.barrel, 0, 0);
+		player = createScaledBitmap(R.drawable.playerx2x2, 0, 0);
+		playerThrottle = createScaledBitmap(R.drawable.playerthrottlex2x2, 0, 0);
 		playerexploding = createScaledBitmap(R.drawable.explosion02x3x1, 0, 0);
+		playerportalin = createScaledBitmap(R.drawable.portalinx7x1, 0, 0);
+		playerportalout = createScaledBitmap(R.drawable.portaloutx7x1, 0, 0);
 		ground = createScaledBitmap(R.drawable.crate, (int) PhysicsApplication.deviceWidth, 50);
-		missile = createScaledBitmap(R.drawable.ammomissilex2x1, 120, 30);
-		missileLight = createScaledBitmap(R.drawable.ammomissilelightx2x1, 120, 15);
-		missileLocking = createScaledBitmap(R.drawable.ammomissilelockingx2x1, 200, 30);
-		bomb = createScaledBitmap(R.drawable.ammobombbigx2x1, 100, 50);
-		bombsmall = createScaledBitmap(R.drawable.ammobombx2x1, 60, 30);
-		bombtriple = createScaledBitmap(R.drawable.ammobombtriplex2x1, 50, 25);
-		bombtimer = createScaledBitmap(R.drawable.ammobombtimerx2x1, 120, 30);
+		missile = createScaledBitmap(R.drawable.ammomissilex2x1, 0, 0);
+		missileLight = createScaledBitmap(R.drawable.ammomissilelightx2x1, 0, 0);
+		missileLocking = createScaledBitmap(R.drawable.ammomissilelockingx2x1, 0, 0);
+		bomb = createScaledBitmap(R.drawable.ammobombbigx2x1, 0, 0);
+		bombsmall = createScaledBitmap(R.drawable.ammobombx2x1, 0, 0);
+		bombtriple = createScaledBitmap(R.drawable.ammobombtriplex2x1, 0, 0);
+		bombtimer = createScaledBitmap(R.drawable.ammobombtimerx2x1, 0, 0);
 		bombexploding = createScaledBitmap(R.drawable.explosion01x4x1, 0, 0);
 		powerBar = createScaledBitmap(R.drawable.powerbar, (int) (225 * 0.4f), (int) (20 * 0.4f));
 		lifeBar = createScaledBitmap(R.drawable.progressbarslife, (int) (225 * 0.4f), (int) (20 * 0.4f));
 		fuelBar = createScaledBitmap(R.drawable.fuelbar, 60, 45);
 		joystick = createScaledBitmap(R.drawable.joystick, 0, 0);
-		fireButton = createScaledBitmap(R.drawable.buttonsfire, 380, 220);
-		fireArrow = createScaledBitmap(R.drawable.firearrowx10, 500, 50);
+		fireButton = createScaledBitmap(R.drawable.buttonsfire, 0, 0);
+		fireArrow = createScaledBitmap(R.drawable.firearrowx10, 0, 0);
 		// hook = createScaledBitmap(R.drawable.hook, 0, 0);
 		enemypointer = createScaledBitmap(R.drawable.enemypointer, 0, 0);
-		weaponSwapButton = createScaledBitmap(R.drawable.weaponsmine, 100, 100);
-		portalButton = createScaledBitmap(R.drawable.buttonsportal, 100, 100);
-		stagePassBar = createScaledBitmap(R.drawable.progressbarsstage, (int) (394 * 0.75f), (int) (44 * 0.75f));
-		lifeBarBonus = createScaledBitmap(R.drawable.progressbarstime, (int) (394 * 0.75f), (int) (44 * 0.75f));
+		weaponSwapButton = createScaledBitmap(R.drawable.weaponsmine, 0, 0);
+		portalButton = createScaledBitmap(R.drawable.buttonsportal, 0, 0);
+		stagePassBar = createScaledBitmap(R.drawable.progressbarsstage, 0, 0);
+		lifeBarBonus = createScaledBitmap(R.drawable.progressbarstime, 0, 0);
 		smoke = createScaledBitmap(R.drawable.smokex2x1, 0, 0);
+		bmpFirstAidKit = createScaledBitmap(R.drawable.firstaidkitx2x1, 0, 0);
+		firstAidKitpointer = createScaledBitmap(R.drawable.firstaidkitpointerx2x1, 0, 0);
 	}
 
 	public Bitmap createScaledBitmap(Bitmap bmp, float scale) {

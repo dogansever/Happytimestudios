@@ -32,8 +32,10 @@ public class SmokeSprite extends FreeSprite {
 	}
 
 	private void updateBitmap() {
-		if (!manualFrameSet && ++spriteBmp.BMP_FPS_CURRENT % spriteBmp.BMP_FPS == 0)
+		if (!manualFrameSet && ++spriteBmp.BMP_FPS_CURRENT % spriteBmp.BMP_FPS == 0) {
+			spriteBmp.BMP_FPS_CURRENT = 0;
 			spriteBmp.currentFrame = ++spriteBmp.currentFrame % spriteBmp.BMP_COLUMNS;
+		}
 
 		int srcX = (int) (spriteBmp.currentFrame * width);
 		int srcY = (int) (spriteBmp.currentRow * height);

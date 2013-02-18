@@ -1,13 +1,24 @@
 package com.sever.physics.game.sprites;
 
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jbox2d.collision.PolygonDef;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
+import com.sever.physic.PhysicsApplication;
 import com.sever.physics.game.GameView;
+import com.sever.physics.game.utils.BitmapManager;
+import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
+import com.sever.physics.game.utils.WeaponsManager;
 
 public class BoxSprite extends FreeSprite {
+
+	public CollectItemPointerSprite pointer = null;
 
 	public BoxSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
@@ -40,5 +51,22 @@ public class BoxSprite extends FreeSprite {
 		// getBody().setAngularVelocity(360f);
 		// getBody().setLinearVelocity(new Vec2(10, 20));
 
+	}
+
+	public void addPointerSprite() {
+		fades = true;
+		FADE_LIFE = Constants.FPS * 10;
+		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
+		bmp.add(BitmapManager.firstAidKitpointer);
+		ArrayList<int[]> colsrows = new ArrayList<int[]>();
+		colsrows.add(new int[] { 2, 1 });
+		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
+		pointer = new CollectItemPointerSprite(this, gameView, spriteBmp, x, y);
+	}
+
+	public void onDraw(Canvas canvas) {
+		if (pointer != null)
+			pointer.onDraw(canvas);
+		super.onDraw(canvas);
 	}
 }

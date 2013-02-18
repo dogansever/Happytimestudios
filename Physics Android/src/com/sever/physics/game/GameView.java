@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.jbox2d.common.MathUtils;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -55,6 +57,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	public GameLoopThread gameLoopThread;
 	public ConcurrentLinkedQueue<FreeSprite> explosiveSprites = new ConcurrentLinkedQueue<FreeSprite>();
 	public ConcurrentLinkedQueue<FreeSprite> freeSprites = new ConcurrentLinkedQueue<FreeSprite>();
+	public ConcurrentLinkedQueue<FreeSprite> collectSprites = new ConcurrentLinkedQueue<FreeSprite>();
 	public ConcurrentLinkedQueue<FreeSprite> staticSprites = new ConcurrentLinkedQueue<FreeSprite>();
 	public ConcurrentLinkedQueue<FreeSprite> groundSprites = new ConcurrentLinkedQueue<FreeSprite>();
 	public ConcurrentLinkedQueue<FreeSprite> enemySprites = new ConcurrentLinkedQueue<FreeSprite>();
@@ -92,6 +95,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	private boolean buttonSwapEnabled;
 	private boolean buttonFireEnabled;
 	public static boolean success;
+	public static boolean newGame;
 
 	float newStagePointx = 0;
 	float newStagePointy = 0;
@@ -103,23 +107,44 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	private String newStageUpMessage = "";
 
 	public FreeSprite getBonusLifeBarSprite() {
-		return (FreeSprite) this.nophysicsSprite.toArray()[3];
+		for (Object fs : this.nophysicsSprite.toArray()) {
+			if (fs instanceof BonusLifeBarSprite)
+				return (FreeSprite) fs;
+		}
+		return null;
 	}
 
 	public FreeSprite getPortalButtonSprite() {
-		return (FreeSprite) this.nophysicsSprite.toArray()[5];
+		for (Object fs : this.nophysicsSprite.toArray()) {
+			if (fs instanceof ButtonPortalSprite)
+				return (FreeSprite) fs;
+		}
+		return null;
+
 	}
 
 	public FreeSprite getSwapWeaponButtonSprite() {
-		return (FreeSprite) this.nophysicsSprite.toArray()[2];
+		for (Object fs : this.nophysicsSprite.toArray()) {
+			if (fs instanceof ButtonSwapWeaponSprite)
+				return (FreeSprite) fs;
+		}
+		return null;
 	}
 
 	public FreeSprite getFireButtonSprite() {
-		return (FreeSprite) this.nophysicsSprite.toArray()[1];
+		for (Object fs : this.nophysicsSprite.toArray()) {
+			if (fs instanceof ButtonFireSprite)
+				return (FreeSprite) fs;
+		}
+		return null;
 	}
 
 	public FreeSprite getJoystickSprite() {
-		return (FreeSprite) this.nophysicsSprite.toArray()[0];
+		for (Object fs : this.nophysicsSprite.toArray()) {
+			if (fs instanceof JoystickSprite)
+				return (FreeSprite) fs;
+		}
+		return null;
 	}
 
 	public FreeSprite getFireArrowSprite() {
@@ -317,6 +342,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		return sprite;
 	}
 
+	public FreeSprite addFirstAidKit(float x, float y) {
+		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
+		bmp.add(BitmapManager.bmpFirstAidKit);
+		ArrayList<int[]> colsrows = new ArrayList<int[]>();
+		colsrows.add(new int[] { 2, 1 });
+		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
+		BoxSprite sprite = new BoxSprite(collectSprites, this, spriteBmp, x, y);
+		sprite.addPointerSprite();
+		collectSprites.add(sprite);
+		return sprite;
+	}
+
 	public FreeSprite addBox(float x, float y) {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
 		bmp.add(BitmapManager.bmpBox);
@@ -409,10 +446,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		bmp.add(BitmapManager.player);
 		bmp.add(BitmapManager.playerThrottle);
 		bmp.add(BitmapManager.playerexploding);
+		bmp.add(BitmapManager.playerportalout);
+		bmp.add(BitmapManager.playerportalin);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
 		colsrows.add(new int[] { 2, 2 });
 		colsrows.add(new int[] { 2, 2 });
 		colsrows.add(new int[] { 3, 1 });
+		colsrows.add(new int[] { 7, 1 });
+		colsrows.add(new int[] { 7, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		playerSprite.add(new PlayerSprite(playerSprite, this, spriteBmp, x, y));
 		((PlayerSprite) getPlayerSprite()).weapon = WeaponsManager.getManager().firstAvailableWeapon();
@@ -506,12 +547,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	private void createNophysicSprites() {
 		addJoystick(120, 60);
-		float perc = BitmapManager.getManager().getPerc();
-		addFireButton(PhysicsApplication.deviceWidth - 100 * perc, 120 * perc);
-		addSwapWeaponButton(PhysicsApplication.deviceWidth - 50 * perc, 300 * perc);
+		float perc = 1;
+		// float perc = BitmapManager.getManager().getPerc();
 		addBonusLifeBarSprite(PhysicsApplication.deviceWidth - 100 * perc, PhysicsApplication.deviceHeight - 50 * perc);
-		addStagePassBarSprite(PhysicsApplication.deviceWidth - 250 * perc, PhysicsApplication.deviceHeight - 50 * perc);
-		addPortalButton(PhysicsApplication.deviceWidth - 50 * perc, 450 * perc);
+		addStagePassBarSprite(PhysicsApplication.deviceWidth - 270 * perc, PhysicsApplication.deviceHeight - 50 * perc);
+		addPortalButton(PhysicsApplication.deviceWidth - 50 * perc, 300 * perc);
+		addSwapWeaponButton(PhysicsApplication.deviceWidth - 250 * perc, 50 * perc);
+		addFireButton(PhysicsApplication.deviceWidth - 100 * perc, 120 * perc);
 	}
 
 	@Override
@@ -570,9 +612,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	protected void onDraw(Canvas canvas) {
 		try {
 			synchronized (getHolder()) {
-				if(canvas == null)
+				if (canvas == null)
 					return;
-				
+
 				long tstart = System.currentTimeMillis();
 				long t = System.currentTimeMillis();
 
@@ -602,6 +644,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				draw(canvas, freeSprites);
 				String freeSprites = "freeSprites:" + (System.currentTimeMillis() - t);
 
+				// draw frees, push pull frees
+				t = System.currentTimeMillis();
+				draw(canvas, collectSprites);
+				String collectSprites = "collectSprites:" + (System.currentTimeMillis() - t);
+
 				// draw enemies
 				t = System.currentTimeMillis();
 				draw(canvas, enemySprites);
@@ -615,7 +662,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				t = System.currentTimeMillis();
 				draw(canvas, effectsSprite);
 				String effectsSprite = "effectsSprite:" + (System.currentTimeMillis() - t);
-				
+
 				t = System.currentTimeMillis();
 				draw(canvas, nophysicsSprite);
 				String nophysicsSprite = "nophysicsSprite:" + (System.currentTimeMillis() - t);
@@ -893,6 +940,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			// PhysicsActivity.context.updateScore();
 			PhysicsActivity.context.mWorld.update();
 			checkPhysicalEffects();
+			checkCollecItems();
 			checkSpaceTrash();
 			checkGameStatus();
 		} catch (Exception e) {
@@ -946,6 +994,43 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	}
 
+	private void checkCollecItems() {
+
+		// draw explosives, push enemies
+		for (Iterator<FreeSprite> it = collectSprites.iterator(); it.hasNext();) {
+			FreeSprite fs = it.next();
+			if (getPlayerSprite().getDistance(fs) < 10) {
+				((PlayerSprite) getPlayerSprite()).lifeGain((int) (((PlayerSprite) getPlayerSprite()).life_MAX * 0.25f));
+				fs.killSprite();
+			}
+		}
+
+		// draw frees, push pull frees
+		// for (Iterator<FreeSprite> it2 = freeSprites.iterator();
+		// it2.hasNext();) {
+		// FreeSprite spritefree = it2.next();
+		// try {
+		// if (((PlayerSprite) getPlayerSprite()).powerOn) {
+		// getPlayerSprite().pull(spritefree);
+		// } else if (!((PlayerSprite) getPlayerSprite()).powerOn &&
+		// ((PlayerSprite) getPlayerSprite()).scatter) {
+		// getPlayerSprite().push(spritefree);
+		// }
+		// if (((PlayerSprite) getPlayerSprite()).powerPush) {
+		// ((PlayerSprite) getPlayerSprite()).pushPower(spritefree);
+		// }
+		// } catch (Exception e) {
+		// }
+		// }
+		// ((PlayerSprite) getPlayerSprite()).powerPush = false;
+		// if (getPlayerSprite() != null && (!((PlayerSprite)
+		// getPlayerSprite()).powerOn && ((PlayerSprite)
+		// getPlayerSprite()).scatter)) {
+		// ((PlayerSprite) getPlayerSprite()).scatter = false;
+		// }
+
+	}
+
 	private void checkSpaceTrash() {
 		// System.out.println("checkSpaceTrash():freeSprites.size():" +
 		// freeSprites.size());
@@ -955,8 +1040,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	private void sendEnemies() {
-		StageManager.getManager().currentStage = Integer.parseInt((String) IntroActivity.dbDBWriteUtil.getBestScore(1));
-		Constants.scoreTotal = Integer.parseInt((String) IntroActivity.dbDBWriteUtil.getBestScore(0));
+		if (newGame) {
+			StageManager.getManager().currentStage = 0;
+			Constants.scoreTotal = 0;
+		} else {
+			StageManager.getManager().currentStage = Integer.parseInt((String) IntroActivity.dbDBWriteUtil.getBestScore(1));
+			Constants.scoreTotal = Integer.parseInt((String) IntroActivity.dbDBWriteUtil.getBestScore(0));
+		}
 		addStageEnemies();
 	}
 
@@ -1013,6 +1103,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				newStageUpMessage = "STAGE UP!";
 			}
 
+			for (FreeSprite enmy : enemySprites) {
+				enmy.destroySprite();
+			}
 		} else if (waitingForNextStage) {
 			NEXT_STAGE_WAIT_TIME--;
 			if (NEXT_STAGE_WAIT_TIME <= 0) {
@@ -1027,9 +1120,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	private void nextStage() {
-		for (FreeSprite enmy : enemySprites) {
-			enmy.destroySprite();
-		}
 
 		if (!StageManager.getManager().incrementStage()) {
 			endOfGame = true;
@@ -1051,7 +1141,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		gameLoopThread.setRunning(false);
 	}
 
-	private void finishGame() {
+	public void finishGame() {
 		System.out.println("finishGame()");
 		gameLoopThread.setRunning(false);
 		releaseBitmaps();
@@ -1073,6 +1163,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			z.freeBitmaps();
 		}
 		freeSprites2.clear();
+	}
+
+	public void togglepauseresume() {
+		if (gameLoopThread.isSleeping())
+			resume();
+		else
+			pause();
 	}
 
 	public void pause() {
@@ -1112,4 +1209,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		Constants.scoreStage += bns;
 		return Constants.scoreToPassTheStage > Constants.scoreStage;
 	}
+
+	public boolean sentFirstAidKit() {
+		return new Random().nextFloat() * 100.0f < 30.0f;
+		// return true;
+	}
+
 }

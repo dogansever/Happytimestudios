@@ -3,10 +3,16 @@ package com.sever.physic;
 import java.util.ArrayList;
 import java.util.Timer;
 
+import org.jbox2d.common.Vec2;
+
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.sever.physics.game.GameView;
@@ -23,6 +29,8 @@ public class PhysicsActivity extends Activity {
 	public static Timer timer = null;
 	public final Handler mHandler = new Handler();
 	public static int count = 0;
+	public static boolean facingRigth;
+	public static Vec2 velocityVec;
 	private ArrayList<View> ballViews = new ArrayList<View>();
 	protected boolean TOUCHED;
 	protected View TOUCHED_VIEW;
@@ -30,6 +38,9 @@ public class PhysicsActivity extends Activity {
 	protected int downy;
 	protected long downTime;
 	private GameView gameView;
+
+	private Dialog dialog;
+
 	public static PhysicsActivity context;
 
 	@Override
@@ -98,6 +109,42 @@ public class PhysicsActivity extends Activity {
 	protected void onDestroy() {
 		System.out.println("onDestroy:" + this);
 		super.onDestroy();
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (getGameView().idle)
+			return;
+
+		getGameView().togglepauseresume();
+		showMenu();
+	}
+
+	public void showMenu() {
+		dialog = new Dialog(context, R.style.ThemeDialogCustom);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.pausemenu);
+		dialog.setCancelable(false);
+
+		Button cont = (Button) dialog.findViewById(R.id.Button01);
+		cont.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.cancel();
+				getGameView().togglepauseresume();
+			}
+		});
+		Button leave = (Button) dialog.findViewById(R.id.Button04);
+		leave.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.cancel();
+				getGameView().togglepauseresume();
+				getGameView().finishGame = true;
+				getGameView().finishGame();
+			}
+		});
+		dialog.show();
 	}
 
 }

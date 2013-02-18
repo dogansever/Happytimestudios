@@ -29,7 +29,7 @@ public class WeaponsManager {
 		weaponsList.add(new Weapon(WeaponTypes.BULLET, Constants.FPS * 2, true, true, false, (int) (Constants.FPS * 0.5), DAMAGE_MEDIUM, RADIUS_NARROW, false, false));
 		weaponsList.add(new Weapon(WeaponTypes.MISSILE_LIGHT, Constants.FPS * 2, true, true, false, (int) (Constants.FPS * 0.5), DAMAGE_LOW, RADIUS_NARROW, false, true));
 		weaponsList.add(new Weapon(WeaponTypes.MISSILE, Constants.FPS * 2, true, true, false, Constants.FPS * 1, DAMAGE_HIGH, RADIUS_NARROW, false, true));
-		weaponsList.add(new Weapon(WeaponTypes.MISSILE_LOCKING, Constants.FPS * 2, false, true, false, Constants.FPS * 2, DAMAGE_MEDIUM, RADIUS_NARROW, false, true));
+		weaponsList.add(new Weapon(WeaponTypes.MISSILE_LOCKING, Constants.FPS * 4, false, true, false, Constants.FPS * 2, DAMAGE_MEDIUM, RADIUS_NARROW, false, true));
 		weaponsList.add(new Weapon(WeaponTypes.BOMB, Constants.FPS * 2, true, true, false, Constants.FPS * 1, DAMAGE_LOW, RADIUS_MEDIUM, false, false));
 		weaponsList.add(new Weapon(WeaponTypes.BOMB_TRIPLE, Constants.FPS * 2, true, true, false, Constants.FPS * 1, DAMAGE_LOW, RADIUS_MEDIUM, false, false));
 		weaponsList.add(new Weapon(WeaponTypes.BOMB_BIG, Constants.FPS * 4, true, true, false, Constants.FPS * 2, DAMAGE_HIGH, RADIUS_WIDE, false, false));
@@ -46,21 +46,21 @@ public class WeaponsManager {
 	// }
 
 	public float getBitmapPercentageByType(WeaponTypes wt, Boolean fly) {
-		if (wt == WeaponTypes.MISSILE) {
-			return fly ? 0.7f : 0.9f;
-		}
-		if (wt == WeaponTypes.MISSILE_LIGHT) {
-			return fly ? 0.8f : 1.0f;
-		}
-		if (wt == WeaponTypes.MISSILE_LOCKING) {
-			return fly ? 0.5f : 1.0f;
-		}
-		if (wt == WeaponTypes.BOMB) {
-			return fly ? 1.0f : 1.0f;
-		}
-		if (wt == WeaponTypes.BOMB_BIG) {
-			return fly ? 1.0f : 1.0f;
-		}
+		// if (wt == WeaponTypes.MISSILE) {
+		// return fly ? 0.7f : 0.9f;
+		// }
+		// if (wt == WeaponTypes.MISSILE_LIGHT) {
+		// return fly ? 0.8f : 1.0f;
+		// }
+		// if (wt == WeaponTypes.MISSILE_LOCKING) {
+		// return fly ? 0.5f : 1.0f;
+		// }
+		// if (wt == WeaponTypes.BOMB) {
+		// return fly ? 1.0f : 1.0f;
+		// }
+		// if (wt == WeaponTypes.BOMB_BIG) {
+		// return fly ? 1.0f : 1.0f;
+		// }
 		return 1.0f;
 	}
 
@@ -148,19 +148,19 @@ public class WeaponsManager {
 	public Bitmap getEnemyBitmapByWT(WeaponTypes wt, Boolean fly) {
 		int resId = R.drawable.enemy02x2x1;
 		if (wt == WeaponTypes.MISSILE) {
-			resId = R.drawable.enemy01x2x1;
+			resId = R.drawable.enemy05x2x1;
 		}
 		if (wt == WeaponTypes.MISSILE_LIGHT) {
-			resId = R.drawable.enemy01x2x1;
-		}
-		if (wt == WeaponTypes.MISSILE_LOCKING) {
-			resId = R.drawable.enemy01x2x1;
-		}
-		if (wt == WeaponTypes.BOMB) {
 			resId = R.drawable.enemy02x2x1;
 		}
-		if (wt == WeaponTypes.BOMB_BIG) {
+		if (wt == WeaponTypes.MISSILE_LOCKING) {
 			resId = R.drawable.enemy03x2x1;
+		}
+		if (wt == WeaponTypes.BOMB) {
+			resId = R.drawable.enemy01x2x1;
+		}
+		if (wt == WeaponTypes.BOMB_BIG) {
+			resId = R.drawable.enemy04x2x1;
 		}
 
 		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getBitmapPercentageByType(wt, fly));
@@ -169,19 +169,19 @@ public class WeaponsManager {
 	public Bitmap getEnemyThrottleBitmapByWT(WeaponTypes wt, Boolean fly) {
 		int resId = R.drawable.enemy02throttlex2x2;
 		if (wt == WeaponTypes.MISSILE) {
-			resId = R.drawable.enemy01throttlex2x2;
+			resId = R.drawable.enemy05throttlex2x2;
 		}
 		if (wt == WeaponTypes.MISSILE_LIGHT) {
-			resId = R.drawable.enemy01throttlex2x2;
-		}
-		if (wt == WeaponTypes.MISSILE_LOCKING) {
-			resId = R.drawable.enemy01throttlex2x2;
-		}
-		if (wt == WeaponTypes.BOMB) {
 			resId = R.drawable.enemy02throttlex2x2;
 		}
-		if (wt == WeaponTypes.BOMB_BIG) {
+		if (wt == WeaponTypes.MISSILE_LOCKING) {
 			resId = R.drawable.enemy03throttlex2x2;
+		}
+		if (wt == WeaponTypes.BOMB) {
+			resId = R.drawable.enemy01throttlex2x2;
+		}
+		if (wt == WeaponTypes.BOMB_BIG) {
+			resId = R.drawable.enemy04throttlex2x2;
 		}
 
 		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getBitmapPercentageByType(wt, fly));
@@ -190,19 +190,19 @@ public class WeaponsManager {
 	public Bitmap getEnemyBurningBitmapByWT(WeaponTypes wt, Boolean fly) {
 		int resId = R.drawable.enemy02burningx2x2;
 		if (wt == WeaponTypes.MISSILE) {
-			resId = R.drawable.enemy01burningx2x2;
+			resId = R.drawable.enemy05burningx2x2;
 		}
 		if (wt == WeaponTypes.MISSILE_LIGHT) {
-			resId = R.drawable.enemy01burningx2x2;
-		}
-		if (wt == WeaponTypes.MISSILE_LOCKING) {
-			resId = R.drawable.enemy01burningx2x2;
-		}
-		if (wt == WeaponTypes.BOMB) {
 			resId = R.drawable.enemy02burningx2x2;
 		}
-		if (wt == WeaponTypes.BOMB_BIG) {
+		if (wt == WeaponTypes.MISSILE_LOCKING) {
 			resId = R.drawable.enemy03burningx2x2;
+		}
+		if (wt == WeaponTypes.BOMB) {
+			resId = R.drawable.enemy01burningx2x2;
+		}
+		if (wt == WeaponTypes.BOMB_BIG) {
+			resId = R.drawable.enemy04burningx2x2;
 		}
 
 		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getBitmapPercentageByType(wt, fly));
@@ -233,8 +233,8 @@ public class WeaponsManager {
 		Weapon weapon = ((PlayerSprite) PhysicsActivity.context.getGameView().getPlayerSprite()).weapon;
 		WeaponTypes type = weapon.getType();
 		weapon.setAvailable(getManager().getWTAvailability(type));
-		int h = 100;
-		int w = 100;
+		int h = 0;
+		int w = 0;
 		if (type == WeaponTypes.BULLET) {
 			if (weapon.isAvailable())
 				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.weaponsmine, w, h);

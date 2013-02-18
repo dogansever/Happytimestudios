@@ -42,6 +42,9 @@ public class ActiveSprite extends FreeSprite {
 	public WeaponTypes wt;
 	private boolean fly;
 
+	public int smokeFreqMAXInFPS = (int) (Constants.FPS * 0.5f);
+	public int smokeFreqInFPS = smokeFreqMAXInFPS;
+
 	public void setFly(boolean fly) {
 		this.fly = fly;
 	}
@@ -86,6 +89,7 @@ public class ActiveSprite extends FreeSprite {
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
 		angle = 180;
+		destroyShape();
 		SoundEffectsManager.getManager().playEXPLODE_ROBOT();
 	}
 
@@ -127,6 +131,11 @@ public class ActiveSprite extends FreeSprite {
 
 	public void lifeLost(int lost) {
 		life -= lost;
+	}
+
+	public void lifeGain(int lost) {
+		life += lost;
+		life = life > life_MAX ? life_MAX : life;
 	}
 
 	public void checkVelocity() {
@@ -213,7 +222,10 @@ public class ActiveSprite extends FreeSprite {
 		if (!fly)
 			return;
 		throttle(0);
-		FreeSprite smoke = gameView.addSmoke(x, y - height * 0.4f);
+		if (smokeFreqInFPS-- == 0) {
+			gameView.addSmoke(x, y - height * 0.4f);
+			smokeFreqInFPS = smokeFreqMAXInFPS;
+		}
 	}
 
 	public void throttleDown() {

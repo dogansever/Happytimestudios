@@ -40,6 +40,9 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 		} catch (SQLException e) {
 		} finally {
 			try {
+				if (db != null && !db.isOpen()) {
+					db.close();
+				}
 			} catch (Exception e) {
 			}
 
@@ -55,7 +58,7 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 		} finally {
 			try {
 				if (db != null && !db.isOpen()) {
-					// db.close();
+					db.close();
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -84,7 +87,7 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 			} finally {
 				try {
 					if (db != null && !db.isOpen()) {
-						// db.close();
+						db.close();
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -106,7 +109,7 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 			} finally {
 				try {
 					if (db != null && !db.isOpen()) {
-						// db.close();
+						db.close();
 					}
 				} catch (Exception e) {
 				}
@@ -166,7 +169,7 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 					cur.close();
 				}
 				if (db != null && !db.isOpen()) {
-					// db.close();
+					db.close();
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

@@ -1,9 +1,12 @@
 package com.sever.physic;
 
 import java.util.Date;
+import java.util.Random;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -12,15 +15,21 @@ import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
+import com.google.ads.AdView;
 import com.sever.physic.adapters.GlobalRankingAdapter;
 import com.sever.physic.adapters.InfoAdapter;
+import com.sever.physics.game.GameView;
 import com.sever.physics.game.IntroView;
 import com.sever.physics.game.utils.DBWriteUtil;
 import com.sever.physics.game.utils.GeneralUtil;
@@ -28,6 +37,7 @@ import com.sever.physics.game.utils.GeneralUtil;
 public class IntroActivity extends Activity {
 
 	private IntroView introView;
+	private Dialog dialog;
 	public static Typeface tf;
 	public static Bitmap bmpIntro;
 	public static DBWriteUtil dbDBWriteUtil;
@@ -42,7 +52,8 @@ public class IntroActivity extends Activity {
 		uniqueID = tm.getDeviceId();
 
 		tf = Typeface.createFromAsset(getAssets(), "FEASFBRG.TTF");
-		dbDBWriteUtil = new DBWriteUtil(this);
+		if (dbDBWriteUtil == null)
+			dbDBWriteUtil = new DBWriteUtil(this);
 		bmpIntro = GeneralUtil.createScaledBitmap(this, R.drawable.space, (int) PhysicsApplication.deviceWidth, (int) PhysicsApplication.deviceHeight);
 
 		setContentView(R.layout.intro);
@@ -112,13 +123,46 @@ public class IntroActivity extends Activity {
 		sub.addView(submain);
 
 		final Button start = (Button) findViewById(R.id.Button01);
-		start.setVisibility(View.VISIBLE);
+		final Button newgame = (Button) findViewById(R.id.Button04);
+
+		newgame.setVisibility(View.VISIBLE);
+		newgame.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Random randomGenerator = new Random();
+				int randomInt = randomGenerator.nextInt(5);
+				if (randomInt == 5) {
+					simClick();
+				} else {
+					GameView.newGame = true;
+					introView.finishIntro();
+					start.setVisibility(View.GONE);
+					newgame.setVisibility(View.GONE);
+				}
+
+			}
+		});
+
+		if (dbDBWriteUtil.getBestScore(0).equals("")) {
+			start.setVisibility(View.GONE);
+		} else {
+			start.setVisibility(View.VISIBLE);
+		}
 		start.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				introView.finishIntro();
-				start.setVisibility(View.GONE);
+				Random randomGenerator = new Random();
+				int randomInt = randomGenerator.nextInt(5);
+				if (randomInt == 5) {
+					simClick();
+				} else {
+					GameView.newGame = false;
+					introView.finishIntro();
+					start.setVisibility(View.GONE);
+					newgame.setVisibility(View.GONE);
+				}
 			}
 		});
 
@@ -174,10 +218,6 @@ public class IntroActivity extends Activity {
 	}
 
 	@Override
-	public void onBackPressed() {
-	}
-
-	@Override
 	protected void onDestroy() {
 		System.out.println("onDestroy:" + this);
 		super.onDestroy();
@@ -193,12 +233,71 @@ public class IntroActivity extends Activity {
 	protected void onResume() {
 		System.out.println("onResume:" + this);
 		super.onResume();
+//		createAd();
 	}
 
 	@Override
 	protected void onStop() {
 		System.out.println("onStop:" + this);
 		super.onStop();
+//		destroyAd();
 	}
 
+	@Override
+	public void onBackPressed() {
+		showMenu();
+	}
+
+	public void showMenu() {
+		dialog = new Dialog(this, R.style.ThemeDialogCustom);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.quitmenu);
+		dialog.setCancelable(false);
+
+		Button yes = (Button) dialog.findViewById(R.id.Button01);
+		yes.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.cancel();
+				Intent intent = new Intent(Intent.ACTION_MAIN);
+				intent.addCategory(Intent.CATEGORY_HOME);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(intent);
+				finish();
+			}
+		});
+		Button no = (Button) dialog.findViewById(R.id.Button04);
+		no.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.cancel();
+			}
+		});
+		dialog.show();
+	}
+
+	private void simClick() {
+		Thread t = new Thread() {
+			public void run() {
+				new Test("com.sever.physic", IntroActivity.class).simulateClick();
+			}
+		};
+		t.start();
+	}
+	
+	private AdView adView;
+
+	private void createAd() {
+		System.out.println("createAd");
+		adView = new AdView(this, AdSize.BANNER, "a15121f41d20fd7");
+		LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayoutAdview);
+		layout.removeAllViews();
+		layout.addView(adView);
+		adView.loadAd(new AdRequest());
+	}
+
+	private void destroyAd() {
+		System.out.println("destroyAd");
+		adView.destroy();
+	}
 }

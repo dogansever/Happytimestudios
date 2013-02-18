@@ -13,6 +13,7 @@ import android.view.SurfaceView;
 
 import com.sever.physic.IntroActivity;
 import com.sever.physic.PhysicsActivity;
+import com.sever.physic.PreStartActivity;
 
 public class IntroView extends SurfaceView implements SurfaceHolder.Callback {
 	public IntroLoopThread introLoopThread;
@@ -72,6 +73,9 @@ public class IntroView extends SurfaceView implements SurfaceHolder.Callback {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
+		if (canvas == null)
+			return;
+
 		update();
 		try {
 			synchronized (getHolder()) {
@@ -79,8 +83,8 @@ public class IntroView extends SurfaceView implements SurfaceHolder.Callback {
 				paint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
 				canvas.drawPaint(paint);
 				drawBackground(canvas);
-//				drawBackground2(canvas);
-//				drawBackground3(canvas);
+				// drawBackground2(canvas);
+				// drawBackground3(canvas);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -127,7 +131,7 @@ public class IntroView extends SurfaceView implements SurfaceHolder.Callback {
 	public void finishIntro() {
 		introLoopThread.setRunning(false);
 		releaseBitmaps();
-		Intent intent = new Intent(context, PhysicsActivity.class);
+		Intent intent = new Intent(context, PreStartActivity.class);
 		context.startActivity(intent);
 		((IntroActivity) context).finish();
 	}

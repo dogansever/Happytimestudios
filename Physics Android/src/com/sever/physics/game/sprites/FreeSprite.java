@@ -1,5 +1,6 @@
 package com.sever.physics.game.sprites;
 
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jbox2d.common.Vec2;
@@ -15,6 +16,7 @@ import android.graphics.Rect;
 import com.sever.physic.PhysicsActivity;
 import com.sever.physic.PhysicsApplication;
 import com.sever.physics.game.GameView;
+import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.WeaponTypes;
@@ -43,6 +45,8 @@ public class FreeSprite {
 	public boolean manualAngleSet = false;
 	public boolean dynamic;
 	public boolean hasbody = false;
+	public boolean portalingout = false;
+	public boolean portalingin = false;
 	public SpriteBmp spriteBmp;
 	public WeaponTypes wt;
 
@@ -174,8 +178,10 @@ public class FreeSprite {
 
 	private void updateBitmap() {
 		try {
-			if (!manualFrameSet && ++spriteBmp.BMP_FPS_CURRENT % spriteBmp.BMP_FPS == 0)
+			if (!manualFrameSet && ++spriteBmp.BMP_FPS_CURRENT % spriteBmp.BMP_FPS == 0){
+				spriteBmp.BMP_FPS_CURRENT = 0;				
 				spriteBmp.currentFrame = ++spriteBmp.currentFrame % spriteBmp.BMP_COLUMNS;
+			}
 
 			int srcX = (int) (spriteBmp.currentFrame * width);
 			int srcY = (int) (spriteBmp.currentRow * height);
@@ -275,7 +281,15 @@ public class FreeSprite {
 	public float spacing(float x, float y) {
 		return (float) Math.sqrt(x * x + y * y);
 	}
-
+	
+	public float getDistance(FreeSprite sprite){
+		Body body = sprite.getBody();
+		Vec2 positionTarget = body.getPosition();
+		Vec2 positionSrc = this.getBody().getPosition();
+		float range = spacing(positionSrc.x - positionTarget.x, positionSrc.y - positionTarget.y);
+		return range;
+	}
+	
 	public void applyForce(FreeSprite sprite, Vec2 positionSrc, float FIELD_RADIUS, float pullG, Vec2 force) {
 		Body body = sprite.getBody();
 		Vec2 positionTarget = body.getPosition();
@@ -373,5 +387,7 @@ public class FreeSprite {
 	public void setAngle(float angle) {
 		this.angle = angle;
 	}
-
+	
+	public void addPointerSprite() {
+	}
 }

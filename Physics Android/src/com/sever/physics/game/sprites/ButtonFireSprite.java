@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import com.sever.physic.PhysicsApplication;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.SpriteBmp;
+import com.sever.physics.game.utils.WeaponTypes;
 import com.sever.physics.game.utils.WeaponsManager;
 
 public class ButtonFireSprite extends FreeSprite {
@@ -88,8 +89,11 @@ public class ButtonFireSprite extends FreeSprite {
 			}
 
 			this.xstick = xn;
-			if (Math.abs(xstick - x) > 20)
-				gameView.getPlayerSprite().facingRigth = xstick > x;
+
+			if (((PlayerSprite) gameView.getPlayerSprite()).weapon.getType() != WeaponTypes.BULLET) {
+				if (Math.abs(xstick - x) > 20)
+					gameView.getPlayerSprite().facingRigth = xstick > x;
+			}
 			this.ystick = yn;
 			((PlayerSprite) gameView.getPlayerSprite()).fireHold();
 			((FireArrowSprite) gameView.getFireArrowSprite()).onMove(xn, PhysicsApplication.deviceHeight - yn);
@@ -117,6 +121,7 @@ public class ButtonFireSprite extends FreeSprite {
 		// if (gameView.endOfGame) {
 		// return;
 		// }
+		spriteBmp.setBmpIndex(0);
 		spriteBmp.currentRow = 0;
 		spriteBmp.currentFrame = 0;
 		draw(canvas);
@@ -125,8 +130,19 @@ public class ButtonFireSprite extends FreeSprite {
 		float ytemp = y;
 		x = Math.abs(xstick - x) < width * 0.25f ? xstick : x + (xstick - x < 0 ? -1 : 1) * width * 0.25f;
 		y = Math.abs(ystick - y) < height * 0.25f ? ystick : y + (ystick - y < 0 ? -1 : 1) * height * 0.25f;
+
 		spriteBmp.currentFrame = 1;
-		draw2(canvas);
+
+		int srcX = (int) (spriteBmp.currentFrame * width);
+		int srcY = (int) (spriteBmp.currentRow * height);
+		Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height));
+		spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) width, (int) height);
+
+		Matrix m = new Matrix();
+		Vec2 translate = getBitmapDrawingXY();
+		m.postTranslate(translate.x, translate.y);
+		canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
+
 		x = xtemp;
 		y = ytemp;
 	}
@@ -137,18 +153,6 @@ public class ButtonFireSprite extends FreeSprite {
 		Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height));
 		spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) width, (int) height);
 
-		Matrix m = new Matrix();
-		Vec2 translate = getBitmapDrawingXY();
-		m.postTranslate(translate.x, translate.y);
-		canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
-	}
-	
-	private void draw2(Canvas canvas) {
-		int srcX = (int) (spriteBmp.currentFrame * width);
-		int srcY = (int) (spriteBmp.currentRow * height);
-		Rect src = new Rect(srcX+1, srcY, (int) (srcX + width), (int) (srcY + height));
-		spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) width, (int) height);
-		
 		Matrix m = new Matrix();
 		Vec2 translate = getBitmapDrawingXY();
 		m.postTranslate(translate.x, translate.y);

@@ -8,7 +8,7 @@ public class SpriteBmp {
 
 	public int BMP_COLUMNS = 1;
 	public int BMP_ROWS = 1;
-	public int BMP_FPS = 6;
+	public int BMP_FPS = 2;
 	public int BMP_FPS_CURRENT = 0;
 	public ArrayList<Bitmap> bmpArray;
 	public ArrayList<int[]> colsrows;

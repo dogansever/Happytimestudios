@@ -4,8 +4,8 @@ import com.sever.physic.PhysicsApplication;
 
 public class Constants {
 
-	public static float extraHeight = PhysicsApplication.deviceHeight * 0.95f;
-	public static float extraWidth = PhysicsApplication.deviceWidth * 0.95f;
+	public static float extraHeight = PhysicsApplication.deviceHeight * 1.0f;
+	public static float extraWidth = PhysicsApplication.deviceWidth * 1.0f;
 	public static float extraWidthOffset = 0;
 	public static float extraHeightOffset = 0;
 	public static int quakePower = 0;

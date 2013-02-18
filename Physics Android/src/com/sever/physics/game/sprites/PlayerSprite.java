@@ -32,7 +32,7 @@ public class PlayerSprite extends ActiveSprite {
 	public FreeSprite sprite;
 	public static int loadingTimeInFPS;
 	public static int portalTimeInFPS;
-	public static int portalTimeInFPSMax = Constants.FPS * 20;
+	public static int portalTimeInFPSMax = Constants.FPS * 1;
 
 	public PlayerSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
@@ -83,15 +83,42 @@ public class PlayerSprite extends ActiveSprite {
 	}
 
 	public void portalSprite() {
+		portalTimeInFPS = portalTimeInFPSMax;
+		portaloutSprite();
+	}
+
+	private void portalinSprite() {
+		portalingout = false;
+		portalingin = true;
+		this.x = Constants.upperBoundxScreen - x;
+		this.y = Constants.upperBoundyScreen - y;
+		addSprite(x, y);
+		this.shiftLockOnME();
+		portalinBmp();
+		noPositionUpdate = true;
+	}
+
+	private void portaloutSprite() {
+		portalingout = true;
+		portalingin = false;
+		noPositionUpdate = true;
 		PhysicsActivity.mWorld.bodies.remove(body);
 		PhysicsActivity.mWorld.world.destroyBody(body);
 		destroyShape();
-		this.x = Constants.upperBoundxScreen - x;
-		this.y = Constants.upperBoundyScreen - y;
+		portaloutBmp();
+	}
+
+	private void portalinEnd() {
+		portalingout = false;
+		portalingin = false;
 		noPositionUpdate = false;
-		addSprite(x, y);
-		this.shiftLockOnME();
-		portalTimeInFPS = portalTimeInFPSMax;
+		throttleOffBmp();
+	}
+
+	public void lifeLost(int lost) {
+		if (portalingin || portalingout)
+			return;
+		life -= lost;
 	}
 
 	public void onDraw(Canvas canvas) {
@@ -102,11 +129,11 @@ public class PlayerSprite extends ActiveSprite {
 			return;
 		}
 
-		if (!gameView.idle) {
+		if (!gameView.idle && (!portalingin && !portalingout)) {
 			super.onDraw(canvas);
 			lifeBarSprite.onDraw(canvas);
-//			fuelBarSprite.onDraw(canvas);
-			if (!WeaponsManager.getManager().getWeaponByType(weapon.getType()).fireAtMaxSpeed){				
+			// fuelBarSprite.onDraw(canvas);
+			if (!WeaponsManager.getManager().getWeaponByType(weapon.getType()).fireAtMaxSpeed) {
 				powerBarSprite.onDraw(canvas);
 			}
 			fireArrowSprite.onDraw(canvas);
@@ -119,6 +146,16 @@ public class PlayerSprite extends ActiveSprite {
 			if (portalTimeInFPS > 0) {
 				portalTimeInFPS--;
 			}
+		}
+
+		if (portalingin || portalingout) {
+			if (portalingout && spriteBmp.currentFrame == spriteBmp.BMP_COLUMNS - 1) {
+				portalinSprite();
+			} else if (portalingin && spriteBmp.currentFrame == spriteBmp.BMP_COLUMNS - 1) {
+				portalinEnd();
+			}
+			shiftCheck();
+			super.onDraw(canvas);
 		}
 		if (gameView.idle && fades && FADE_LIFE > 0) {
 			super.onDraw(canvas);
@@ -143,10 +180,29 @@ public class PlayerSprite extends ActiveSprite {
 		spriteBmp.currentRow = 1;
 	}
 
+	public void portalinBmp() {
+		spriteBmp.setBmpIndex(4);
+		this.width = spriteBmp.getWidth();
+		this.height = spriteBmp.getHeight();
+		spriteBmp.currentRow = 0;
+		spriteBmp.currentFrame = 0;
+		spriteBmp.BMP_FPS = 1;
+	}
+
+	public void portaloutBmp() {
+		spriteBmp.setBmpIndex(3);
+		this.width = spriteBmp.getWidth();
+		this.height = spriteBmp.getHeight();
+		spriteBmp.currentRow = 0;
+		spriteBmp.currentFrame = 0;
+		spriteBmp.BMP_FPS = 1;
+	}
+
 	public void throttleBmp() {
 		spriteBmp.setBmpIndex(1);
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
+		spriteBmp.BMP_FPS = 3;
 	}
 
 	public void throttleOffBmp() {
@@ -154,6 +210,8 @@ public class PlayerSprite extends ActiveSprite {
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
 		spriteBmp.currentRow = 0;
+		spriteBmp.currentFrame = 0;
+		spriteBmp.BMP_FPS = 3;
 	}
 
 	private void shiftCheck() {
@@ -186,24 +244,24 @@ public class PlayerSprite extends ActiveSprite {
 	}
 
 	public boolean throttleHold() {
-//		fuel_AGG = -1;
-//		fuel = fuel + fuel_AGG;
-//		if (fuel <= 0) {
-//			fuel = 0;
-//			throttleOffBmp();
-//			return false;
-//		}
+		// fuel_AGG = -1;
+		// fuel = fuel + fuel_AGG;
+		// if (fuel <= 0) {
+		// fuel = 0;
+		// throttleOffBmp();
+		// return false;
+		// }
 		return true;
 	}
 
 	public void throttleLeave() {
 		throttleOffBmp();
-//		fuel_AGG = 5;
-//		fuel = fuel + fuel_AGG;
-//		if (fuel >= fuel_MAX) {
-//			fuel = fuel_MAX;
-//			return;
-//		}
+		// fuel_AGG = 5;
+		// fuel = fuel + fuel_AGG;
+		// if (fuel >= fuel_MAX) {
+		// fuel = fuel_MAX;
+		// return;
+		// }
 	}
 
 	public void fireHold() {
@@ -291,8 +349,8 @@ public class PlayerSprite extends ActiveSprite {
 
 	public void fireGrenadeTriple() {
 		try {
-			FreeSprite bullet = gameView.addGrenadeTriple(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f);
-			bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBomb, firePowerOld));
+			FreeSprite bullet = gameView.addGrenadeTriple(x + (PhysicsActivity.context.facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f);
+			bullet.getBody().setLinearVelocity(PhysicsActivity.context.velocityVec);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -354,7 +412,7 @@ public class PlayerSprite extends ActiveSprite {
 
 	public void createShape() {
 		CircleDef circle = new CircleDef();
-		circle.radius = getWidthPhysical() * 0.5f;
+		circle.radius = getWidthPhysical() * 0.25f;
 		circle.friction = 1.0f;// zero being completely frictionless
 		circle.restitution = 0.0f;// zero being not bounce at all
 		circle.density = 10.0f;
@@ -456,6 +514,8 @@ public class PlayerSprite extends ActiveSprite {
 
 	protected void fireGrenadeTripleThread() {
 		PhysicsActivity.context.count = 0;
+		PhysicsActivity.context.facingRigth = facingRigth;
+		PhysicsActivity.context.velocityVec = getVelocityVec(fireMultiplierBomb, firePowerOld);
 		final Runnable updatePercentage = new Runnable() {
 			public void run() {
 				if (PhysicsActivity.context.count++ < 3) {

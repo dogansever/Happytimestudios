@@ -57,6 +57,7 @@ public class EnemySprite extends ActiveSprite {
 		addLifeBarSprite();
 		velocity_MAX = 30;
 		addEnemyPointerSprite();
+		smokeFreqMAXInFPS = (int) (Constants.FPS * 0.1f);
 	}
 
 	public void addEnemyPointerSprite() {
@@ -197,6 +198,11 @@ public class EnemySprite extends ActiveSprite {
 				boolean cont = gameView.updateScore(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
 				if (cont)
 					gameView.addEnemy(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
+
+				if (gameView.sentFirstAidKit()) {
+					FreeSprite fak = gameView.addFirstAidKit(x, y);
+					fak.getBody().setAngularVelocity((float) (Math.random() * 45));
+				}
 			}
 			freefallAndExplodeAndDie();
 		} else {
@@ -242,7 +248,7 @@ public class EnemySprite extends ActiveSprite {
 		// return;
 		// }
 
-		float minDistanceBetweenx = 150;
+		float minDistanceBetweenx = 250;
 		float minDistanceBetweeny = 50;
 		float targetx = gameView.getPlayerSprite().x;
 		float targety = gameView.getPlayerSprite().y;
@@ -287,12 +293,12 @@ public class EnemySprite extends ActiveSprite {
 
 	public void throttleLeave() {
 		throttleOffBmp();
-//		fuel_AGG = 3;
-//		fuel = fuel + fuel_AGG;
-//		if (fuel >= fuel_MAX) {
-//			fuel = fuel_MAX;
-//			return;
-//		}
+		// fuel_AGG = 3;
+		// fuel = fuel + fuel_AGG;
+		// if (fuel >= fuel_MAX) {
+		// fuel = fuel_MAX;
+		// return;
+		// }
 	}
 
 	public void throttlexBmp() {
@@ -309,6 +315,7 @@ public class EnemySprite extends ActiveSprite {
 		spriteBmp.setBmpIndex(1);
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
+		spriteBmp.BMP_FPS = 3;
 	}
 
 	public void throttleOffBmp() {
@@ -316,11 +323,12 @@ public class EnemySprite extends ActiveSprite {
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
 		spriteBmp.currentRow = 0;
+		spriteBmp.BMP_FPS = 3;
 	}
 
 	public void createShape() {
 		CircleDef circle = new CircleDef();
-		circle.radius = getWidthPhysical() * 0.5f;
+		circle.radius = getWidthPhysical() * 0.25f;
 		circle.friction = 1.0f;// zero being completely frictionless
 		circle.restitution = 0.2f;// zero being not bounce at all
 		circle.density = 10.0f;
