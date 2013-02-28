@@ -4,15 +4,48 @@
     android:layout_height="fill_parent" >
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" >
+        android:layout_width="500px"
+        android:layout_height="339px"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bckgrnd"
+        android:padding="20px" >
 
         <ListView
             android:id="@+id/listView1"
-            android:layout_width="400px"
-            android:layout_height="300px" >
+            android:layout_width="fill_parent"
+            android:layout_height="250px"
+            android:background="@android:color/transparent"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="4px"
+            android:overScrollMode="never"
+            android:scrollbars="none" >
         </ListView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/listView1"
+            android:layout_centerInParent="true">
+
+            <Button
+                android:id="@+id/Button02"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/buttonsmain12" />
+
+            <LinearLayout
+                android:layout_width="10px"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/Button01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/buttonsmain11" />
+        </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout
@@ -32,7 +65,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/buttonsmain05" />
-
         </LinearLayout>
     </RelativeLayout>
 

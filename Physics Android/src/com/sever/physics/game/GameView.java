@@ -229,7 +229,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new MissileLockingSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.MISSILE_LOCKING, facingRight);
 		explosiveSprites.add(sprite);
-		SoundEffectsManager.getManager().playLAUNCH_ROCKET();
+		SoundEffectsManager.getManager().playLAUNCH_ROCKET(context);
 		return sprite;
 	}
 
@@ -243,7 +243,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new MissileSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.MISSILE_LIGHT, facingRight);
 		explosiveSprites.add(sprite);
-		SoundEffectsManager.getManager().playLAUNCH_ROCKET();
+		SoundEffectsManager.getManager().playLAUNCH_ROCKET(context);
 		return sprite;
 	}
 
@@ -257,7 +257,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new MissileSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.MISSILE, facingRight);
 		explosiveSprites.add(sprite);
-		SoundEffectsManager.getManager().playLAUNCH_ROCKET();
+		SoundEffectsManager.getManager().playLAUNCH_ROCKET(context);
 		return sprite;
 	}
 
@@ -271,7 +271,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new GrenadeSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.BULLET);
 		explosiveSprites.add(sprite);
-		SoundEffectsManager.getManager().playTHROW_BOMB();
+		SoundEffectsManager.getManager().playTHROW_BOMB(context);
 		return sprite;
 	}
 
@@ -296,7 +296,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new GrenadeSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.BOMB_TRIPLE);
 		explosiveSprites.add(sprite);
-		SoundEffectsManager.getManager().playTHROW_BOMB();
+		SoundEffectsManager.getManager().playTHROW_BOMB(context);
 		return sprite;
 	}
 
@@ -310,7 +310,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new GrenadeSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.BOMB);
 		explosiveSprites.add(sprite);
-		SoundEffectsManager.getManager().playTHROW_BOMB();
+		SoundEffectsManager.getManager().playTHROW_BOMB(context);
 		return sprite;
 	}
 
@@ -324,7 +324,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new GrenadeSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.BOMB_BIG);
 		explosiveSprites.add(sprite);
-		SoundEffectsManager.getManager().playTHROW_BOMB();
+		SoundEffectsManager.getManager().playTHROW_BOMB(context);
 		return sprite;
 	}
 
@@ -338,7 +338,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new GrenadeImplodeSprite(explosiveSprites, this, spriteBmp, x, y, WeaponTypes.BOMB_IMPLODING);
 		explosiveSprites.add(sprite);
-		SoundEffectsManager.getManager().playTHROW_BOMB();
+		SoundEffectsManager.getManager().playTHROW_BOMB(context);
 		return sprite;
 	}
 
@@ -547,12 +547,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	private void createNophysicSprites() {
 		addJoystick(120, 60);
-		float perc = 1;
-		// float perc = BitmapManager.getManager().getPerc();
+		// float perc = 1;
+		float perc = BitmapManager.getManager().getPerc();
 		addBonusLifeBarSprite(PhysicsApplication.deviceWidth - 100 * perc, PhysicsApplication.deviceHeight - 50 * perc);
 		addStagePassBarSprite(PhysicsApplication.deviceWidth - 270 * perc, PhysicsApplication.deviceHeight - 50 * perc);
-		addPortalButton(PhysicsApplication.deviceWidth - 50 * perc, 300 * perc);
-		addSwapWeaponButton(PhysicsApplication.deviceWidth - 250 * perc, 50 * perc);
+		addPortalButton(PhysicsApplication.deviceWidth - 50 * perc, 330 * perc);
+		addSwapWeaponButton(PhysicsApplication.deviceWidth - 300 * perc, 50 * perc);
 		addFireButton(PhysicsApplication.deviceWidth - 100 * perc, 120 * perc);
 	}
 
@@ -1079,6 +1079,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			newStagePointx = (float) (getPlayerSprite().x + +Math.random() * 20);
 			newStagePointy = (float) (getPlayerSprite().y + +Math.random() * 20);
 			idleGame();
+			SoundEffectsManager.getManager().playGAME_OVER(context);
 		} else if (!waitingForNextStage && Constants.scoreToPassTheStage <= Constants.scoreStage) {
 			waitingForNextStage = true;
 			NEXT_STAGE_WAIT_TIME = NEXT_STAGE_WAIT_TIME_MAX;
@@ -1097,15 +1098,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			newWeaponUnlockedMessage = "";
 			if (WeaponsManager.getManager().isNewWeaponUnlocked((StageManager.getManager().currentStage + 1) > levelPrev)) {
 				newWeaponUnlockedMessage = "NEW WEAPON UNLOCKED!";
+				SoundEffectsManager.getManager().playNEW_WEAPON(context);
 			}
 			newStageUpMessage = "";
 			if ((StageManager.getManager().currentStage + 1) > levelPrev) {
 				newStageUpMessage = "STAGE UP!";
+				SoundEffectsManager.getManager().playSTAGE_UP(context);
 			}
 
 			for (FreeSprite enmy : enemySprites) {
 				enmy.destroySprite();
 			}
+
 		} else if (waitingForNextStage) {
 			NEXT_STAGE_WAIT_TIME--;
 			if (NEXT_STAGE_WAIT_TIME <= 0) {
@@ -1113,6 +1117,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				// NEXT_STAGE_WAIT_TIME = NEXT_STAGE_WAIT_TIME_MAX;
 				nextStage();
 				((BonusLifeBarSprite) getBonusLifeBarSprite()).resetTimer();
+				SoundEffectsManager.getManager().playSTAGE_START(context);
 			}
 		} else if (finishGame) {
 			finishGame();
@@ -1142,6 +1147,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	public void finishGame() {
+		SoundEffectsManager.stopSound();
 		System.out.println("finishGame()");
 		gameLoopThread.setRunning(false);
 		releaseBitmaps();

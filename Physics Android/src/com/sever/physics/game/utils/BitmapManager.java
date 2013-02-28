@@ -113,16 +113,22 @@ public class BitmapManager {
 	}
 
 	public Bitmap createScaledBitmap(int decodeResource, int dstWidth, int dstHeight) {
+		Bitmap btmp = null;
+		btmp = BitmapFactory.decodeResource(PhysicsActivity.context.getResources(), decodeResource);
 		if (dstWidth <= 0 || dstHeight <= 0) {
-			return BitmapFactory.decodeResource(PhysicsActivity.context.getResources(), decodeResource);
+			dstWidth = btmp.getWidth();
+			dstHeight = btmp.getHeight();
 		}
 
 		float perc = getPerc();
-		return Bitmap.createScaledBitmap(BitmapFactory.decodeResource(PhysicsActivity.context.getResources(), decodeResource), (int) (dstWidth * perc), (int) (dstHeight * perc), false);
+		return Bitmap.createScaledBitmap(btmp, (int) (dstWidth * perc), (int) (dstHeight * perc), false);
 	}
 
 	public float getPerc() {
-		return PhysicsApplication.deviceHeight / 600.0f;
+		float perc = PhysicsApplication.deviceHeight / 600.0f;
+		if (PhysicsApplication.deviceHeight < 480)
+			return perc;
+		return 1.0f;
 	}
 
 	public Bitmap createScaledBitmap(int decodeResource, float scale) {

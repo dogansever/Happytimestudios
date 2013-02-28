@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.jbox2d.collision.CircleDef;
 import org.jbox2d.common.Vec2;
 
+import com.sever.physic.PhysicsActivity;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SoundEffectsManager;
@@ -81,7 +82,7 @@ public class GrenadeSprite extends FreeSprite {
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
 		angle = 0;
-		SoundEffectsManager.getManager().playEXPLODE_BOMB();
+		SoundEffectsManager.getManager().playEXPLODE_BOMB(PhysicsActivity.context);
 	}
 
 	void addSprite(float x, float y) {

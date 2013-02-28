@@ -108,6 +108,7 @@ public class PhysicsActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		System.out.println("onDestroy:" + this);
+//		SoundEffectsManager.stopSound();
 		super.onDestroy();
 	}
 
@@ -116,6 +117,7 @@ public class PhysicsActivity extends Activity {
 		if (getGameView().idle)
 			return;
 
+		SoundEffectsManager.getManager().playPAUSE_MENU(PhysicsActivity.this);
 		getGameView().togglepauseresume();
 		showMenu();
 	}
@@ -138,6 +140,8 @@ public class PhysicsActivity extends Activity {
 		leave.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				SoundEffectsManager.stopSound();
+				SoundEffectsManager.getManager().playBUTTON_CLICK(PhysicsActivity.this);
 				dialog.cancel();
 				getGameView().togglepauseresume();
 				getGameView().finishGame = true;

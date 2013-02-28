@@ -16,10 +16,12 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
 import com.sever.physic.IntroActivity;
+import com.sever.physic.PhysicsActivity;
 import com.sever.physic.PhysicsApplication;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.Constants;
+import com.sever.physics.game.utils.SoundEffectsManager;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.WeaponTypes;
 import com.sever.physics.game.utils.WeaponsManager;
@@ -202,7 +204,10 @@ public class EnemySprite extends ActiveSprite {
 				if (gameView.sentFirstAidKit()) {
 					FreeSprite fak = gameView.addFirstAidKit(x, y);
 					fak.getBody().setAngularVelocity((float) (Math.random() * 45));
+
+					SoundEffectsManager.getManager().playPOWER_UP(PhysicsActivity.context);
 				}
+
 			}
 			freefallAndExplodeAndDie();
 		} else {

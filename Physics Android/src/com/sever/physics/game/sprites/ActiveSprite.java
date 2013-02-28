@@ -7,6 +7,7 @@ import org.jbox2d.dynamics.Body;
 
 import android.graphics.Bitmap;
 
+import com.sever.physic.PhysicsActivity;
 import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SoundEffectsManager;
@@ -69,6 +70,7 @@ public class ActiveSprite extends FreeSprite {
 			spriteBmp.setBmpIndex(3);
 			this.width = spriteBmp.getWidth();
 			this.height = spriteBmp.getHeight();
+			SoundEffectsManager.getManager().playEXPLODE_ROBOT(PhysicsActivity.context);
 		}
 
 		if (FADE_LIFE-- <= 0) {
@@ -90,7 +92,6 @@ public class ActiveSprite extends FreeSprite {
 		this.height = spriteBmp.getHeight();
 		angle = 180;
 		destroyShape();
-		SoundEffectsManager.getManager().playEXPLODE_ROBOT();
 	}
 
 	public void addFireArrow() {
@@ -136,6 +137,7 @@ public class ActiveSprite extends FreeSprite {
 	public void lifeGain(int lost) {
 		life += lost;
 		life = life > life_MAX ? life_MAX : life;
+		SoundEffectsManager.getManager().playPOWER_UP(PhysicsActivity.context);
 	}
 
 	public void checkVelocity() {

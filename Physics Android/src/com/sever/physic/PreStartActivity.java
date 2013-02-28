@@ -1,5 +1,7 @@
 package com.sever.physic;
 
+import com.sever.physics.game.utils.SoundEffectsManager;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,13 +17,15 @@ public class PreStartActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		System.out.println("onCreate:" + this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.prestart);
-
+		SoundEffectsManager.startIngameAmbianceSound(PreStartActivity.this);
 		Button yes = (Button) findViewById(R.id.Button03);
 		yes.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				SoundEffectsManager.getManager().playBUTTON_CLICK(PreStartActivity.this);
 				Intent intent = new Intent(PreStartActivity.this, PhysicsActivity.class);
 				startActivity(intent);
 				finish();

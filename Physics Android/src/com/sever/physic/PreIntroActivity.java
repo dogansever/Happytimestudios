@@ -1,5 +1,7 @@
 package com.sever.physic;
 
+import com.sever.physics.game.utils.SoundEffectsManager;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ public class PreIntroActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.preintro);
+		SoundEffectsManager.startIntroAmbianceSound(PreIntroActivity.this);
 		final Runnable r2 = new Runnable() {
 			public void run() {
 				Intent intent = new Intent(PreIntroActivity.this, IntroActivity.class);
@@ -123,6 +126,7 @@ public class PreIntroActivity extends Activity {
 		System.out.println("onPause:" + this);
 		super.onPause();
 		clearBackground();
+//		SoundEffectsManager.stopSound();
 	}
 
 }

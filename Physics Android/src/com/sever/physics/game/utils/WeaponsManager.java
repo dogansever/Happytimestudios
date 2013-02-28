@@ -26,14 +26,14 @@ public class WeaponsManager {
 
 	static {
 		weaponsList = new ArrayList<Weapon>();
-		weaponsList.add(new Weapon(WeaponTypes.BULLET, Constants.FPS * 2, true, true, false, (int) (Constants.FPS * 0.5), DAMAGE_MEDIUM, RADIUS_NARROW, false, false));
+		weaponsList.add(new Weapon(WeaponTypes.BULLET, Constants.FPS * 2, true, true, false, (int) (Constants.FPS * 0.5), DAMAGE_MEDIUM, RADIUS_NARROW, false, true));
 		weaponsList.add(new Weapon(WeaponTypes.MISSILE_LIGHT, Constants.FPS * 2, true, true, false, (int) (Constants.FPS * 0.5), DAMAGE_LOW, RADIUS_NARROW, false, true));
 		weaponsList.add(new Weapon(WeaponTypes.MISSILE, Constants.FPS * 2, true, true, false, Constants.FPS * 1, DAMAGE_HIGH, RADIUS_NARROW, false, true));
 		weaponsList.add(new Weapon(WeaponTypes.MISSILE_LOCKING, Constants.FPS * 4, false, true, false, Constants.FPS * 2, DAMAGE_MEDIUM, RADIUS_NARROW, false, true));
 		weaponsList.add(new Weapon(WeaponTypes.BOMB, Constants.FPS * 2, true, true, false, Constants.FPS * 1, DAMAGE_LOW, RADIUS_MEDIUM, false, false));
 		weaponsList.add(new Weapon(WeaponTypes.BOMB_TRIPLE, Constants.FPS * 2, true, true, false, Constants.FPS * 1, DAMAGE_LOW, RADIUS_MEDIUM, false, false));
 		weaponsList.add(new Weapon(WeaponTypes.BOMB_BIG, Constants.FPS * 4, true, true, false, Constants.FPS * 2, DAMAGE_HIGH, RADIUS_WIDE, false, false));
-		weaponsList.add(new Weapon(WeaponTypes.BOMB_IMPLODING, Constants.FPS * 5, true, true, true, Constants.FPS * 4, DAMAGE_VERYHIGH, RADIUS_WIDEST, false, false));
+		weaponsList.add(new Weapon(WeaponTypes.BOMB_IMPLODING, Constants.FPS * 3, true, true, true, Constants.FPS * 4, DAMAGE_VERYHIGH, RADIUS_WIDEST, false, false));
 		// weaponsList.add(new Weapon(WeaponTypes.SHOCK_GUN, 0, true, false,
 		// false, Constants.FPS * 10, 5, 150, false, false));
 		// weaponsList.add(new Weapon(WeaponTypes.SUPER_SHOCK_GUN, 0, true,
@@ -317,7 +317,7 @@ public class WeaponsManager {
 			unlockLevel = 0;
 		}
 		if (wt == WeaponTypes.MISSILE_LOCKING) {
-			unlockLevel = 1000;
+			unlockLevel = 14;
 		}
 		return unlockLevel;
 	}
@@ -383,7 +383,7 @@ public class WeaponsManager {
 		} else if (type == WeaponTypes.MISSILE_LIGHT) {
 			return "Missile Light (Damage:Low Radius:Narrow)";
 		} else if (type == WeaponTypes.MISSILE_LOCKING) {
-			return "Missile Locking (Enemy Weapon)";
+			return "Missile Seeking (Damage:High Radius:Narrow)";
 		}
 		return "";
 	}

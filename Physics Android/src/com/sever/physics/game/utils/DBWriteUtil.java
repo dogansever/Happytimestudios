@@ -1,5 +1,7 @@
 package com.sever.physics.game.utils;
 
+import com.sever.physic.IntroActivity;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -125,6 +127,7 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 		String username = (String) getBestScore(2);
 		String score = (String) getBestScore(0);
 		if (Integer.parseInt(score) < Integer.parseInt(scoreColumn)) {
+			new LeaderBoardUtil().leaderboardSave(username, scoreColumn, IntroActivity.uniqueDeviceId, stageColumn);
 			SQLiteDatabase db = null;
 			try {
 				db = this.getWritableDatabase();
