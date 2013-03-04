@@ -28,7 +28,15 @@ public class PhysicsActivity extends Activity {
 
 	public static Timer timer = null;
 	public final Handler mHandler = new Handler();
-	public static int count = 0;
+	public static float angleGrenadeCapsule = 0;
+	public static int countGrenadeCapsule = 0;
+	public static int waitGrenadeCapsuleInFPS = (int) (Constants.FPS * 0.05f);
+	public static int waitGrenadeCapsuleInFPSTicking;
+	public static boolean onGrenadeCapsule;
+	public static int countGrenadeTriple = 0;
+	public static int waitGrenadeTripleInFPS = (int) (Constants.FPS * 0.2f);
+	public static int waitGrenadeTripleInFPSTicking;
+	public static boolean onGrenadeTriple;
 	public static boolean facingRigth;
 	public static Vec2 velocityVec;
 	private ArrayList<View> ballViews = new ArrayList<View>();
@@ -108,7 +116,7 @@ public class PhysicsActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		System.out.println("onDestroy:" + this);
-//		SoundEffectsManager.stopSound();
+		// SoundEffectsManager.stopSound();
 		super.onDestroy();
 	}
 

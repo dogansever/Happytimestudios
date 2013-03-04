@@ -16,6 +16,8 @@ public class PlanetSprite extends FreeSprite {
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
 		this.gameView = gameView;
+		this.noPositionUpdate = true;
+		this.noRotation = true;
 		this.x = x;
 		this.y = y;
 		this.spriteList = spriteList;
@@ -43,7 +45,7 @@ public class PlanetSprite extends FreeSprite {
 	}
 
 	public void pull(FreeSprite sprite, Vec2 positionSrc) {
-		float FIELD_RADIUS = getWidthPhysical() * 5;
+		float FIELD_RADIUS = getWidthPhysical() * 2;
 		applyForce(sprite, positionSrc, FIELD_RADIUS, Constants.gravityPlanetPull);
 	}
 

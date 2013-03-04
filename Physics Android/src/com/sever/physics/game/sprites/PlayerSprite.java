@@ -27,6 +27,7 @@ public class PlayerSprite extends ActiveSprite {
 	public boolean hoverOn;
 	public boolean powerOn;
 	public boolean powerPush;
+	public boolean portalAuto;
 	public boolean scatter;
 	public boolean alive = true;
 	public FreeSprite sprite;
@@ -82,6 +83,13 @@ public class PlayerSprite extends ActiveSprite {
 		this.shiftLockOnME();
 	}
 
+	public void portalSpriteAuto() {
+		if (!portalAuto) {
+			portalAuto = true;
+			portalSprite();
+		}
+	}
+
 	public void portalSprite() {
 		portalTimeInFPS = portalTimeInFPSMax;
 		portaloutSprite();
@@ -90,8 +98,13 @@ public class PlayerSprite extends ActiveSprite {
 	private void portalinSprite() {
 		portalingout = false;
 		portalingin = true;
-		this.x = Constants.upperBoundxScreen - x;
-		this.y = Constants.upperBoundyScreen - y;
+		if (portalAuto) {
+			this.x = Constants.upperBoundxScreen - x + (x < PhysicsApplication.deviceWidth ? -50 : 50);
+			this.y = Constants.upperBoundyScreen - y;
+		} else {
+			this.x = Constants.upperBoundxScreen - x;
+			this.y = Constants.upperBoundyScreen - y;
+		}
 		addSprite(x, y);
 		this.shiftLockOnME();
 		portalinBmp();
@@ -113,6 +126,7 @@ public class PlayerSprite extends ActiveSprite {
 		portalingin = false;
 		noPositionUpdate = false;
 		throttleOffBmp();
+		portalAuto = false;
 	}
 
 	public void lifeLost(int lost) {
@@ -329,9 +343,13 @@ public class PlayerSprite extends ActiveSprite {
 		} else if (weapon.getType() == WeaponTypes.BOMB_TRIPLE) {
 			firePowerOld = firePower;
 			fireGrenadeTripleThread();
-			// fireGrenadeTriple();
+		} else if (weapon.getType() == WeaponTypes.BOMB_CAPSULES) {
+			// firePowerOld = firePower;
+			fireGrenadeCapsuleThread();
 		} else if (weapon.getType() == WeaponTypes.BOMB_IMPLODING) {
 			fireGrenadeImploding();
+		} else if (weapon.getType() == WeaponTypes.MISSILE_LOCKING) {
+			fireMissileLocking();
 		}
 		firePower = 0;
 		firePower_AGG = 1;
@@ -378,6 +396,22 @@ public class PlayerSprite extends ActiveSprite {
 		// bullet.shiftLockOnME();
 	}
 
+	public void fireMissileLocking() {
+		try {
+			FreeSprite target = gameView.getClosestEnemy();
+			if (target == null)
+				return;
+
+			Vec2 fireOriginPos = getPositionVecNormalized(target);
+			FreeSprite bullet = gameView.addMissileLockingToEnemy(x + fireOriginPos.x * width, y + fireOriginPos.y * height, isMissileFacingRight(target), target);
+			bullet.aimAt(target);
+			bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierMissileLocking, target));
+			// bullet.shiftLockOnME();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void fireGrenadeSmall() {
 		try {
 			FreeSprite bullet = gameView.addGrenadeSmall(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f);
@@ -391,6 +425,15 @@ public class PlayerSprite extends ActiveSprite {
 		try {
 			FreeSprite bullet = gameView.addGrenade(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f);
 			bullet.getBody().setLinearVelocity(getVelocityVec(fireMultiplierBomb));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void fireCapsule() {
+		try {
+			FreeSprite bullet = gameView.addCapsule(x + (PhysicsActivity.facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f);
+			bullet.getBody().setLinearVelocity(getVelocityVecWithAngle(fireMultiplierMissile, PhysicsActivity.context.angleGrenadeCapsule));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -513,27 +556,19 @@ public class PlayerSprite extends ActiveSprite {
 	}
 
 	protected void fireGrenadeTripleThread() {
-		PhysicsActivity.context.count = 0;
-		PhysicsActivity.context.facingRigth = facingRigth;
-		PhysicsActivity.context.velocityVec = getVelocityVec(fireMultiplierBomb, firePowerOld);
-		final Runnable updatePercentage = new Runnable() {
-			public void run() {
-				if (PhysicsActivity.context.count++ < 3) {
-					fireGrenadeTriple();
-				} else {
-					PhysicsActivity.context.timer.cancel();
-				}
-			}
-		};
-		TimerTask task = new TimerTask() {
-			@Override
-			public void run() {
-				updatePercentage.run();
-				// PhysicsActivity.context.mHandler.post(updatePercentage);
-			}
-		};
-		PhysicsActivity.context.timer = new Timer();
-		PhysicsActivity.context.timer.schedule(task, new Date(), 200);
+		PhysicsActivity.countGrenadeTriple = 0;
+		PhysicsActivity.facingRigth = facingRigth;
+		PhysicsActivity.velocityVec = getVelocityVec(fireMultiplierBomb, firePowerOld);
+		PhysicsActivity.waitGrenadeTripleInFPSTicking = 0;
+		PhysicsActivity.onGrenadeTriple = true;
+	}
+
+	protected void fireGrenadeCapsuleThread() {
+		PhysicsActivity.countGrenadeCapsule = 0;
+		PhysicsActivity.facingRigth = facingRigth;
+		PhysicsActivity.angleGrenadeCapsule = ((FireArrowSprite) gameView.getFireArrowSprite()).getAngle() - 45;
+		PhysicsActivity.waitGrenadeCapsuleInFPSTicking = 0;
+		PhysicsActivity.onGrenadeCapsule = true;
 	}
 
 	public boolean isAlive() {

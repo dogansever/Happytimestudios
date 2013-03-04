@@ -2,6 +2,10 @@ package com.sever.physics.game.utils;
 
 import java.util.ArrayList;
 
+import org.jbox2d.common.Vec2;
+
+import com.sever.physic.PhysicsApplication;
+
 public class StageManager {
 
 	static StageManager self = null;
@@ -9,7 +13,7 @@ public class StageManager {
 
 	static {
 		stageList = new ArrayList<ArrayList<Integer>>();
-		// grML,gtM,grMLo,flyB,flyBBig,flyML,flyM,flyMLo
+		// -----------------------gML,gM,gMLo,fB,fBBig,fML,fM,fMLo
 		stageList.add(prepareStage(1, 0, 0, 0, 0, 0, 0, 0, 30));
 		stageList.add(prepareStage(1, 1, 0, 0, 0, 0, 0, 0, 80));
 		stageList.add(prepareStage(1, 0, 0, 1, 0, 0, 0, 0, 100));
@@ -63,6 +67,62 @@ public class StageManager {
 	public boolean incrementStage() {
 		currentStage++;
 		return currentStage < stageList.size();
+	}
+
+	public ArrayList<Vec2> stagePlanetDesign() {
+		ArrayList<Vec2> list = new ArrayList<Vec2>();
+		Vec2 coords;
+
+		coords = new Vec2(PhysicsApplication.deviceWidth * 0.5f, PhysicsApplication.deviceHeight * 0.5f);
+		list.add(coords);
+		coords = new Vec2(PhysicsApplication.deviceWidth + Constants.extraWidth * 0.5f, PhysicsApplication.deviceHeight * 0.5f);
+		list.add(coords);
+		coords = new Vec2(PhysicsApplication.deviceWidth, PhysicsApplication.deviceHeight + Constants.extraHeight * 0.5f);
+		list.add(coords);
+
+		return list;
+	}
+
+	public ArrayList<Vec2> stagePortalDesign() {
+		ArrayList<Vec2> list = new ArrayList<Vec2>();
+		float boxSize = 50;
+		Vec2 coords;
+
+		coords = new Vec2(boxSize * 0.5f, PhysicsApplication.deviceHeight);
+		list.add(coords);
+		coords = new Vec2(Constants.upperBoundxScreen - boxSize * 0.5f, PhysicsApplication.deviceHeight);
+		list.add(coords);
+		return list;
+	}
+
+	public ArrayList<Vec2> stageBoxDesign() {
+		ArrayList<Vec2> list = new ArrayList<Vec2>();
+		float boxSize = 50;
+		Vec2 coords;
+
+		coords = new Vec2(boxSize * 0.5f, PhysicsApplication.deviceHeight - boxSize);
+		list.add(coords);
+		coords = new Vec2(boxSize * 0.5f, PhysicsApplication.deviceHeight + boxSize);
+		list.add(coords);
+		coords = new Vec2(Constants.upperBoundxScreen - boxSize * 0.5f, PhysicsApplication.deviceHeight - boxSize);
+		list.add(coords);
+		coords = new Vec2(Constants.upperBoundxScreen - boxSize * 0.5f, PhysicsApplication.deviceHeight + boxSize);
+		list.add(coords);
+
+		coords = new Vec2(PhysicsApplication.deviceWidth * 0.5f, PhysicsApplication.deviceHeight + Constants.extraHeight * 0.5f);
+		list.add(coords);
+		coords = new Vec2(PhysicsApplication.deviceWidth + Constants.extraWidth * 0.5f, PhysicsApplication.deviceHeight + Constants.extraHeight * 0.5f);
+		list.add(coords);
+
+		coords = new Vec2(PhysicsApplication.deviceWidth * 0.75f, PhysicsApplication.deviceHeight * 0.75f);
+		list.add(coords);
+		coords = new Vec2(PhysicsApplication.deviceWidth + Constants.extraWidth * 0.25f, PhysicsApplication.deviceHeight * 0.75f);
+		list.add(coords);
+
+		coords = new Vec2(PhysicsApplication.deviceWidth, PhysicsApplication.deviceHeight);
+		list.add(coords);
+
+		return list;
 	}
 
 }

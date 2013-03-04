@@ -54,11 +54,26 @@ public class LeaderBoardUtil {
 			// customData.put("playerName", playerName);
 			customData.put("stage", stage);
 
+			if (exists(score))
+				return;
 			IntroActivity.startLoadingDialog(IntroActivity.context, "", false);
-			leaderboards.save(HIGHSCORES, score, true, false);
+			leaderboards.save(HIGHSCORES, score, true, true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private boolean exists(PlaytomicScore score) {
+		try {
+			for (PlaytomicScore sc : scoreList) {
+				if (sc.getName().equals(score.getName()) && score.getPoints() == score.getPoints()) {
+					return true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	private void requestLeaderBoardSaveFinished() {

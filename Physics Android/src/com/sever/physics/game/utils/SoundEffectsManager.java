@@ -88,12 +88,14 @@ public class SoundEffectsManager {
 
 	public static void startIngameAmbianceSound(Context context) {
 		System.out.println("startIngameAmbianceSound");
-		mp1 = MediaPlayer.create(context, R.raw.accelerator);
-		mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
-		mp1.setVolume(0.2f, 0.2f);
-		mp1.setLooping(true);
-		// if (!mp1.isPlaying())
-		mp1.start();
+		if (mp1 == null) {
+			mp1 = MediaPlayer.create(context, R.raw.accelerator);
+			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
+			mp1.setVolume(0.2f, 0.2f);
+			mp1.setLooping(true);
+		}
+		if (!mp1.isPlaying())
+			mp1.start();
 	}
 
 	public static void startIntroAmbianceSound(Context context) {

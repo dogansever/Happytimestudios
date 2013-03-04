@@ -36,7 +36,7 @@ public class EnemySprite extends ActiveSprite {
 	public int fuel_AGG = +1;
 	public final int fuel_MAX = 100;
 	public EnemyPointerSprite enemyPointerSprite;
-	private boolean killed;
+	public boolean killed;
 	private int alpha = 255;
 	private float killpointx = 0;
 	private float killpointy = 0;

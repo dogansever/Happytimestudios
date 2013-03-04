@@ -30,7 +30,7 @@ public class GrenadeImplodeSprite extends GrenadeSprite {
 		playerDef.setAsBox(getWidthPhysical() * 0.5f, getHeightPhysical() * 0.5f);
 		playerDef.friction = 1.0f;
 		playerDef.restitution = 0.0f;
-		playerDef.density = 0.5f;
+		playerDef.density = 0.5f * 10;
 
 		getBody().createShape(playerDef);
 

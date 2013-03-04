@@ -32,6 +32,7 @@ public class WeaponsManager {
 		weaponsList.add(new Weapon(WeaponTypes.MISSILE_LOCKING, Constants.FPS * 4, false, true, false, Constants.FPS * 2, DAMAGE_MEDIUM, RADIUS_NARROW, false, true));
 		weaponsList.add(new Weapon(WeaponTypes.BOMB, Constants.FPS * 2, true, true, false, Constants.FPS * 1, DAMAGE_LOW, RADIUS_MEDIUM, false, false));
 		weaponsList.add(new Weapon(WeaponTypes.BOMB_TRIPLE, Constants.FPS * 2, true, true, false, Constants.FPS * 1, DAMAGE_LOW, RADIUS_MEDIUM, false, false));
+		weaponsList.add(new Weapon(WeaponTypes.BOMB_CAPSULES, Constants.FPS * 2, true, true, false, Constants.FPS * 1, DAMAGE_LOW, RADIUS_MEDIUM, false, true));
 		weaponsList.add(new Weapon(WeaponTypes.BOMB_BIG, Constants.FPS * 4, true, true, false, Constants.FPS * 2, DAMAGE_HIGH, RADIUS_WIDE, false, false));
 		weaponsList.add(new Weapon(WeaponTypes.BOMB_IMPLODING, Constants.FPS * 3, true, true, true, Constants.FPS * 4, DAMAGE_VERYHIGH, RADIUS_WIDEST, false, false));
 		// weaponsList.add(new Weapon(WeaponTypes.SHOCK_GUN, 0, true, false,
@@ -235,56 +236,8 @@ public class WeaponsManager {
 		weapon.setAvailable(getManager().getWTAvailability(type));
 		int h = 0;
 		int w = 0;
-		if (type == WeaponTypes.BULLET) {
-			if (weapon.isAvailable())
-				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.weaponsmine, w, h);
-			// else
-			// PhysicsActivity.weaponSwapButton =
-			// PhysicsActivity.context.createScaledBitmap(R.drawable.buttongun,
-			// w, h);
-		} else if (type == WeaponTypes.BOMB) {
-			if (weapon.isAvailable())
-				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.weaponsbomb, w, h);
-			// else
-			// BitmapManager.weaponSwapButton =
-			// PhysicsActivity.context.createScaledBitmap(R.drawable.bombsmall2,
-			// w, h);
-		} else if (type == WeaponTypes.BOMB_TRIPLE) {
-			if (weapon.isAvailable())
-				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.weaponsbombtriple, w, h);
-			// else
-			// BitmapManager.weaponSwapButton =
-			// BitmapManager.getManager().createScaledBitmap(R.drawable.bombtriple2,
-			// w, h);
-		} else if (type == WeaponTypes.BOMB_BIG) {
-			if (weapon.isAvailable())
-				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.weaponsbombbig, w, h);
-			// else
-			// BitmapManager.weaponSwapButton =
-			// BitmapManager.getManager().createScaledBitmap(R.drawable.buttonbomb,
-			// w, h);
-		} else if (type == WeaponTypes.BOMB_IMPLODING) {
-			if (weapon.isAvailable())
-				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.weaponsbombtimer, w, h);
-			// else
-			// BitmapManager.weaponSwapButton =
-			// BitmapManager.getManager().createScaledBitmap(R.drawable.buttonbombimploding,
-			// w, h);
-		} else if (type == WeaponTypes.MISSILE) {
-			if (weapon.isAvailable())
-				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.weaponsmissile, w, h);
-			// else
-			// BitmapManager.weaponSwapButton =
-			// BitmapManager.getManager().createScaledBitmap(R.drawable.buttonmissile,
-			// w, h);
-		} else if (type == WeaponTypes.MISSILE_LIGHT) {
-			if (weapon.isAvailable())
-				BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(R.drawable.weaponsmissilelight, w, h);
-			// else
-			// BitmapManager.weaponSwapButton =
-			// BitmapManager.getManager().createScaledBitmap(R.drawable.buttonmissilelight,
-			// w, h);
-		}
+		if (weapon.isAvailable())
+			BitmapManager.weaponSwapButton = BitmapManager.getManager().createScaledBitmap(getWTBitmap(type), w, h);
 	}
 
 	public boolean getWTAvailability(WeaponTypes wt) {
@@ -302,7 +255,10 @@ public class WeaponsManager {
 			unlockLevel = 0;
 		}
 		if (wt == WeaponTypes.BOMB_TRIPLE) {
-			unlockLevel = 4;
+			unlockLevel = 3;
+		}
+		if (wt == WeaponTypes.BOMB_CAPSULES) {
+			unlockLevel = 5;
 		}
 		if (wt == WeaponTypes.BOMB_IMPLODING) {
 			unlockLevel = 10;
@@ -317,7 +273,7 @@ public class WeaponsManager {
 			unlockLevel = 0;
 		}
 		if (wt == WeaponTypes.MISSILE_LOCKING) {
-			unlockLevel = 14;
+			unlockLevel = 12;
 		}
 		return unlockLevel;
 	}
@@ -339,6 +295,7 @@ public class WeaponsManager {
 		wtList.add(WeaponTypes.MISSILE_LIGHT);
 		wtList.add(WeaponTypes.BOMB);
 		wtList.add(WeaponTypes.BOMB_TRIPLE);
+		wtList.add(WeaponTypes.BOMB_CAPSULES);
 		wtList.add(WeaponTypes.MISSILE);
 		wtList.add(WeaponTypes.BOMB_BIG);
 		wtList.add(WeaponTypes.BOMB_IMPLODING);
@@ -353,6 +310,8 @@ public class WeaponsManager {
 			return R.drawable.weaponsbomb;
 		} else if (type == WeaponTypes.BOMB_TRIPLE) {
 			return R.drawable.weaponsbombtriple;
+		} else if (type == WeaponTypes.BOMB_CAPSULES) {
+			return R.drawable.weaponsbombcapsule;
 		} else if (type == WeaponTypes.BOMB_BIG) {
 			return R.drawable.weaponsbombbig;
 		} else if (type == WeaponTypes.BOMB_IMPLODING) {
@@ -369,21 +328,23 @@ public class WeaponsManager {
 
 	public static String getWTInfo(WeaponTypes type) {
 		if (type == WeaponTypes.BULLET) {
-			return "Mine (Damage:Low Radius:Medium)";
+			return "Mine (Damage:Fair Radius:Medium)";
 		} else if (type == WeaponTypes.BOMB) {
-			return "Bomb (Damage:Low Radius:Medium)";
+			return "Bomb (Damage:Fair Radius:Medium)";
 		} else if (type == WeaponTypes.BOMB_TRIPLE) {
-			return "Bomb Triple (Damage:Medium Radius:Medium)";
+			return "Triple Bomb (Damage:Medium Radius:Medium)";
+		} else if (type == WeaponTypes.BOMB_CAPSULES) {
+			return "Capsules (Damage:Medium Radius:Medium)";
 		} else if (type == WeaponTypes.BOMB_BIG) {
-			return "Bomb Big (Damage:High Radius:Wide)";
+			return "Big Bomb (Damage:High Radius:Wide)";
 		} else if (type == WeaponTypes.BOMB_IMPLODING) {
-			return "Bomb Timer (Damage:Very High Radius:Widest)";
+			return "Gravity Bomb (Damage:Very High Radius:Widest)";
 		} else if (type == WeaponTypes.MISSILE) {
 			return "Missile (Damage:High Radius:Narrow)";
 		} else if (type == WeaponTypes.MISSILE_LIGHT) {
-			return "Missile Light (Damage:Low Radius:Narrow)";
+			return "Light Missile (Damage:Fair Radius:Narrow)";
 		} else if (type == WeaponTypes.MISSILE_LOCKING) {
-			return "Missile Seeking (Damage:High Radius:Narrow)";
+			return "Seeking Missile (Damage:High Radius:Narrow)";
 		}
 		return "";
 	}

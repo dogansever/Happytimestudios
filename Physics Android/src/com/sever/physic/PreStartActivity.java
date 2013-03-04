@@ -21,10 +21,11 @@ public class PreStartActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.prestart);
 		SoundEffectsManager.startIngameAmbianceSound(PreStartActivity.this);
-		Button yes = (Button) findViewById(R.id.Button03);
+		final Button yes = (Button) findViewById(R.id.Button03);
 		yes.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				yes.setVisibility(View.INVISIBLE);
 				SoundEffectsManager.getManager().playBUTTON_CLICK(PreStartActivity.this);
 				Intent intent = new Intent(PreStartActivity.this, PhysicsActivity.class);
 				startActivity(intent);
@@ -74,7 +75,7 @@ public class PreStartActivity extends Activity {
 	protected void onPause() {
 		System.out.println("onPause:" + this);
 		super.onPause();
-		clearBackground();
+//		clearBackground();
 	}
 
 }

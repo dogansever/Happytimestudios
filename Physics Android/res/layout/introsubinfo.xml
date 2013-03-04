@@ -4,6 +4,7 @@
     android:layout_height="fill_parent" >
 
     <RelativeLayout
+        android:id="@+id/relLay01"
         android:layout_width="500px"
         android:layout_height="339px"
         android:layout_centerInParent="true"
@@ -42,5 +43,13 @@
                 android:background="@drawable/buttonsmain05" />
         </LinearLayout>
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/relLay01"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/weapons" />
 
 </RelativeLayout>

@@ -36,13 +36,6 @@
             android:screenSize="xlarge" />
     </compatible-screens>
 
-    <supports-screens
-        android:largeScreens="true"
-        android:normalScreens="true"
-        android:resizeable="false"
-        android:smallScreens="false"
-        android:xlargeScreens="true" />
-
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />

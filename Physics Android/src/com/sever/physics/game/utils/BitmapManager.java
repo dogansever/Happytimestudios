@@ -30,12 +30,14 @@ public class BitmapManager {
 	// public static Bitmap enemyexploding;
 	// public static Bitmap enemyBurning;
 	public static Bitmap ground;
+	public static Bitmap ground2;
 	public static Bitmap missile;
 	public static Bitmap missileLight;
 	public static Bitmap missileLocking;
 	public static Bitmap bomb;
 	public static Bitmap bombsmall;
 	public static Bitmap bombtriple;
+	public static Bitmap bombcapsule;
 	public static Bitmap bombexploding;
 	public static Bitmap bombtimer;
 	public static Bitmap powerBar;
@@ -50,6 +52,7 @@ public class BitmapManager {
 	public static Bitmap fireArrow;
 	public static Bitmap hook;
 	public static Bitmap smoke;
+	public static Bitmap portal;
 	static {
 
 	}
@@ -64,21 +67,23 @@ public class BitmapManager {
 		bmpBack = createScaledBitmap(R.drawable.space, (int) PhysicsApplication.deviceWidth, (int) PhysicsApplication.deviceHeight);
 		bmpBall = createScaledBitmap(R.drawable.ammominex1x1, 0, 0);
 		bmpBox = createScaledBitmap(R.drawable.crate, 40, 40);
-		bmpBox2 = createScaledBitmap(R.drawable.crate, 40, 40);
-		planet1 = createScaledBitmap(R.drawable.planet200x200, 50, 50);
+		bmpBox2 = createScaledBitmap(R.drawable.crate, 0, 0);
+		planet1 = createScaledBitmap(R.drawable.planet, 0, 0);
 		barrel = createScaledBitmap(R.drawable.barrel, 0, 0);
 		player = createScaledBitmap(R.drawable.playerx2x2, 0, 0);
 		playerThrottle = createScaledBitmap(R.drawable.playerthrottlex2x2, 0, 0);
 		playerexploding = createScaledBitmap(R.drawable.explosion02x3x1, 0, 0);
 		playerportalin = createScaledBitmap(R.drawable.portalinx7x1, 0, 0);
 		playerportalout = createScaledBitmap(R.drawable.portaloutx7x1, 0, 0);
-		ground = createScaledBitmap(R.drawable.crate, (int) PhysicsApplication.deviceWidth, 50);
+		ground = createScaledBitmap(R.drawable.ground01, (int) 0, 0);
+		ground2 = createScaledBitmap(R.drawable.ground03, (int) 0, 0);
 		missile = createScaledBitmap(R.drawable.ammomissilex2x1, 0, 0);
 		missileLight = createScaledBitmap(R.drawable.ammomissilelightx2x1, 0, 0);
 		missileLocking = createScaledBitmap(R.drawable.ammomissilelockingx2x1, 0, 0);
 		bomb = createScaledBitmap(R.drawable.ammobombbigx2x1, 0, 0);
 		bombsmall = createScaledBitmap(R.drawable.ammobombx2x1, 0, 0);
 		bombtriple = createScaledBitmap(R.drawable.ammobombtriplex2x1, 0, 0);
+		bombcapsule = createScaledBitmap(R.drawable.ammobombcapsulex2x1, 0, 0);
 		bombtimer = createScaledBitmap(R.drawable.ammobombtimerx2x1, 0, 0);
 		bombexploding = createScaledBitmap(R.drawable.explosion01x4x1, 0, 0);
 		powerBar = createScaledBitmap(R.drawable.powerbar, (int) (225 * 0.4f), (int) (20 * 0.4f));
@@ -96,6 +101,7 @@ public class BitmapManager {
 		smoke = createScaledBitmap(R.drawable.smokex2x1, 0, 0);
 		bmpFirstAidKit = createScaledBitmap(R.drawable.firstaidkitx2x1, 0, 0);
 		firstAidKitpointer = createScaledBitmap(R.drawable.firstaidkitpointerx2x1, 0, 0);
+		portal = createScaledBitmap(R.drawable.portalx4x1, 0, 0);
 	}
 
 	public Bitmap createScaledBitmap(Bitmap bmp, float scale) {

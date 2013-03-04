@@ -184,7 +184,7 @@ public class IntroActivity extends Activity {
 			public void onClick(View v) {
 				Random randomGenerator = new Random();
 				int randomInt = randomGenerator.nextInt(5);
-				if (randomInt == 5) {
+				if (randomInt == 0) {
 					simClick();
 				} else {
 					SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
@@ -210,7 +210,7 @@ public class IntroActivity extends Activity {
 			public void onClick(View v) {
 				Random randomGenerator = new Random();
 				int randomInt = randomGenerator.nextInt(5);
-				if (randomInt == 5) {
+				if (randomInt == 0) {
 					simClick();
 				} else {
 					SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
@@ -307,14 +307,14 @@ public class IntroActivity extends Activity {
 	protected void onResume() {
 		System.out.println("onResume:" + this);
 		super.onResume();
-		// createAd();
+		createAd();
 	}
 
 	@Override
 	protected void onStop() {
 		System.out.println("onStop:" + this);
 		super.onStop();
-		// destroyAd();
+		destroyAd();
 	}
 
 	@Override

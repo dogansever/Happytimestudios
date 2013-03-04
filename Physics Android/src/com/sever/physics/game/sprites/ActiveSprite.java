@@ -274,6 +274,19 @@ public class ActiveSprite extends FreeSprite {
 		return v;
 	}
 
+	public Vec2 getVelocityVecWithAngle(int fireMultiplier, float angleIn360) {
+		float fangle = angleIn360;
+		Vec2 force = new Vec2((float) Math.cos(Math.toRadians(fangle)), (float) Math.sin(Math.toRadians(fangle)));
+		force.normalize();
+
+		firePower = WeaponsManager.getManager().getWeaponByType(getWt()).fireAtMaxSpeed ? firePower_MAX : firePower;
+		float xt = (PhysicsActivity.facingRigth ? 1 : -1) * (firePower * fireMultiplier / firePower_MAX) * force.x;
+		float yt = (firePower * fireMultiplier / firePower_MAX) * force.y;
+		Vec2 v = new Vec2(xt, yt);
+
+		return v;
+	}
+
 	public Vec2 getVelocityVec(int fireMultiplier) {
 		float fangle = ((FireArrowSprite) gameView.getFireArrowSprite()).getAngle();
 		Vec2 force = new Vec2((float) Math.cos(Math.toRadians(fangle)), (float) Math.sin(Math.toRadians(fangle)));

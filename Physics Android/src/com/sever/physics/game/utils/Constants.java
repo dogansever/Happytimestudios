@@ -21,7 +21,7 @@ public class Constants {
 	public static final float boundhxyScreen = 500.0f;
 	public static final float boundhxy = boundhxyScreen / pixelpermeter;
 
-	public static final float lowerBoundyScreen = 50f;
+	public static final float lowerBoundyScreen = 20f;
 	public static final float lowerBoundy = lowerBoundyScreen / pixelpermeter;
 
 	public static final float lowerBoundxScreen = 0f;
@@ -53,13 +53,14 @@ public class Constants {
 	public static final float gravityPushEnemy = 5.0f * pixelpermeter;
 	public static final float gravityPushExplosive = -500.0f * pixelpermeter;
 	public static final float gravityPullPlayer = 2.0f * pixelpermeter;
-	public static final float gravityPullEnemy = 2.0f * pixelpermeter;
+	public static final float gravityPullEnemy = 30.0f * pixelpermeter;
 	public static final float gravityPullExplosive = 10.0f * pixelpermeter;
 	public static final float gravityThrottle = 0.5f * pixelpermeter;
 	public static final float gravityPullFieldRadiusPlayer = 500 / Constants.pixelpermeter;
 	public static final float gravityPullFieldRadiusEnemy = 100 / Constants.pixelpermeter;
-	public static final float gravityPullFieldRadiusExplosive = 500 / Constants.pixelpermeter;
-	public static final float gravityPlanetPull = 10.0f * pixelpermeter;
+	public static final float gravityPullFieldRadiusExplosive = 5000 / Constants.pixelpermeter;
+	public static final float gravityPullFieldRadiusPlanet = 5000 / Constants.pixelpermeter;
+	public static final float gravityPlanetPull = 40.0f * pixelpermeter;
 	public static final float gravityPlanetPush = -15.0f * pixelpermeter;
 
 	public static void startQuake() {

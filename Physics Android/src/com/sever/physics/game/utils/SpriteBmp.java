@@ -60,6 +60,9 @@ public class SpriteBmp {
 		try {
 			return bmpArray.get(bmpIndex);
 		} catch (Exception e) {
+			System.out.println("bmpArray:" + bmpArray);
+			System.out.println("bmpIndex:" + bmpIndex);
+			e.printStackTrace();
 			return null;
 		}
 	}

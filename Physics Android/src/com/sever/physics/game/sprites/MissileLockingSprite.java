@@ -13,17 +13,19 @@ import com.sever.physics.game.utils.WeaponsManager;
 
 public class MissileLockingSprite extends MissileSprite {
 
+	public FreeSprite target;
+
 	public MissileLockingSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt, boolean facingRigth) {
 		super(spriteList, gameView, spriteBmp, x, y, wt, facingRigth);
 	}
 
 	@Override
 	public void onDraw(Canvas canvas) {
-		moveToPlayer();
+		moveToTarget();
 		super.onDraw(canvas);
 	}
 
-	private void moveToPlayer() {
+	private void moveToTarget() {
 		if (gameView.idle) {
 			return;
 		}
@@ -32,8 +34,14 @@ public class MissileLockingSprite extends MissileSprite {
 			return;
 		}
 
-		this.aimAt(gameView.getPlayerSprite());
-		getBody().setLinearVelocity(getVelocityVec(gameView.getPlayerSprite()));
+		if (target == null) {
+			this.aimAt(gameView.getPlayerSprite());
+			getBody().setLinearVelocity(getVelocityVec(gameView.getPlayerSprite()));
+		} else {
+			this.aimAt(target);
+			getBody().setLinearVelocity(getVelocityVec(target));
+
+		}
 	}
 
 	public Vec2 getVelocityVec(FreeSprite target) {
@@ -50,6 +58,14 @@ public class MissileLockingSprite extends MissileSprite {
 		// System.out.println("MissileLockingSprite getVelocityVec: x:" + v.x +
 		// ", y:" + v.y);
 		return v;
+	}
+
+	public FreeSprite getTarget() {
+		return target;
+	}
+
+	public void setTarget(FreeSprite target) {
+		this.target = target;
 	}
 
 }
