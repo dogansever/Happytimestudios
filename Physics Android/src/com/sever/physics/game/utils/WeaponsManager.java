@@ -278,15 +278,15 @@ public class WeaponsManager {
 		return unlockLevel;
 	}
 
-	public boolean isNewWeaponUnlocked(boolean b) {
+	public WeaponTypes isNewWeaponUnlocked(boolean b) {
 		int level = Integer.parseInt((String) IntroActivity.dbDBWriteUtil.getBestScore(1));
 		ArrayList<WeaponTypes> list = getWTListForPlayer();
 		for (WeaponTypes weaponTypes : list) {
 			if (getWTUnlockLevel(weaponTypes) == level && b) {
-				return true;
+				return weaponTypes;
 			}
 		}
-		return false;
+		return null;
 	}
 
 	public ArrayList<WeaponTypes> getWTListForPlayer() {

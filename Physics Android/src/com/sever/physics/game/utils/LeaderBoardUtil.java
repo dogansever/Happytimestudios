@@ -66,7 +66,7 @@ public class LeaderBoardUtil {
 	private boolean exists(PlaytomicScore score) {
 		try {
 			for (PlaytomicScore sc : scoreList) {
-				if (sc.getName().equals(score.getName()) && score.getPoints() == score.getPoints()) {
+				if (sc.getName().equals(score.getName()) && score.getPoints() == sc.getPoints()) {
 					return true;
 				}
 			}

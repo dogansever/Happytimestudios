@@ -52,7 +52,7 @@ public class PlayerSprite extends ActiveSprite {
 		addPowerBar();
 		addFireArrow();
 		FADE_LIFE = 80;
-		velocity_MAX = 80;
+		velocity_MAX = 100;
 	}
 
 	public float getBonusScoreLife() {

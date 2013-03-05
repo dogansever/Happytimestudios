@@ -307,14 +307,14 @@ public class IntroActivity extends Activity {
 	protected void onResume() {
 		System.out.println("onResume:" + this);
 		super.onResume();
-		createAd();
+//		createAd();
 	}
 
 	@Override
 	protected void onStop() {
 		System.out.println("onStop:" + this);
 		super.onStop();
-		destroyAd();
+//		destroyAd();
 	}
 
 	@Override

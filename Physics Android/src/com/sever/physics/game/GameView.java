@@ -567,13 +567,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		for (Vec2 vec2 : list) {
 			addBoxStatic(vec2.x, vec2.y, 50, 50);
 		}
-		
+
 		list = StageManager.getManager().stagePlanetDesign();
 		for (Vec2 vec2 : list) {
 			addPlanetStatic(vec2.x, vec2.y);
 
 		}
-		
+
 		list = StageManager.getManager().stagePortalDesign();
 		addPortalStatic(list.get(0).x, list.get(0).y, 200, 50).facingRigth = false;
 		addPortalStatic(list.get(1).x, list.get(1).y, 200, 50).facingRigth = true;
@@ -737,19 +737,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 						Color.YELLOW);
 
 				int xd = 100;
-//				drawText(staticSprites, canvas, 10, xd = xd + 25);
-//				drawText(nophysicsSprite, canvas, 10, xd = xd + 25);
-//				drawText(drawBackground, canvas, 10, xd = xd + 25);
-//				drawText(updateStr, canvas, 10, xd = xd + 25);
-//				drawText(PlayerSprite, canvas, 10, xd = xd + 25);
-//				drawText(explosiveSprites, canvas, 10, xd = xd + 25);
-//				drawText(freeSprites, canvas, 10, xd = xd + 25);
-//				drawText(enemySprites, canvas, 10, xd = xd + 25);
-//				drawText(collectSprites, canvas, 10, xd = xd + 25);
-//				drawText(effectsSprite, canvas, 10, xd = xd + 25);
-//				drawText(portalSprites, canvas, 10, xd = xd + 25);
-//				drawText("total:" + (System.currentTimeMillis() - tstart), canvas, 10, xd = xd + 25);
-//				drawText("FPS:" + GameLoopThread.framesCountAvg, canvas, 10, xd = xd + 25);
+				// drawText(staticSprites, canvas, 10, xd = xd + 25);
+				// drawText(nophysicsSprite, canvas, 10, xd = xd + 25);
+				// drawText(drawBackground, canvas, 10, xd = xd + 25);
+				// drawText(updateStr, canvas, 10, xd = xd + 25);
+				// drawText(PlayerSprite, canvas, 10, xd = xd + 25);
+				// drawText(explosiveSprites, canvas, 10, xd = xd + 25);
+				// drawText(freeSprites, canvas, 10, xd = xd + 25);
+				// drawText(enemySprites, canvas, 10, xd = xd + 25);
+				// drawText(collectSprites, canvas, 10, xd = xd + 25);
+				// drawText(effectsSprite, canvas, 10, xd = xd + 25);
+				// drawText(portalSprites, canvas, 10, xd = xd + 25);
+				// drawText("total:" + (System.currentTimeMillis() - tstart),
+				// canvas, 10, xd = xd + 25);
+				// drawText("FPS:" + GameLoopThread.framesCountAvg, canvas, 10,
+				// xd = xd + 25);
 
 				drawText("+" + Constants.scoreLifeBonus, canvas, newStagePointx - Constants.extraWidthOffset, -25 + PhysicsApplication.deviceHeight - newStagePointy + Constants.extraHeightOffset
 						- getPlayerSprite().height - (255 - alphaBonusLife), alphaBonusLife, Paint.Align.CENTER);
@@ -1206,8 +1208,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			IntroActivity.dbDBWriteUtil.updateScoreIfNewBestAchieved("" + Constants.scoreTotal, "" + new Date().getTime(), "" + (StageManager.getManager().currentStage + 1));
 			((PlayerSprite) getPlayerSprite()).collectBonusLife();
 			newWeaponUnlockedMessage = "";
-			if (WeaponsManager.getManager().isNewWeaponUnlocked((StageManager.getManager().currentStage + 1) > levelPrev)) {
-				newWeaponUnlockedMessage = "NEW WEAPON UNLOCKED!";
+			WeaponTypes wt = WeaponsManager.getManager().isNewWeaponUnlocked((StageManager.getManager().currentStage + 1) > levelPrev);
+			if (wt != null) {
+				String str = WeaponsManager.getWTInfo(wt);
+				newWeaponUnlockedMessage = "NEW WEAPON UNLOCKED! " + str.subSequence(0, str.indexOf("("));
 				SoundEffectsManager.getManager().playNEW_WEAPON(context);
 			}
 			newStageUpMessage = "";

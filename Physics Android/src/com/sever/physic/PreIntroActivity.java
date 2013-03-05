@@ -17,6 +17,7 @@ public class PreIntroActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		System.out.println("onCreate:" + this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.preintro);
 		SoundEffectsManager.startIntroAmbianceSound(PreIntroActivity.this);
