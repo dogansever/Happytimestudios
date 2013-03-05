@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <StackView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/stack_view"
+        android:layout_width="300px"
+        android:layout_height="280px"
+        android:gravity="center"
+        android:loopViews="true" />
+
+    <RelativeLayout
+        android:id="@+id/widget_item_NoItem"
+        android:layout_width="250px"
+        android:layout_height="250px"
+        android:gravity="center" >
+
+        <ImageView
+            android:id="@+id/widget_item_imageViewNoItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="tt"
+            android:src="@drawable/preview_stack" />
+    </RelativeLayout>
+
+</FrameLayout>
