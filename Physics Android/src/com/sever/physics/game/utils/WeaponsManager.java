@@ -35,6 +35,9 @@ public class WeaponsManager {
 		weaponsList.add(new Weapon(WeaponTypes.BOMB_CAPSULES, Constants.FPS * 2, true, true, false, Constants.FPS * 1, DAMAGE_LOW, RADIUS_MEDIUM, false, true));
 		weaponsList.add(new Weapon(WeaponTypes.BOMB_BIG, Constants.FPS * 4, true, true, false, Constants.FPS * 2, DAMAGE_HIGH, RADIUS_WIDE, false, false));
 		weaponsList.add(new Weapon(WeaponTypes.BOMB_IMPLODING, Constants.FPS * 3, true, true, true, Constants.FPS * 4, DAMAGE_VERYHIGH, RADIUS_WIDEST, false, false));
+		weaponsList.add(new Weapon(WeaponTypes.BOSS1, Constants.FPS * 3, false, false, false, Constants.FPS * 4, DAMAGE_VERYHIGH, RADIUS_WIDEST, false, true));
+		weaponsList.add(new Weapon(WeaponTypes.BOSS2, Constants.FPS * 3, false, false, false, Constants.FPS * 4, DAMAGE_VERYHIGH, RADIUS_WIDEST, false, true));
+		weaponsList.add(new Weapon(WeaponTypes.BOSS3, Constants.FPS * 3, false, false, false, Constants.FPS * 4, DAMAGE_VERYHIGH, RADIUS_WIDEST, false, true));
 		// weaponsList.add(new Weapon(WeaponTypes.SHOCK_GUN, 0, true, false,
 		// false, Constants.FPS * 10, 5, 150, false, false));
 		// weaponsList.add(new Weapon(WeaponTypes.SUPER_SHOCK_GUN, 0, true,
@@ -350,7 +353,7 @@ public class WeaponsManager {
 	}
 
 	public Integer getBonusByEnemyWT(WeaponTypes wt, boolean fly) {
-		Integer bonus = 0;
+		Integer bonus = 100;
 		if (wt == WeaponTypes.BOMB) {
 			bonus = 10;
 		} else if (wt == WeaponTypes.BOMB_BIG) {

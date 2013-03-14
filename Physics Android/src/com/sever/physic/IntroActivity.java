@@ -162,6 +162,9 @@ public class IntroActivity extends Activity {
 
 		});
 
+		RelativeLayout relLay01 = (RelativeLayout) findViewById(R.id.relLay01);
+		relLay01.getLayoutParams().width = (int) (PhysicsApplication.deviceWidth * 0.55f);
+		relLay01.getLayoutParams().height = (int) (PhysicsApplication.deviceWidth * 0.55f * 339 / 500);
 		ListView globalRankinglistView = ((ListView) findViewById(R.id.listView1));
 		// globalRankinglistView.setBackgroundColor(Color.BLACK);
 		globalRankinglistView.setAdapter(new GlobalRankingAdapter(this));
@@ -284,6 +287,10 @@ public class IntroActivity extends Activity {
 
 		});
 
+
+		RelativeLayout relLay01 = (RelativeLayout) findViewById(R.id.relLay01);
+		relLay01.getLayoutParams().width = (int) (PhysicsApplication.deviceWidth * 0.55f);
+		relLay01.getLayoutParams().height = (int) (PhysicsApplication.deviceWidth * 0.55f * 339 / 500);
 		ListView infolistView = ((ListView) findViewById(R.id.listView1));
 		// infolistView.setBackgroundColor(Color.BLACK);
 		infolistView.setAdapter(new InfoAdapter(this));
@@ -307,14 +314,14 @@ public class IntroActivity extends Activity {
 	protected void onResume() {
 		System.out.println("onResume:" + this);
 		super.onResume();
-//		createAd();
+		// createAd();
 	}
 
 	@Override
 	protected void onStop() {
 		System.out.println("onStop:" + this);
 		super.onStop();
-//		destroyAd();
+		// destroyAd();
 	}
 
 	@Override

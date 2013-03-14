@@ -2,7 +2,12 @@ package com.sever.physics.game.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
 
+import com.sever.physic.IntroActivity;
 import com.sever.physic.PhysicsActivity;
 import com.sever.physic.PhysicsApplication;
 import com.sever.physic.R;

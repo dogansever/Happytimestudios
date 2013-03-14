@@ -218,40 +218,44 @@ public class FreeSprite {
 	// }
 
 	public void onDraw(Canvas canvas) {
-		if (!noPositionUpdate) {
-			updatePosition();
-			if (checkOutOfBounds()) {
-				killSprite();
-				return;
+		try {
+			if (!noPositionUpdate) {
+				updatePosition();
+				if (checkOutOfBounds()) {
+					killSprite();
+					return;
+				}
 			}
-		}
-		updateBitmap();
+			updateBitmap();
 
-		if (fades && FADE_LIFE >= 0) {
-			if (FADE_LIFE-- == 0) {
-				killSprite();
-				return;
+			if (fades && FADE_LIFE >= 0) {
+				if (FADE_LIFE-- == 0) {
+					killSprite();
+					return;
+				}
 			}
-		}
-		if (spriteBmp.getBitmap() != null && isVisible()) {
-			Matrix m = new Matrix();
-			if (!noRotation)
-				m.postRotate((float) Math.toDegrees(angle), width * 0.5f, height * 0.5f);
-			Vec2 translate = getBitmapDrawingXY();
-			if (Constants.checkForQuake()) {
-				m.postTranslate(translate.x - Constants.extraWidthOffset + Constants.getQuakePower(), translate.y + Constants.extraHeightOffset + Constants.getQuakePower());
-			} else {
-				Constants.endQuake();
-				m.postTranslate(translate.x - Constants.extraWidthOffset, translate.y + Constants.extraHeightOffset);
-			}
-			// canvas.drawColor(Color.TRANSPARENT);
-			if (facingRigth) {
-				Matrix mirrorMatrix = new Matrix();
-				mirrorMatrix.preScale(-1.0f, 1.0f);
-				spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.bmpFrame, 0, 0, spriteBmp.bmpFrame.getWidth(), spriteBmp.bmpFrame.getHeight(), mirrorMatrix, false);
-			}
+			if (spriteBmp.getBitmap() != null && isVisible()) {
+				Matrix m = new Matrix();
+				if (!noRotation)
+					m.postRotate((float) Math.toDegrees(angle), width * 0.5f, height * 0.5f);
+				Vec2 translate = getBitmapDrawingXY();
+				if (Constants.checkForQuake()) {
+					m.postTranslate(translate.x - Constants.extraWidthOffset + Constants.getQuakePower(), translate.y + Constants.extraHeightOffset + Constants.getQuakePower());
+				} else {
+					Constants.endQuake();
+					m.postTranslate(translate.x - Constants.extraWidthOffset, translate.y + Constants.extraHeightOffset);
+				}
+				// canvas.drawColor(Color.TRANSPARENT);
+				if (facingRigth) {
+					Matrix mirrorMatrix = new Matrix();
+					mirrorMatrix.preScale(-1.0f, 1.0f);
+					spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.bmpFrame, 0, 0, spriteBmp.bmpFrame.getWidth(), spriteBmp.bmpFrame.getHeight(), mirrorMatrix, false);
+				}
 
-			canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
+				canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

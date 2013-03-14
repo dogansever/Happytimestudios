@@ -14,21 +14,21 @@ public class StageManager {
 	static {
 		stageList = new ArrayList<ArrayList<Integer>>();
 		// -----------------------gML,gM,gMLo,fB,fBBig,fML,fM,fMLo
-		stageList.add(prepareStage(1, 0, 0, 0, 0, 0, 0, 0, 30));
-		stageList.add(prepareStage(1, 1, 0, 0, 0, 0, 0, 0, 80));
-		stageList.add(prepareStage(1, 0, 0, 1, 0, 0, 0, 0, 100));
-		stageList.add(prepareStage(1, 1, 0, 1, 0, 0, 0, 0, 200));
-		stageList.add(prepareStage(1, 0, 0, 1, 1, 0, 0, 0, 250));
-		stageList.add(prepareStage(1, 0, 0, 2, 0, 1, 0, 0, 250));
-		stageList.add(prepareStage(2, 0, 0, 1, 1, 1, 0, 0, 300));
-		stageList.add(prepareStage(2, 0, 0, 0, 1, 2, 0, 0, 300));
-		stageList.add(prepareStage(0, 0, 0, 0, 1, 1, 1, 0, 350));
-		stageList.add(prepareStage(0, 0, 0, 0, 1, 2, 1, 0, 1350));
-		stageList.add(prepareStage(0, 0, 0, 2, 0, 0, 0, 1, 1400));
-		stageList.add(prepareStage(0, 0, 0, 0, 0, 1, 2, 0, 1400));
-		stageList.add(prepareStage(0, 0, 0, 0, 0, 0, 1, 2, 1450));
-		stageList.add(prepareStage(0, 0, 0, 0, 0, 1, 0, 3, 1500));
-		stageList.add(prepareStage(0, 0, 0, 0, 0, 0, 1, 4, 5000));
+		stageList.add(prepareStage(1, 0, 0, 0, 0, 0, 0, 0, 1));
+		stageList.add(prepareStage(1, 1, 0, 0, 0, 0, 0, 0, 1));
+		stageList.add(prepareStage(1, 0, 0, 1, 0, 0, 0, 0, 1));
+		stageList.add(prepareStage(1, 1, 0, 1, 0, 0, 0, 0, 1));
+		stageList.add(prepareStage(1, 0, 0, 1, 1, 0, 0, 0, 1));
+		stageList.add(prepareStage(1, 0, 0, 2, 0, 1, 0, 0, 1));
+		stageList.add(prepareStage(2, 0, 0, 1, 1, 1, 0, 0, 1));
+		stageList.add(prepareStage(2, 0, 0, 0, 1, 2, 0, 0, 1));
+		stageList.add(prepareStage(0, 0, 0, 0, 1, 1, 1, 0, 1));
+		stageList.add(prepareStage(0, 0, 0, 0, 1, 2, 1, 0, 1));
+		stageList.add(prepareStage(0, 0, 0, 2, 0, 0, 0, 1, 1));
+		stageList.add(prepareStage(0, 0, 0, 0, 0, 1, 2, 0, 1));
+		stageList.add(prepareStage(0, 0, 0, 0, 0, 0, 1, 2, 1));
+		stageList.add(prepareStage(0, 0, 0, 0, 0, 1, 0, 3, 1));
+		stageList.add(prepareStage(0, 0, 0, 0, 0, 0, 1, 4, 1));
 	}
 
 	private static ArrayList<Integer> prepareStage(int i, int j, int k, int l, int m, int n, int o, int p, int q) {

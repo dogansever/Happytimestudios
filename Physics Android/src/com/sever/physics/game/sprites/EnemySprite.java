@@ -11,14 +11,10 @@ import org.jbox2d.dynamics.Body;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
 
-import com.sever.physic.IntroActivity;
 import com.sever.physic.PhysicsActivity;
-import com.sever.physic.PhysicsApplication;
 import com.sever.physics.game.GameView;
+import com.sever.physics.game.pojo.TextDrawingPojo;
 import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SoundEffectsManager;
@@ -28,7 +24,8 @@ import com.sever.physics.game.utils.WeaponsManager;
 
 public class EnemySprite extends ActiveSprite {
 
-	private static final int BULLET_FIRE_WAIT_TIME_MAX = 50;
+	private static final int BULLET_FIRE_WAIT_TIME_MAX = 30;
+	public int BULLET_FIRE_COUNT = 0;
 	public boolean powerOn;
 	public boolean scatter;
 	public boolean fueling;
@@ -129,14 +126,7 @@ public class EnemySprite extends ActiveSprite {
 
 	public void fireGrenadeSmall() {
 		Vec2 fireOriginPos = getPositionVecNormalized(gameView.getPlayerSprite());
-		// float yt = (getBody().getLinearVelocity().y < 0 ? 1 : -1) * height *
-		// 0.0f;
-		// float xt = (facingRigth ? 1 : -1) * width * 1.5f;
 		FreeSprite bullet = gameView.addGrenadeSmall(x + fireOriginPos.x * width, y + fireOriginPos.y * height);
-		// applyForce(bullet,
-		// gameView.getPlayerSprite().getBody().getPosition(), 500);
-		// Vec2 v = getVelocityVec(fireMultiplierBomb,
-		// gameView.getPlayerSprite());
 		Vec2 v = getFireVec();
 		bullet.getBody().setLinearVelocity(v);
 	}
@@ -146,22 +136,14 @@ public class EnemySprite extends ActiveSprite {
 		float VELY;
 		Vec2 v;
 		try {
-			// Vec2 positionSrc = getBody().getPosition();
-			// Vec2 positionTarget =
-			// gameView.getPlayerSprite().getBody().getPosition();
-			// float VelCurx = getBody().getLinearVelocity().x;
-			// float VelCury = getBody().getLinearVelocity().y;
 			float VelPlayerx = gameView.getPlayerSprite().getBody().getLinearVelocity().x;
 			float VelPlayery = gameView.getPlayerSprite().getBody().getLinearVelocity().y;
 
 			VELX = (gameView.getPlayerSprite().x - this.x) / (Constants.pixelpermeter * 1);
 			VELY = (gameView.getPlayerSprite().y - this.y) / (Constants.pixelpermeter * 1);
-			// VELY = VELY * 3;
-			// VELX += VELX * new Random().nextFloat();
-			// System.out.println("VELX:" + VELX + ",VELY:" + VELY);
-			// System.out.println("VelPlayerx:" + VelPlayerx + ",VelPlayery:" +
-			// VelPlayery);
-			v = new Vec2(VELX + VelPlayerx, VELY + VelPlayery);
+			float velxAgg = VELX + VelPlayerx > VELX ? VELX + VelPlayerx : VELX;
+			float velyAgg = VELY + VelPlayery > VELY ? VELY + VelPlayery : VELY;
+			v = new Vec2(velxAgg, velyAgg);
 		} catch (Exception e) {
 			e.printStackTrace();
 			VELX = 30;
@@ -177,19 +159,6 @@ public class EnemySprite extends ActiveSprite {
 		createShape();
 	}
 
-	private void drawText(String text, Canvas canvas, float x, float y) {
-		Paint paint = new Paint();
-		paint.setColor(Color.WHITE);
-		paint.setStyle(Style.FILL);
-		paint.setTypeface(IntroActivity.tf);
-		paint.setColor(Color.WHITE);
-		alpha -= 5;
-		paint.setAlpha(alpha <= 0 ? 0 : alpha);
-		paint.setTextSize(20);
-		paint.setTextAlign(Paint.Align.CENTER);
-		canvas.drawText(text, x, y, paint);
-	}
-
 	public void onDraw(Canvas canvas) {
 		if (life <= 0) {
 			if (!killed) {
@@ -198,7 +167,7 @@ public class EnemySprite extends ActiveSprite {
 				killpointx = (float) (gameView.getPlayerSprite().x + Math.random() * 20);
 				killpointy = (float) (gameView.getPlayerSprite().y + Math.random() * 20);
 				boolean cont = gameView.updateScore(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
-				if (cont)
+				if (cont && !gameView.BOSSTIME)
 					gameView.addEnemy(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
 
 				if (gameView.sentFirstAidKit()) {
@@ -213,7 +182,11 @@ public class EnemySprite extends ActiveSprite {
 		} else {
 			BULLET_FIRE_WAIT_TIME--;
 			if (BULLET_FIRE_WAIT_TIME == 0) {
-				BULLET_FIRE_WAIT_TIME = BULLET_FIRE_WAIT_TIME_MAX + new Random().nextInt(BULLET_FIRE_WAIT_TIME_MAX);
+				if (wt == WeaponTypes.BOSS1 || wt == WeaponTypes.BOSS2 || wt == WeaponTypes.BOSS3) {
+					BULLET_FIRE_WAIT_TIME = (int) (BULLET_FIRE_WAIT_TIME_MAX * 0.25f);
+				} else {
+					BULLET_FIRE_WAIT_TIME = BULLET_FIRE_WAIT_TIME_MAX + new Random().nextInt(BULLET_FIRE_WAIT_TIME_MAX);
+				}
 				fire();
 			}
 
@@ -223,10 +196,16 @@ public class EnemySprite extends ActiveSprite {
 			enemyPointerSprite.onDraw(canvas);
 		}
 		// throttleLeave();
-		if (killed) {
+		if (killed && killpointx != -1) {
 			Integer bonus = WeaponsManager.getManager().getBonusByEnemyWT(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
-			drawText("+" + bonus, canvas, killpointx - Constants.extraWidthOffset, PhysicsApplication.deviceHeight - killpointy + Constants.extraHeightOffset - gameView.getPlayerSprite().height
-					- (255 - alpha));
+			gameView.addTextDrawingPojo(new TextDrawingPojo("+" + bonus, killpointx, killpointy, 255));
+			killpointx = -1;
+			killpointy = -1;
+			// drawText("+" + bonus, canvas, killpointx -
+			// Constants.extraWidthOffset, PhysicsApplication.deviceHeight -
+			// killpointy + Constants.extraHeightOffset -
+			// gameView.getPlayerSprite().height
+			// - (255 - alpha));
 		}
 		super.onDraw(canvas);
 	}
@@ -245,6 +224,33 @@ public class EnemySprite extends ActiveSprite {
 			fireGrenade();
 		} else if (wt == WeaponTypes.BOMB) {
 			fireGrenadeSmall();
+		} else if (wt == WeaponTypes.BOSS1) {
+			BULLET_FIRE_COUNT++;
+			if (BULLET_FIRE_COUNT % 10 == 0 || BULLET_FIRE_COUNT % 10 == 1 || BULLET_FIRE_COUNT % 10 == 2 || BULLET_FIRE_COUNT % 10 == 3 || BULLET_FIRE_COUNT % 10 == 4 || BULLET_FIRE_COUNT % 10 == 5) {
+				if (BULLET_FIRE_COUNT % 2 == 0) {
+					fireGrenadeSmall();
+				} else {
+					fireMissileLight();
+				}
+			}
+		} else if (wt == WeaponTypes.BOSS2) {
+			BULLET_FIRE_COUNT++;
+			if (BULLET_FIRE_COUNT % 10 == 0 || BULLET_FIRE_COUNT % 10 == 1 || BULLET_FIRE_COUNT % 10 == 2 || BULLET_FIRE_COUNT % 10 == 3 || BULLET_FIRE_COUNT % 10 == 4 || BULLET_FIRE_COUNT % 10 == 5) {
+				if (BULLET_FIRE_COUNT % 2 == 0) {
+					fireMissile();
+				} else {
+					fireMissileLight();
+				}
+			}
+		} else if (wt == WeaponTypes.BOSS3) {
+			BULLET_FIRE_COUNT++;
+			if (BULLET_FIRE_COUNT % 10 == 0 || BULLET_FIRE_COUNT % 10 == 1 || BULLET_FIRE_COUNT % 10 == 2 || BULLET_FIRE_COUNT % 10 == 3 || BULLET_FIRE_COUNT % 10 == 4 || BULLET_FIRE_COUNT % 10 == 5) {
+				if (BULLET_FIRE_COUNT % 2 == 0) {
+					fireMissileLocking();
+				} else {
+					fireMissileLight();
+				}
+			}
 		}
 	}
 
@@ -408,6 +414,15 @@ public class EnemySprite extends ActiveSprite {
 
 	public void setWt(WeaponTypes wt) {
 		this.wt = wt;
+		if (wt == WeaponTypes.BOSS1) {
+			life_MAX = 250;
+		} else if (wt == WeaponTypes.BOSS2) {
+			life_MAX = 250;
+		} else if (wt == WeaponTypes.BOSS3) {
+			life_MAX = 250;
+		} else {
+			life_MAX = 50;
+		}
+		life = life_MAX;
 	}
-
 }

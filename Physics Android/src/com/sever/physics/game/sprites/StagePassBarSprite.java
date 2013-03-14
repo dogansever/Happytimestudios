@@ -2,6 +2,7 @@ package com.sever.physics.game.sprites;
 
 import org.jbox2d.common.Vec2;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -26,6 +27,7 @@ public class StagePassBarSprite extends FreeSprite {
 		this.manualFrameSet = true;
 	}
 
+	@SuppressLint("DrawAllocation")
 	public void onDraw(Canvas canvas) {
 		if (gameView.endOfGame) {
 			return;
@@ -55,11 +57,12 @@ public class StagePassBarSprite extends FreeSprite {
 		m.postTranslate(translate.x, translate.y);
 		canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
 
+		int widthP = (int) (percentage * width) > 0 ? (int) (percentage * width) : 1;
 		spriteBmp.currentFrame = 1;
 		srcX = (int) (spriteBmp.currentFrame * width);
 		srcY = (int) (spriteBmp.currentRow * height);
-		src = new Rect(srcX, srcY, (int) (srcX + percentage * width), (int) (srcY + height));
-		spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) (percentage * width), (int) height);
+		src = new Rect(srcX, srcY, widthP, (int) (srcY + height));
+		spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, widthP, (int) height);
 
 		m = new Matrix();
 		translate = getBitmapDrawingXY();
@@ -67,5 +70,4 @@ public class StagePassBarSprite extends FreeSprite {
 		canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
 
 	}
-
 }

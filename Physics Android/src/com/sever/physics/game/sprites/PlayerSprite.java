@@ -152,8 +152,8 @@ public class PlayerSprite extends ActiveSprite {
 			}
 			fireArrowSprite.onDraw(canvas);
 			shiftCheck();
-			hoverCheck();
-			fireTry();
+//			hoverCheck();
+//			fireTry();
 			if (loadingTimeInFPS > 0) {
 				loadingTimeInFPS--;
 			}
@@ -584,6 +584,11 @@ public class PlayerSprite extends ActiveSprite {
 		if (gameView.idle) {
 			return;
 		}
+		
+		if (!alive) {
+			return;
+		}
+		
 		super.throttle(direction, f);
 	}
 
