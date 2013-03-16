@@ -52,7 +52,7 @@ public class PlayerSprite extends ActiveSprite {
 		addPowerBar();
 		addFireArrow();
 		FADE_LIFE = 80;
-		velocity_MAX = 100;
+		velocity_MAX = 120;
 	}
 
 	public float getBonusScoreLife() {
@@ -152,8 +152,11 @@ public class PlayerSprite extends ActiveSprite {
 			}
 			fireArrowSprite.onDraw(canvas);
 			shiftCheck();
-//			hoverCheck();
-//			fireTry();
+			if (!fades) {
+				throttleOffBmp();
+			}
+			// hoverCheck();
+			// fireTry();
 			if (loadingTimeInFPS > 0) {
 				loadingTimeInFPS--;
 			}
@@ -584,11 +587,11 @@ public class PlayerSprite extends ActiveSprite {
 		if (gameView.idle) {
 			return;
 		}
-		
+
 		if (!alive) {
 			return;
 		}
-		
+
 		super.throttle(direction, f);
 	}
 

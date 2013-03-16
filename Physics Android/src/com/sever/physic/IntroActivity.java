@@ -202,7 +202,7 @@ public class IntroActivity extends Activity {
 			}
 		});
 
-		if (dbDBWriteUtil.getBestScore(0).equals("0")) {
+		if (dbDBWriteUtil.getBestScore(0).equals("0") || dbDBWriteUtil.getBestScore(1).equals("15")) {
 			start.setVisibility(View.GONE);
 		} else {
 			start.setVisibility(View.VISIBLE);
@@ -286,7 +286,6 @@ public class IntroActivity extends Activity {
 			}
 
 		});
-
 
 		RelativeLayout relLay01 = (RelativeLayout) findViewById(R.id.relLay01);
 		relLay01.getLayoutParams().width = (int) (PhysicsApplication.deviceWidth * 0.55f);

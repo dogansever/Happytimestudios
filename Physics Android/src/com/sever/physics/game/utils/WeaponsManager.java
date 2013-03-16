@@ -150,7 +150,7 @@ public class WeaponsManager {
 	}
 
 	public Bitmap getEnemyBitmapByWT(WeaponTypes wt, Boolean fly) {
-		int resId = R.drawable.enemy02x2x1;
+		int resId = R.drawable.boss01x2x1;
 		if (wt == WeaponTypes.MISSILE) {
 			resId = R.drawable.enemy05x2x1;
 		}
@@ -166,12 +166,21 @@ public class WeaponsManager {
 		if (wt == WeaponTypes.BOMB_BIG) {
 			resId = R.drawable.enemy04x2x1;
 		}
+		if (wt == WeaponTypes.BOSS1) {
+			resId = R.drawable.boss01x2x1;
+		}
+		if (wt == WeaponTypes.BOSS2) {
+			resId = R.drawable.boss02x2x1;
+		}
+		if (wt == WeaponTypes.BOSS3) {
+			resId = R.drawable.boss03x2x1;
+		}
 
 		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getBitmapPercentageByType(wt, fly));
 	}
 
 	public Bitmap getEnemyThrottleBitmapByWT(WeaponTypes wt, Boolean fly) {
-		int resId = R.drawable.enemy02throttlex2x2;
+		int resId = R.drawable.boss01throttlex2x2;
 		if (wt == WeaponTypes.MISSILE) {
 			resId = R.drawable.enemy05throttlex2x2;
 		}
@@ -187,12 +196,21 @@ public class WeaponsManager {
 		if (wt == WeaponTypes.BOMB_BIG) {
 			resId = R.drawable.enemy04throttlex2x2;
 		}
+		if (wt == WeaponTypes.BOSS1) {
+			resId = R.drawable.boss01throttlex2x2;
+		}
+		if (wt == WeaponTypes.BOSS2) {
+			resId = R.drawable.boss02throttlex2x2;
+		}
+		if (wt == WeaponTypes.BOSS3) {
+			resId = R.drawable.boss03throttlex2x2;
+		}
 
 		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getBitmapPercentageByType(wt, fly));
 	}
 
 	public Bitmap getEnemyBurningBitmapByWT(WeaponTypes wt, Boolean fly) {
-		int resId = R.drawable.enemy02burningx2x2;
+		int resId = R.drawable.boss01burningx2x2;
 		if (wt == WeaponTypes.MISSILE) {
 			resId = R.drawable.enemy05burningx2x2;
 		}
@@ -207,6 +225,15 @@ public class WeaponsManager {
 		}
 		if (wt == WeaponTypes.BOMB_BIG) {
 			resId = R.drawable.enemy04burningx2x2;
+		}
+		if (wt == WeaponTypes.BOSS1) {
+			resId = R.drawable.boss01burningx2x2;
+		}
+		if (wt == WeaponTypes.BOSS2) {
+			resId = R.drawable.boss02burningx2x2;
+		}
+		if (wt == WeaponTypes.BOSS3) {
+			resId = R.drawable.boss03burningx2x2;
 		}
 
 		return BitmapManager.getManager().createScaledBitmap(resId, WeaponsManager.getManager().getBitmapPercentageByType(wt, fly));

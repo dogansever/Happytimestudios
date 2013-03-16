@@ -550,6 +550,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		createNophysicSprites();
 		sendEnemies();
 		((BonusLifeBarSprite) getBonusLifeBarSprite()).resetTimer();
+		BOSSTIME = false;
 	}
 
 	public void createJoint2Player(float x, float y) {
@@ -1204,7 +1205,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			// ((ButtonSwapWeaponSprite)
 			// getSwapWeaponButtonSprite()).deactivate();
 			// ((ButtonFireSprite) getFireButtonSprite()).deactivate();
-			StageManager.getManager().currentStage = 0;
+			StageManager.getManager().currentStage = -1;
+			Constants.scoreTotal = 0;
 			endOfGame = false;
 		} else if (!idle && !((PlayerSprite) getPlayerSprite()).isAlive()) {
 			GAMEOVER_WAIT_TIME = 100;

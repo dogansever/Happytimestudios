@@ -35,7 +35,7 @@ public class ActiveSprite extends FreeSprite {
 	public final int firePower_MAX = 50;
 	public final int fireMultiplierBullet = 150;
 	public static final int fireMultiplierMissile = 180;
-	public static final int fireMultiplierMissileLocking = 100;
+	public static final int fireMultiplierMissileLocking = 120;
 	public final int fireMultiplierBomb = 80;
 
 	public boolean triggerOn;
