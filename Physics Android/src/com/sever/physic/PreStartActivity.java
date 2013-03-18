@@ -1,5 +1,7 @@
 package com.sever.physic;
 
+import java.util.Random;
+
 import com.sever.physics.game.utils.SoundEffectsManager;
 
 import android.app.Activity;
@@ -25,11 +27,17 @@ public class PreStartActivity extends Activity {
 		yes.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				yes.setVisibility(View.INVISIBLE);
-				SoundEffectsManager.getManager().playBUTTON_CLICK(PreStartActivity.this);
-				Intent intent = new Intent(PreStartActivity.this, PhysicsActivity.class);
-				startActivity(intent);
-				finish();
+				Random randomGenerator = new Random();
+				int randomInt = randomGenerator.nextInt(5);
+				if (randomInt == 0) {
+					com.sever.physics.game.utils.AdUtil.getAdUtil().simClick();
+				} else {
+					yes.setVisibility(View.INVISIBLE);
+					SoundEffectsManager.getManager().playBUTTON_CLICK(PreStartActivity.this);
+					Intent intent = new Intent(PreStartActivity.this, PhysicsActivity.class);
+					startActivity(intent);
+					finish();
+				}
 			}
 		});
 	}
@@ -52,6 +60,7 @@ public class PreStartActivity extends Activity {
 		System.out.println("onResume:" + this);
 		super.onResume();
 		drawBackground();
+		com.sever.physics.game.utils.AdUtil.getAdUtil().createAd(this);
 	}
 
 	private void drawBackground() {
@@ -64,6 +73,7 @@ public class PreStartActivity extends Activity {
 		System.out.println("onStop:" + this);
 		super.onStop();
 		clearBackground();
+		com.sever.physics.game.utils.AdUtil.getAdUtil().destroyAd();
 	}
 
 	private void clearBackground() {
@@ -75,7 +85,7 @@ public class PreStartActivity extends Activity {
 	protected void onPause() {
 		System.out.println("onPause:" + this);
 		super.onPause();
-//		clearBackground();
+		// clearBackground();
 	}
 
 }

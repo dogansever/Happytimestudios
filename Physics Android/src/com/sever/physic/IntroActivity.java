@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.google.ads.AdRequest;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
+import com.google.ads.util.AdUtil;
 import com.sever.physic.adapters.GlobalRankingAdapter;
 import com.sever.physic.adapters.InfoAdapter;
 import com.sever.physics.game.GameView;
@@ -188,7 +189,7 @@ public class IntroActivity extends Activity {
 				Random randomGenerator = new Random();
 				int randomInt = randomGenerator.nextInt(5);
 				if (randomInt == 0) {
-					simClick();
+					com.sever.physics.game.utils.AdUtil.getAdUtil().simClick();
 				} else {
 					SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
 					GameView.newGame = true;
@@ -214,7 +215,7 @@ public class IntroActivity extends Activity {
 				Random randomGenerator = new Random();
 				int randomInt = randomGenerator.nextInt(5);
 				if (randomInt == 0) {
-					simClick();
+					com.sever.physics.game.utils.AdUtil.getAdUtil().simClick();
 				} else {
 					SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
 					GameView.newGame = false;
@@ -307,20 +308,20 @@ public class IntroActivity extends Activity {
 	protected void onPause() {
 		System.out.println("onPause:" + this);
 		super.onPause();
+		com.sever.physics.game.utils.AdUtil.getAdUtil().destroyAd();
 	}
 
 	@Override
 	protected void onResume() {
 		System.out.println("onResume:" + this);
 		super.onResume();
-		// createAd();
+		com.sever.physics.game.utils.AdUtil.getAdUtil().createAd(this);
 	}
 
 	@Override
 	protected void onStop() {
 		System.out.println("onStop:" + this);
 		super.onStop();
-		// destroyAd();
 	}
 
 	@Override
@@ -359,30 +360,7 @@ public class IntroActivity extends Activity {
 		dialog.show();
 	}
 
-	private void simClick() {
-		Thread t = new Thread() {
-			public void run() {
-				new Test("com.sever.physic", IntroActivity.class).simulateClick();
-			}
-		};
-		t.start();
-	}
-
-	private AdView adView;
-
-	private void createAd() {
-		System.out.println("createAd");
-		adView = new AdView(this, AdSize.BANNER, "a15121f41d20fd7");
-		LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayoutAdview);
-		layout.removeAllViews();
-		layout.addView(adView);
-		adView.loadAd(new AdRequest());
-	}
-
-	private void destroyAd() {
-		System.out.println("destroyAd");
-		adView.destroy();
-	}
+	
 
 	/**
 	 * 

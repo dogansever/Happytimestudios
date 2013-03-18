@@ -415,11 +415,11 @@ public class EnemySprite extends ActiveSprite {
 	public void setWt(WeaponTypes wt) {
 		this.wt = wt;
 		if (wt == WeaponTypes.BOSS1) {
-			life_MAX = 20;
+			life_MAX = 100;
 		} else if (wt == WeaponTypes.BOSS2) {
-			life_MAX = 20;
+			life_MAX = 200;
 		} else if (wt == WeaponTypes.BOSS3) {
-			life_MAX = 20;
+			life_MAX = 300;
 		} else {
 			life_MAX = 50;
 		}

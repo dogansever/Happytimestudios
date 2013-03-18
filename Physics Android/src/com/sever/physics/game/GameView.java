@@ -52,6 +52,7 @@ import com.sever.physics.game.sprites.StaticBoxSprite;
 import com.sever.physics.game.sprites.StaticSpriteNoShape;
 import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.Constants;
+import com.sever.physics.game.utils.GameStates;
 import com.sever.physics.game.utils.Joint;
 import com.sever.physics.game.utils.SoundEffectsManager;
 import com.sever.physics.game.utils.SpriteBmp;
@@ -105,6 +106,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	public static boolean success;
 	public static boolean newGame;
 	public static boolean BOSSTIME;
+	public GameStates gameState;
 
 	float newStagePointx = 0;
 	float newStagePointy = 0;
@@ -729,12 +731,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				draw(canvas, nophysicsSprite);
 				String nophysicsSprite = "nophysicsSprite:" + (System.currentTimeMillis() - t);
 
-				drawText("STAGE: " + (StageManager.getManager().currentStage + 1), canvas, 10, 25);
-				drawText("SCORE: " + Constants.scoreTotal, canvas, 10, 50);
-				drawText(newWeaponUnlockedMessage, canvas, 10, 75, 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX <= 0 ? 0 : 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX,
-						Paint.Align.LEFT, NEXT_STAGE_WAIT_TIME % 2 == 0 ? Color.GREEN : Color.YELLOW);
-				drawText(newStageUpMessage, canvas, 10, 100, 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX <= 0 ? 0 : 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX, Paint.Align.LEFT,
-						NEXT_STAGE_WAIT_TIME % 2 == 0 ? Color.RED : Color.YELLOW);
+				if (!endOfGame) {
+					drawText("STAGE: " + (StageManager.getManager().currentStage + 1), canvas, 10, 25);
+					drawText("SCORE: " + Constants.scoreTotal, canvas, 10, 50);
+					drawText(newWeaponUnlockedMessage, canvas, 10, 75, 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX <= 0 ? 0 : 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX,
+							Paint.Align.LEFT, NEXT_STAGE_WAIT_TIME % 2 == 0 ? Color.GREEN : Color.YELLOW);
+					drawText(newStageUpMessage, canvas, 10, 100, 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX <= 0 ? 0 : 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX,
+							Paint.Align.LEFT, NEXT_STAGE_WAIT_TIME % 2 == 0 ? Color.RED : Color.YELLOW);
+				}
 
 				int xd = 100;
 				// drawText(staticSprites, canvas, 10, xd = xd + 25);
@@ -753,8 +757,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				// drawText("FPS:" + GameLoopThread.framesCountAvg, canvas, 10,
 				// xd = xd + 25);
 
-				drawTextStageStart(canvas);
-				drawTextStageGameOver(canvas);
+				if (!endOfGame) {
+					drawTextStageStart(canvas);
+					drawTextStageGameOver(canvas);
+				} else {
+					drawTextStageGameEnd(canvas);
+				}
 
 				for (TextDrawingPojo tdpojo : textDrawingPojoList) {
 					if (tdpojo.alpha > 0) {
@@ -797,6 +805,32 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		paint.setTextAlign(Paint.Align.CENTER);
 		canvas.drawText("GAME OVER", PhysicsApplication.deviceWidth * 0.5f, PhysicsApplication.deviceHeight * 0.5f, paint);
 		paint.setTextSize(20);
+		if (GAMEOVER_WAIT_TIME-- <= 0) {
+			GAMEOVER_WAIT_TIME = 0;
+			canvas.drawText("(Touch to Go to Main Menu)", PhysicsApplication.deviceWidth * 0.5f, PhysicsApplication.deviceHeight * 0.5f + 50, paint);
+		}
+	}
+
+	private void drawTextStageGameEnd(Canvas canvas) {
+		if (GAMEOVER_ALPHA <= GAMEOVER_ALPHA_MIN) {
+			GAMEOVER_ALPHA = GAMEOVER_ALPHA_MIN;
+			GAMEOVER_ALPHA_INCREMENT = 5;
+		} else if (GAMEOVER_ALPHA >= GAMEOVER_ALPHA_MAX) {
+			GAMEOVER_ALPHA = GAMEOVER_ALPHA_MAX;
+			GAMEOVER_ALPHA_INCREMENT = -5;
+		}
+		GAMEOVER_ALPHA += GAMEOVER_ALPHA_INCREMENT;
+		Paint paint = new Paint();
+		paint.setStyle(Style.FILL);
+		paint.setTypeface(IntroActivity.tf);
+		paint.setColor(Color.YELLOW);
+		int alpha = GAMEOVER_ALPHA;
+		paint.setAlpha(alpha <= 0 ? 0 : alpha);
+		paint.setTextSize(50);
+		paint.setTextAlign(Paint.Align.CENTER);
+		canvas.drawText("MISSION COMPLETE", PhysicsApplication.deviceWidth * 0.5f, PhysicsApplication.deviceHeight * 0.5f, paint);
+		paint.setTextSize(20);
+		canvas.drawText("Score " + Constants.scoreTotal, PhysicsApplication.deviceWidth * 0.5f, PhysicsApplication.deviceHeight * 0.5f + 25, paint);
 		if (GAMEOVER_WAIT_TIME-- <= 0) {
 			GAMEOVER_WAIT_TIME = 0;
 			canvas.drawText("(Touch to Go to Main Menu)", PhysicsApplication.deviceWidth * 0.5f, PhysicsApplication.deviceHeight * 0.5f + 50, paint);
@@ -956,7 +990,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 					buttonFirePointerId = id;
 					// buttonSwapWeaponPointerId = -1;
 					((ButtonFireSprite) getFireButtonSprite()).onDown(x, PhysicsApplication.deviceHeight - y);
-				} else if (xLimitForJoystickTouch >= x && !joystickEnabled) {
+				} else if (xLimitForJoystickTouch >= x && !joystickEnabled && !endOfGame) {
 					actionString = "DOWN JoystickSprite";
 					joystickEnabled = true;
 					// buttonFirePointerId = -1;
@@ -968,8 +1002,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				actionString = "UP";
 			case MotionEvent.ACTION_POINTER_UP:
 				actionString = "UP PNTR";
+				if (endOfGame && GAMEOVER_WAIT_TIME == 0) {
+					finishGame = true;
+					break;
+				}
 				if (idle && GAMEOVER_WAIT_TIME == 0) {
 					finishGame = true;
+					break;
 					// ((PlayerSprite) getPlayerSprite()).setAlive(true);
 					// ((PlayerSprite) getPlayerSprite()).restartSprite(x +
 					// Constants.extraWidthOffset,
@@ -1180,6 +1219,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			StageManager.getManager().currentStage = Integer.parseInt((String) IntroActivity.dbDBWriteUtil.getBestScore(1));
 			Constants.scoreTotal = Integer.parseInt((String) IntroActivity.dbDBWriteUtil.getBestScore(0));
 		}
+		// StageManager.getManager().currentStage = 14;
 		addStageEnemies();
 	}
 
@@ -1201,19 +1241,30 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	private void checkGameStatus() {
-		if (!idle && endOfGame) {
-			// ((ButtonSwapWeaponSprite)
-			// getSwapWeaponButtonSprite()).deactivate();
-			// ((ButtonFireSprite) getFireButtonSprite()).deactivate();
-			StageManager.getManager().currentStage = -1;
-			Constants.scoreTotal = 0;
-			endOfGame = false;
+		if (endOfGame) {
+			// StageManager.getManager().currentStage = -1;
+			// Constants.scoreTotal = 0;
+			// endOfGame = false;
+			// nextStage();
+
+			addTextDrawingPojo(new TextDrawingPojo("MISSION COMPLETE", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
+			addTextDrawingPojo(new TextDrawingPojo("M", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
+			addTextDrawingPojo(new TextDrawingPojo("I", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
+			addTextDrawingPojo(new TextDrawingPojo("S", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
+			addTextDrawingPojo(new TextDrawingPojo("O", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
+			addTextDrawingPojo(new TextDrawingPojo("N", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
+			addTextDrawingPojo(new TextDrawingPojo("C", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
+			addTextDrawingPojo(new TextDrawingPojo("P", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
+			addTextDrawingPojo(new TextDrawingPojo("L", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
+			addTextDrawingPojo(new TextDrawingPojo("E", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
+			addTextDrawingPojo(new TextDrawingPojo("T", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
+
 		} else if (!idle && !((PlayerSprite) getPlayerSprite()).isAlive()) {
 			GAMEOVER_WAIT_TIME = 100;
 			newStagePointx = (float) (getPlayerSprite().x + +Math.random() * 20);
 			newStagePointy = (float) (getPlayerSprite().y + +Math.random() * 20);
 
-			addTextDrawingPojo(new TextDrawingPojo("Total Score " + Constants.scoreTotal, newStagePointx, newStagePointy, 255));
+			addTextDrawingPojo(new TextDrawingPojo("Total Score " + (Constants.scoreTotal - Constants.scoreStage), newStagePointx, newStagePointy, 255));
 
 			idleGame();
 			SoundEffectsManager.getManager().playGAME_OVER(context);
@@ -1235,7 +1286,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				return;
 			}
 
-			waitingForNextStage = true;
+			if (isGameEnd()) {
+				endOfGame = true;
+				GAMEOVER_WAIT_TIME = 100;
+			} else {
+				waitingForNextStage = true;
+			}
 			NEXT_STAGE_WAIT_TIME = NEXT_STAGE_WAIT_TIME_MAX;
 			newStagePointx = (float) (getPlayerSprite().x + +Math.random() * 20);
 			newStagePointy = (float) (getPlayerSprite().y + +Math.random() * 20);
@@ -1265,8 +1321,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				SoundEffectsManager.getManager().playSTAGE_UP(context);
 			}
 
-			for (FreeSprite enmy : enemySprites) {
-				enmy.destroySprite();
+			if (!BOSSTIME) {
+				for (FreeSprite enmy : enemySprites) {
+					enmy.destroySprite();
+				}
 			}
 
 		} else if (waitingForNextStage) {
@@ -1279,7 +1337,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				((BonusLifeBarSprite) getBonusLifeBarSprite()).resetTimer();
 				SoundEffectsManager.getManager().playSTAGE_START(context);
 			}
-		} else if (finishGame) {
+		}
+
+		if (finishGame) {
 			finishGame();
 		}
 	}
@@ -1290,6 +1350,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				return enmy;
 		}
 		return null;
+	}
+
+	private boolean isGameEnd() {
+		return StageManager.getManager().currentStage + 1 == StageManager.stageList.size();
 	}
 
 	private void nextStage() {
@@ -1385,7 +1449,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	public boolean sentFirstAidKit() {
-		return new Random().nextFloat() * 100.0f < 30.0f;
+		return new Random().nextFloat() * 100.0f < 40.0f;
 		// return true;
 	}
 

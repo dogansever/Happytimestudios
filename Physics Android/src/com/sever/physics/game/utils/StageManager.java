@@ -9,7 +9,7 @@ import com.sever.physic.PhysicsApplication;
 public class StageManager {
 
 	static StageManager self = null;
-	private static ArrayList<ArrayList<Integer>> stageList;
+	public static ArrayList<ArrayList<Integer>> stageList;
 
 	static {
 		stageList = new ArrayList<ArrayList<Integer>>();

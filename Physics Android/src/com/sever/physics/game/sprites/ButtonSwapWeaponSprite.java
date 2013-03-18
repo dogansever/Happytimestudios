@@ -42,6 +42,10 @@ public class ButtonSwapWeaponSprite extends FreeSprite {
 	}
 
 	public boolean checkButtonTouch(float xn, float yn) {
+		if (gameView.endOfGame) {
+			return false;
+		}
+		
 		if (PlayerSprite.loadingTimeInFPS > 0) {
 			return false;
 		}
@@ -72,9 +76,9 @@ public class ButtonSwapWeaponSprite extends FreeSprite {
 		if (gameView.idle) {
 			return;
 		}
-//		if (gameView.endOfGame) {
-//			return;
-//		}
+		if (gameView.endOfGame) {
+			return;
+		}
 
 		spriteBmp.currentRow = 0;
 		spriteBmp.currentFrame = 0;

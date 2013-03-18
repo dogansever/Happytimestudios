@@ -41,6 +41,10 @@ public class ButtonPortalSprite extends FreeSprite {
 	}
 
 	public boolean checkButtonTouch(float xn, float yn) {
+		if (gameView.endOfGame) {
+			return false;
+		}
+		
 		if (PlayerSprite.portalTimeInFPS > 0) {
 			return false;
 		}
@@ -70,9 +74,9 @@ public class ButtonPortalSprite extends FreeSprite {
 		if (gameView.idle) {
 			return;
 		}
-//		if (gameView.endOfGame) {
-//			return;
-//		}
+		if (gameView.endOfGame) {
+			return;
+		}
 
 		spriteBmp.currentRow = 0;
 		spriteBmp.currentFrame = 0;

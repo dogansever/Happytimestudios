@@ -11,10 +11,10 @@ import com.sever.physics.game.sprites.PlayerSprite;
 
 public class WeaponsManager {
 
-	private static final int DAMAGE_LOW = 15;
-	private static final int DAMAGE_MEDIUM = 25;
-	private static final int DAMAGE_HIGH = 40;
-	private static final int DAMAGE_VERYHIGH = 50;
+	private static final int DAMAGE_LOW = 20;
+	private static final int DAMAGE_MEDIUM = 30;
+	private static final int DAMAGE_HIGH = 50;
+	private static final int DAMAGE_VERYHIGH = 100;
 	private static final int RADIUS_NARROW = 30;
 	private static final int RADIUS_MEDIUM = 30;
 	private static final int RADIUS_WIDE = 60;

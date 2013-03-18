@@ -44,6 +44,10 @@ public class ButtonFireSprite extends FreeSprite {
 	}
 
 	public boolean checkButtonTouch(float xn, float yn) {
+		if (gameView.endOfGame) {
+			return false;
+		}
+
 		if (active)
 			return true;
 
@@ -118,9 +122,9 @@ public class ButtonFireSprite extends FreeSprite {
 			return;
 		}
 
-		// if (gameView.endOfGame) {
-		// return;
-		// }
+		if (gameView.endOfGame) {
+			return;
+		}
 		spriteBmp.setBmpIndex(0);
 		spriteBmp.currentRow = 0;
 		spriteBmp.currentFrame = 0;
