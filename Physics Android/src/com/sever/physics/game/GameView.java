@@ -743,19 +743,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				}
 
 				int xd = 100;
-				drawText(staticSprites, canvas, 10, xd = xd + 25);
-				drawText(nophysicsSprite, canvas, 10, xd = xd + 25);
-				drawText(drawBackground, canvas, 10, xd = xd + 25);
-				drawText(updateStr, canvas, 10, xd = xd + 25);
-				drawText(PlayerSprite, canvas, 10, xd = xd + 25);
-				drawText(explosiveSprites, canvas, 10, xd = xd + 25);
-				drawText(freeSprites, canvas, 10, xd = xd + 25);
-				drawText(enemySprites, canvas, 10, xd = xd + 25);
-				drawText(collectSprites, canvas, 10, xd = xd + 25);
-				drawText(effectsSprite, canvas, 10, xd = xd + 25);
-				drawText(portalSprites, canvas, 10, xd = xd + 25);
-				drawText("total:" + (System.currentTimeMillis() - tstart), canvas, 10, xd = xd + 25);
-				drawText("FPS:" + GameLoopThread.framesCountAvg, canvas, 10, xd = xd + 25);
+				// drawText(staticSprites, canvas, 10, xd = xd + 25);
+				// drawText(nophysicsSprite, canvas, 10, xd = xd + 25);
+				// drawText(drawBackground, canvas, 10, xd = xd + 25);
+				// drawText(updateStr, canvas, 10, xd = xd + 25);
+				// drawText(PlayerSprite, canvas, 10, xd = xd + 25);
+				// drawText(explosiveSprites, canvas, 10, xd = xd + 25);
+				// drawText(freeSprites, canvas, 10, xd = xd + 25);
+				// drawText(enemySprites, canvas, 10, xd = xd + 25);
+				// drawText(collectSprites, canvas, 10, xd = xd + 25);
+				// drawText(effectsSprite, canvas, 10, xd = xd + 25);
+				// drawText(portalSprites, canvas, 10, xd = xd + 25);
+				// drawText("total:" + (System.currentTimeMillis() - tstart),
+				// canvas, 10, xd = xd + 25);
+				// drawText("FPS:" + GameLoopThread.framesCountAvg, canvas, 10,
+				// xd = xd + 25);
 
 				if (!endOfGame) {
 					drawTextStageStart(canvas);
@@ -1206,7 +1208,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	private void checkSpaceTrash() {
 		// System.out.println("checkSpaceTrash():freeSprites.size():" +
 		// freeSprites.size());
-		if (freeSprites.size() < 5) {
+		if (freeSprites.size() < 6) {
 			sendSpaceTrash();
 		}
 	}
@@ -1261,7 +1263,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			addTextDrawingPojo(new TextDrawingPojo("Total Score " + (Constants.scoreTotal - Constants.scoreStage), newStagePointx, newStagePointy, 255));
 
 			idleGame();
-//			SoundEffectsManager.getManager().playGAME_OVER(context);
+			// SoundEffectsManager.getManager().playGAME_OVER(context);
 
 			SoundEffectsManager.stopSound();
 			SoundEffectsManager.startGameOverAmbianceSound(context);

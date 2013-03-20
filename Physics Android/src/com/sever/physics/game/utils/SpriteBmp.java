@@ -40,8 +40,9 @@ public class SpriteBmp {
 	}
 
 	public void freeBitmaps() {
-		bmpArray = null;
-		bmpFrame = null;
+//		bmpArray = null;
+//		bmpFrame = null;
+//		bmpIndex = -1;
 	}
 
 	public float getWidth(int index) {

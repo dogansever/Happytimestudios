@@ -24,16 +24,16 @@ public class AdUtil {
 
 	public void createAd(Activity a) {
 		System.out.println("createAd");
-//		adView = new AdView(a, AdSize.BANNER, "a15121f41d20fd7");
-//		LinearLayout layout = (LinearLayout) a.findViewById(R.id.linearLayoutAdview);
-//		layout.removeAllViews();
-//		layout.addView(adView);
-//		adView.loadAd(new AdRequest());
+		adView = new AdView(a, AdSize.BANNER, "a15121f41d20fd7");
+		LinearLayout layout = (LinearLayout) a.findViewById(R.id.linearLayoutAdview);
+		layout.removeAllViews();
+		layout.addView(adView);
+		adView.loadAd(new AdRequest());
 	}
 
 	public void destroyAd() {
 		System.out.println("destroyAd");
-//		adView.destroy();
+		adView.destroy();
 	}
 
 	public void simClick() {

@@ -45,7 +45,7 @@ public class ButtonSwapWeaponSprite extends FreeSprite {
 		if (gameView.endOfGame) {
 			return false;
 		}
-		
+
 		if (PlayerSprite.loadingTimeInFPS > 0) {
 			return false;
 		}
@@ -86,16 +86,22 @@ public class ButtonSwapWeaponSprite extends FreeSprite {
 	}
 
 	private void draw(Canvas canvas) {
-		float percentage = ((PlayerSprite) gameView.getPlayerSprite()).getLoadingTimePercentage();
-		int srcX = (int) (spriteBmp.currentFrame * width);
-		int srcY = (int) (spriteBmp.currentRow * height);
-		Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height * percentage));
-		spriteBmp.bmpFrame = Bitmap.createBitmap(BitmapManager.weaponSwapButton, src.left, src.top, (int) width, (int) (height * percentage));
-
-		Matrix m = new Matrix();
-		Vec2 translate = getBitmapDrawingXY();
-		m.postTranslate(translate.x, translate.y);
-		canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
+		try {
+			float percentage = ((PlayerSprite) gameView.getPlayerSprite()).getLoadingTimePercentage();
+			int heightCalc = (int) (height * percentage);
+			int srcX = (int) (spriteBmp.currentFrame * width);
+			int srcY = (int) (spriteBmp.currentRow * height);
+			Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + heightCalc));
+			if (heightCalc > 0) {
+				spriteBmp.bmpFrame = Bitmap.createBitmap(BitmapManager.weaponSwapButton, src.left, src.top, (int) width, heightCalc);
+				Matrix m = new Matrix();
+				Vec2 translate = getBitmapDrawingXY();
+				m.postTranslate(translate.x, translate.y);
+				canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
