@@ -86,6 +86,42 @@ public class SoundEffectsManager {
 		}
 	}
 
+	public static void startGameEndAmbianceSound(Context context) {
+		System.out.println("startIngameAmbianceSound");
+		if (mp1 == null) {
+			mp1 = MediaPlayer.create(context, R.raw.meditatewithchoir);
+			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
+			mp1.setVolume(0.2f, 0.2f);
+			mp1.setLooping(true);
+		}
+		if (!mp1.isPlaying())
+			mp1.start();
+	}
+	
+	public static void startBossTimeAmbianceSound(Context context) {
+		System.out.println("startIngameAmbianceSound");
+		if (mp1 == null) {
+			mp1 = MediaPlayer.create(context, R.raw.toppriority);
+			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
+			mp1.setVolume(0.2f, 0.2f);
+			mp1.setLooping(true);
+		}
+		if (!mp1.isPlaying())
+			mp1.start();
+	}
+
+	public static void startGameOverAmbianceSound(Context context) {
+		System.out.println("startIngameAmbianceSound");
+		if (mp1 == null) {
+			mp1 = MediaPlayer.create(context, R.raw.peopleinexile);
+			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
+			mp1.setVolume(0.2f, 0.2f);
+			mp1.setLooping(true);
+		}
+		if (!mp1.isPlaying())
+			mp1.start();
+	}
+
 	public static void startIngameAmbianceSound(Context context) {
 		System.out.println("startIngameAmbianceSound");
 		if (mp1 == null) {

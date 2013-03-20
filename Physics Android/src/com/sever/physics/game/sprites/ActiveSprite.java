@@ -225,7 +225,14 @@ public class ActiveSprite extends FreeSprite {
 			return;
 		throttle(0);
 		if (smokeFreqInFPS-- == 0) {
-			gameView.addSmoke(x, y - height * 0.4f);
+			if (wt == WeaponTypes.BOSS3) {
+//				gameView.addSmoke(x - width* 0.4f, y - height * 0.3f);
+//				gameView.addSmoke(x + width* 0.4f, y - height * 0.3f);
+//				gameView.addSmoke(x - width* 0.4f, y - height * 0.3f);
+//				gameView.addSmoke(x + width* 0.4f, y - height * 0.3f);
+			} else {
+				gameView.addSmoke(x, y - height * 0.4f);
+			}
 			smokeFreqInFPS = smokeFreqMAXInFPS;
 		}
 	}

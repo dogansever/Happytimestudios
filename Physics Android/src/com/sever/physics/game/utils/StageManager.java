@@ -14,21 +14,21 @@ public class StageManager {
 	static {
 		stageList = new ArrayList<ArrayList<Integer>>();
 		// -----------------------gML,gM,gMLo,fB,fBBig,fML,fM,fMLo
-		stageList.add(prepareStage(1, 0, 0, 0, 0, 0, 0, 0, 1));
-		stageList.add(prepareStage(1, 1, 0, 0, 0, 0, 0, 0, 1));
-		stageList.add(prepareStage(1, 0, 0, 1, 0, 0, 0, 0, 1));
-		stageList.add(prepareStage(1, 1, 0, 1, 0, 0, 0, 0, 1));
-		stageList.add(prepareStage(1, 0, 0, 1, 1, 0, 0, 0, 1));
-		stageList.add(prepareStage(1, 0, 0, 2, 0, 1, 0, 0, 1));
-		stageList.add(prepareStage(2, 0, 0, 1, 1, 1, 0, 0, 1));
-		stageList.add(prepareStage(2, 0, 0, 0, 1, 2, 0, 0, 1));
-		stageList.add(prepareStage(0, 0, 0, 0, 1, 1, 1, 0, 1));
-		stageList.add(prepareStage(0, 0, 0, 0, 1, 2, 1, 0, 1));
-		stageList.add(prepareStage(0, 0, 0, 2, 0, 0, 0, 1, 1));
-		stageList.add(prepareStage(0, 0, 0, 0, 0, 1, 2, 0, 1));
-		stageList.add(prepareStage(0, 0, 0, 0, 0, 0, 1, 2, 1));
-		stageList.add(prepareStage(0, 0, 0, 0, 0, 1, 0, 3, 1));
-		stageList.add(prepareStage(0, 0, 0, 0, 0, 0, 1, 4, 1));
+		stageList.add(prepareStage(1, 0, 0, 0, 0, 0, 0, 0, 10));
+		stageList.add(prepareStage(1, 1, 0, 0, 0, 0, 0, 0, 20));
+		stageList.add(prepareStage(1, 0, 0, 1, 0, 0, 0, 0, 40));
+		stageList.add(prepareStage(1, 1, 0, 1, 0, 0, 0, 0, 60));
+		stageList.add(prepareStage(1, 0, 0, 1, 1, 0, 0, 0, 80));
+		stageList.add(prepareStage(1, 0, 0, 2, 0, 1, 0, 0, 100));
+		stageList.add(prepareStage(2, 0, 0, 1, 1, 1, 0, 0, 180));
+		stageList.add(prepareStage(2, 0, 0, 0, 1, 2, 0, 0, 200));
+		stageList.add(prepareStage(0, 0, 0, 0, 1, 1, 1, 0, 220));
+		stageList.add(prepareStage(0, 0, 0, 0, 1, 2, 1, 0, 240));
+		stageList.add(prepareStage(0, 0, 0, 2, 0, 0, 0, 1, 200));
+		stageList.add(prepareStage(0, 0, 0, 0, 0, 1, 2, 0, 200));
+		stageList.add(prepareStage(0, 0, 0, 0, 0, 0, 1, 2, 200));
+		stageList.add(prepareStage(0, 0, 0, 0, 0, 1, 0, 3, 200));
+		stageList.add(prepareStage(0, 0, 0, 0, 0, 0, 1, 4, 400));
 	}
 
 	private static ArrayList<Integer> prepareStage(int i, int j, int k, int l, int m, int n, int o, int p, int q) {

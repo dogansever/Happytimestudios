@@ -29,6 +29,7 @@ import android.view.SurfaceView;
 import com.sever.physic.IntroActivity;
 import com.sever.physic.PhysicsActivity;
 import com.sever.physic.PhysicsApplication;
+import com.sever.physic.PreStartActivity;
 import com.sever.physics.game.pojo.TextDrawingPojo;
 import com.sever.physics.game.sprites.BonusLifeBarSprite;
 import com.sever.physics.game.sprites.BoxSprite;
@@ -462,6 +463,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		colsrows.add(new int[] { 4, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new StaticSpriteNoShape(this, spriteBmp, x, y);
+		sprite.setManualFrameSet(false);
 		portalSprites.add(sprite);
 		return sprite;
 	}
@@ -741,21 +743,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				}
 
 				int xd = 100;
-				// drawText(staticSprites, canvas, 10, xd = xd + 25);
-				// drawText(nophysicsSprite, canvas, 10, xd = xd + 25);
-				// drawText(drawBackground, canvas, 10, xd = xd + 25);
-				// drawText(updateStr, canvas, 10, xd = xd + 25);
-				// drawText(PlayerSprite, canvas, 10, xd = xd + 25);
-				// drawText(explosiveSprites, canvas, 10, xd = xd + 25);
-				// drawText(freeSprites, canvas, 10, xd = xd + 25);
-				// drawText(enemySprites, canvas, 10, xd = xd + 25);
-				// drawText(collectSprites, canvas, 10, xd = xd + 25);
-				// drawText(effectsSprite, canvas, 10, xd = xd + 25);
-				// drawText(portalSprites, canvas, 10, xd = xd + 25);
-				// drawText("total:" + (System.currentTimeMillis() - tstart),
-				// canvas, 10, xd = xd + 25);
-				// drawText("FPS:" + GameLoopThread.framesCountAvg, canvas, 10,
-				// xd = xd + 25);
+				drawText(staticSprites, canvas, 10, xd = xd + 25);
+				drawText(nophysicsSprite, canvas, 10, xd = xd + 25);
+				drawText(drawBackground, canvas, 10, xd = xd + 25);
+				drawText(updateStr, canvas, 10, xd = xd + 25);
+				drawText(PlayerSprite, canvas, 10, xd = xd + 25);
+				drawText(explosiveSprites, canvas, 10, xd = xd + 25);
+				drawText(freeSprites, canvas, 10, xd = xd + 25);
+				drawText(enemySprites, canvas, 10, xd = xd + 25);
+				drawText(collectSprites, canvas, 10, xd = xd + 25);
+				drawText(effectsSprite, canvas, 10, xd = xd + 25);
+				drawText(portalSprites, canvas, 10, xd = xd + 25);
+				drawText("total:" + (System.currentTimeMillis() - tstart), canvas, 10, xd = xd + 25);
+				drawText("FPS:" + GameLoopThread.framesCountAvg, canvas, 10, xd = xd + 25);
 
 				if (!endOfGame) {
 					drawTextStageStart(canvas);
@@ -1248,16 +1248,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			// nextStage();
 
 			addTextDrawingPojo(new TextDrawingPojo("MISSION COMPLETE", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
-			addTextDrawingPojo(new TextDrawingPojo("M", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
-			addTextDrawingPojo(new TextDrawingPojo("I", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
-			addTextDrawingPojo(new TextDrawingPojo("S", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
-			addTextDrawingPojo(new TextDrawingPojo("O", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
-			addTextDrawingPojo(new TextDrawingPojo("N", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
-			addTextDrawingPojo(new TextDrawingPojo("C", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
-			addTextDrawingPojo(new TextDrawingPojo("P", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
-			addTextDrawingPojo(new TextDrawingPojo("L", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
-			addTextDrawingPojo(new TextDrawingPojo("E", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
-			addTextDrawingPojo(new TextDrawingPojo("T", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
+			for (char ch : "MISSION COMPLETE".toCharArray()) {
+				addTextDrawingPojo(new TextDrawingPojo("" + ch, (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
+
+			}
 
 		} else if (!idle && !((PlayerSprite) getPlayerSprite()).isAlive()) {
 			GAMEOVER_WAIT_TIME = 100;
@@ -1267,7 +1261,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			addTextDrawingPojo(new TextDrawingPojo("Total Score " + (Constants.scoreTotal - Constants.scoreStage), newStagePointx, newStagePointy, 255));
 
 			idleGame();
-			SoundEffectsManager.getManager().playGAME_OVER(context);
+//			SoundEffectsManager.getManager().playGAME_OVER(context);
+
+			SoundEffectsManager.stopSound();
+			SoundEffectsManager.startGameOverAmbianceSound(context);
 		} else if (!waitingForNextStage && Constants.scoreToPassTheStage <= Constants.scoreStage) {
 
 			if (!BOSSTIME && (StageManager.getManager().currentStage + 1) % 5 == 0) {
@@ -1277,10 +1274,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				BOSSTIME = true;
 				if (StageManager.getManager().currentStage + 1 == 5) {
 					addEnemy(WeaponTypes.BOSS1, true);
+					SoundEffectsManager.stopSound();
+					SoundEffectsManager.startBossTimeAmbianceSound(context);
 				} else if (StageManager.getManager().currentStage + 1 == 10) {
 					addEnemy(WeaponTypes.BOSS2, true);
+					SoundEffectsManager.stopSound();
+					SoundEffectsManager.startBossTimeAmbianceSound(context);
 				} else if (StageManager.getManager().currentStage + 1 == 15) {
 					addEnemy(WeaponTypes.BOSS3, true);
+					SoundEffectsManager.stopSound();
+					SoundEffectsManager.startBossTimeAmbianceSound(context);
 				}
 				Constants.scoreStage = Constants.scoreToPassTheStage - 1;
 				return;
@@ -1289,7 +1292,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			if (isGameEnd()) {
 				endOfGame = true;
 				GAMEOVER_WAIT_TIME = 100;
+				SoundEffectsManager.stopSound();
+				SoundEffectsManager.startGameEndAmbianceSound(context);
 			} else {
+
+				SoundEffectsManager.stopSound();
+				SoundEffectsManager.startIngameAmbianceSound(context);
 				waitingForNextStage = true;
 			}
 			NEXT_STAGE_WAIT_TIME = NEXT_STAGE_WAIT_TIME_MAX;

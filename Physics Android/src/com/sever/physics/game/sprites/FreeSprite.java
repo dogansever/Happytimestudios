@@ -89,6 +89,7 @@ public class FreeSprite {
 
 	public void createStaticBody(float x, float y) {
 		dynamic = false;
+		manualFrameSet = true;
 		hasbody = true;
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(x / Constants.pixelpermeter, y / Constants.pixelpermeter);
@@ -181,12 +182,14 @@ public class FreeSprite {
 				spriteBmp.currentFrame = ++spriteBmp.currentFrame % spriteBmp.BMP_COLUMNS;
 			}
 
-			int srcX = (int) (spriteBmp.currentFrame * width);
-			int srcY = (int) (spriteBmp.currentRow * height);
-			Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height));
-			Rect dst = new Rect((int) (x), (int) (y), (int) (x + width), (int) (y + height));
-			Paint p = new Paint();
-			spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) width, (int) height);
+			if (!manualFrameSet || spriteBmp.bmpFrame == null) {
+				int srcX = (int) (spriteBmp.currentFrame * width);
+				int srcY = (int) (spriteBmp.currentRow * height);
+				Rect src = new Rect(srcX, srcY, (int) (srcX + width), (int) (srcY + height));
+				Rect dst = new Rect((int) (x), (int) (y), (int) (x + width), (int) (y + height));
+				Paint p = new Paint();
+				spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.getBitmap(), src.left, src.top, (int) width, (int) height);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -393,5 +396,13 @@ public class FreeSprite {
 	}
 
 	public void addPointerSprite() {
+	}
+
+	public boolean isManualFrameSet() {
+		return manualFrameSet;
+	}
+
+	public void setManualFrameSet(boolean manualFrameSet) {
+		this.manualFrameSet = manualFrameSet;
 	}
 }
