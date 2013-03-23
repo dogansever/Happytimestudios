@@ -14,7 +14,7 @@ import com.sever.physic.R;
 import com.sever.physics.game.utils.LeaderBoardUtil;
 
 public class GlobalRankingAdapter extends BaseAdapter {
-	private int MAX_PAGE = 20;
+	private int MAX_PAGE = 50;
 	private Context myContext;
 
 	public GlobalRankingAdapter(Context c) {

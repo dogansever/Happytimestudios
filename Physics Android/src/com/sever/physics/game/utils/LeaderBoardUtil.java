@@ -54,8 +54,10 @@ public class LeaderBoardUtil {
 			// customData.put("playerName", playerName);
 			customData.put("stage", stage);
 
-			if (exists(score))
+			if (exists(score)) {
+				Toast.makeText(IntroActivity.context, "Hey You already sent it before! No need to repeat!", Toast.LENGTH_SHORT).show();
 				return;
+			}
 			IntroActivity.startLoadingDialog(IntroActivity.context, "", false);
 			leaderboards.save(HIGHSCORES, score, true, true);
 		} catch (Exception e) {
@@ -110,7 +112,7 @@ public class LeaderBoardUtil {
 			}
 		});
 
-		leaderboards.list(HIGHSCORES, true, "alltime", 1, 20, null);
+		leaderboards.list(HIGHSCORES, true, "alltime", 1, 50, null);
 	}
 
 	private boolean hasConnection(Context ctx) {
