@@ -18,7 +18,7 @@ import com.sever.physics.game.utils.WeaponsManager;
 public class ActiveSprite extends FreeSprite {
 
 	public int velocity_MAX = 50;
-	public float frictionConstant = 0.90f;//1.0f no friction
+	public float frictionConstant = 0.85f;//1.0f no friction
 	public int life_AGG = +1;
 	public int life_MAX = 100;
 	public int life = life_MAX;
