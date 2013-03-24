@@ -69,6 +69,12 @@ public class SplashIntroActivity extends Activity {
 		int deviceWidth = metrics.widthPixels;
 		textView1.setTextSize(TypedValue.COMPLEX_UNIT_PX, deviceWidth / 18);
 		textView1.setTextColor(Color.YELLOW);
+		textView1.setText("Owls vs Monsters is on Google Play!!!");
+		TextView textView01 = (TextView) findViewById(R.id.TextView01);
+		textView01.setTypeface(face2);
+		textView01.setTextSize(TypedValue.COMPLEX_UNIT_PX, deviceWidth / 18);
+		textView01.setTextColor(Color.YELLOW);
+		textView01.setText("Owl Space is on Google Play!!!");
 		((RelativeLayout) findViewById(R.id.relativeLayout2)).setVisibility(View.GONE);
 		try {
 			list.add(R.drawable.back3);
@@ -103,7 +109,7 @@ public class SplashIntroActivity extends Activity {
 				};
 				Thread t = new Thread() {
 					public void run() {
-						mHandler.postDelayed(r2, 1000 * 5);
+						mHandler.postDelayed(r2, 1000 * 10);
 					}
 				};
 				t.start();
