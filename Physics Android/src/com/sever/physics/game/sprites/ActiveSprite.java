@@ -18,6 +18,7 @@ import com.sever.physics.game.utils.WeaponsManager;
 public class ActiveSprite extends FreeSprite {
 
 	public int velocity_MAX = 50;
+	public float frictionConstant = 0.90f;//1.0f no friction
 	public int life_AGG = +1;
 	public int life_MAX = 100;
 	public int life = life_MAX;
@@ -159,6 +160,10 @@ public class ActiveSprite extends FreeSprite {
 		;
 	}
 
+	public void stabilizeVelocity() {
+		getBody().setLinearVelocity(new Vec2(getBody().getLinearVelocity().x * frictionConstant, getBody().getLinearVelocity().y * frictionConstant));
+	}
+
 	public void throttle(int direction, float... f) {
 		if (!throttleHold()) {
 			return;
@@ -226,10 +231,10 @@ public class ActiveSprite extends FreeSprite {
 		throttle(0);
 		if (smokeFreqInFPS-- == 0) {
 			if (wt == WeaponTypes.BOSS3) {
-//				gameView.addSmoke(x - width* 0.4f, y - height * 0.3f);
-//				gameView.addSmoke(x + width* 0.4f, y - height * 0.3f);
-//				gameView.addSmoke(x - width* 0.4f, y - height * 0.3f);
-//				gameView.addSmoke(x + width* 0.4f, y - height * 0.3f);
+				// gameView.addSmoke(x - width* 0.4f, y - height * 0.3f);
+				// gameView.addSmoke(x + width* 0.4f, y - height * 0.3f);
+				// gameView.addSmoke(x - width* 0.4f, y - height * 0.3f);
+				// gameView.addSmoke(x + width* 0.4f, y - height * 0.3f);
 			} else {
 				gameView.addSmoke(x, y - height * 0.4f);
 			}

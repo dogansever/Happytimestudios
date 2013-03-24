@@ -259,7 +259,7 @@ public class EnemySprite extends ActiveSprite {
 		// return;
 		// }
 
-		float minDistanceBetweenx = 250;
+		float minDistanceBetweenx = 50;
 		float minDistanceBetweeny = 50;
 		float targetx = gameView.getPlayerSprite().x;
 		float targety = gameView.getPlayerSprite().y;

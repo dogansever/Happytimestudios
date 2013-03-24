@@ -155,7 +155,7 @@ public class PlayerSprite extends ActiveSprite {
 			if (!fades) {
 				throttleOffBmp();
 			}
-			// hoverCheck();
+			 hoverCheck();
 			// fireTry();
 			if (loadingTimeInFPS > 0) {
 				loadingTimeInFPS--;
@@ -273,6 +273,7 @@ public class PlayerSprite extends ActiveSprite {
 
 	public void throttleLeave() {
 		throttleOffBmp();
+		stabilizeVelocity();
 		// fuel_AGG = 5;
 		// fuel = fuel + fuel_AGG;
 		// if (fuel >= fuel_MAX) {
