@@ -4,3 +4,7 @@ increase size of leaderboard list to 50
 after 1.0.1
 change enemy movetoplayer distance parameters
 add stabilizevelocity to the player
+after 1.0.2
+smaller joystick
+checkSuddenChangeInDirection changed
+fire getbody null problem handled

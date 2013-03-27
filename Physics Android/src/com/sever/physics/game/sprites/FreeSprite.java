@@ -162,14 +162,14 @@ public class FreeSprite {
 	}
 
 	public Body getBody() {
-		if (body == null && hasbody) {
-			if (dynamic)
-				createDynamicBody(x, y);
-			else
-				createStaticBody(x, y);
-			// System.out.println("getBody():" + body + " " +
-			// this.getClass().getName());
-		}
+//		if (body == null && hasbody) {
+//			if (dynamic)
+//				createDynamicBody(x, y);
+//			else
+//				createStaticBody(x, y);
+//			// System.out.println("getBody():" + body + " " +
+//			// this.getClass().getName());
+//		}
 		return body;
 		// int index = PhysicsActivity.mWorld.bodies.indexOf(body);
 		// return PhysicsActivity.mWorld.bodies.get(index);
