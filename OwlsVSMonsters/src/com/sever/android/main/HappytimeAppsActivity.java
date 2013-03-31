@@ -2,23 +2,39 @@ package com.sever.android.main;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-public class IntroActivity extends Activity {
+public class HappytimeAppsActivity extends Activity {
 	public final Handler mHandler = new Handler();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.intro);
+		setContentView(R.layout.happytimeappslayout);
+
+		Typeface face2 = Typeface.createFromAsset(getAssets(), "FEASFBRG.TTF");
+		TextView textView1 = (TextView) findViewById(R.id.textView1);
+		textView1.setTypeface(face2);
+		DisplayMetrics metrics = new DisplayMetrics();
+		this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		int deviceWidth = metrics.widthPixels;
+		textView1.setTextSize(TypedValue.COMPLEX_UNIT_PX, deviceWidth / 18);
+		textView1.setTextColor(Color.YELLOW);
+		textView1.setText("Owl Space is on Google Play!!!");
+		
 		final Runnable r2 = new Runnable() {
 			public void run() {
-				Intent intent = new Intent(IntroActivity.this, HappytimeAppsActivity.class);
+				Intent intent = new Intent(HappytimeAppsActivity.this, StartActivity.class);
 				startActivity(intent);
 				finish();
 			}
@@ -68,7 +84,7 @@ public class IntroActivity extends Activity {
 
 	private void drawBackground() {
 		ImageView im = (ImageView) findViewById(R.id.imageView1);
-		im.setBackgroundResource(R.drawable.splash);
+		im.setBackgroundResource(R.drawable.coverapps);
 		Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha);
 		// Animation hyperspaceJumpAnimation =
 		// AnimationUtils.loadAnimation(this, R.anim.hyperspace_jump);
@@ -126,4 +142,5 @@ public class IntroActivity extends Activity {
 		super.onPause();
 		clearBackground();
 	}
+
 }
