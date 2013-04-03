@@ -54,7 +54,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public int score = 0;
 	public int point = 0;
 
-
 	public int incrementScore(int index) {
 		if (GameView.hitCount > 0) {
 			GameView.hitCount--;
@@ -107,8 +106,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		Random randomGenerator = new Random();
 		int randomInt;
 		for (int i = 0; i < waveCount; i++) {
-			int minDelay = 5;
-			int delayInSeconds = randomGenerator.nextInt(5) + minDelay;
+			int minDelay = 2;
+			int delayInSeconds = randomGenerator.nextInt(2) + minDelay;
 			System.out.println("prepareZombieWaves:delayInSeconds:" + delayInSeconds);
 			ArrayList<Object> wave = new ArrayList<Object>();
 			wave.add(delayInSeconds);
@@ -347,14 +346,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			// return;
 			// }
 
-			if(ZOMBIESENDTIME == -1){
+			if (ZOMBIESENDTIME == -1) {
 				final ArrayList<Object> wave = zombies.get(0);
-//				System.out.println("zombies.size():" + zombies.size());
-//				zombies.remove(0);
+				// System.out.println("zombies.size():" + zombies.size());
+				// zombies.remove(0);
 				delayInSeconds = (Integer) wave.get(0);
-				ZOMBIESENDTIME = delayInSeconds * GameLoopThread.FPS;								
-			}
-			else if(--ZOMBIESENDTIME == 0){
+				ZOMBIESENDTIME = delayInSeconds * GameLoopThread.FPS;
+			} else if (--ZOMBIESENDTIME == 0) {
 
 				final ArrayList<Object> wave = zombies.get(0);
 				System.out.println("zombies.size():" + zombies.size());
@@ -382,24 +380,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 						}
 						switch (i) {
 						case 0:
-							sprites.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t),
-									StartActivity.bmpZombieAttack.get(t) }, i, sprites, ((Zombies) object)));
+							sprites.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t), StartActivity.bmpZombieAttack.get(t) }, i, sprites,
+									((Zombies) object)));
 							break;
 						case 1:
-							sprites2.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t),
-									StartActivity.bmpZombieAttack.get(t) }, i, sprites2, ((Zombies) object)));
+							sprites2.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t), StartActivity.bmpZombieAttack.get(t) }, i, sprites2,
+									((Zombies) object)));
 							break;
 						case 2:
-							sprites3.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t),
-									StartActivity.bmpZombieAttack.get(t) }, i, sprites3, ((Zombies) object)));
+							sprites3.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t), StartActivity.bmpZombieAttack.get(t) }, i, sprites3,
+									((Zombies) object)));
 							break;
 						case 3:
-							sprites4.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t),
-									StartActivity.bmpZombieAttack.get(t) }, i, sprites4, ((Zombies) object)));
+							sprites4.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t), StartActivity.bmpZombieAttack.get(t) }, i, sprites4,
+									((Zombies) object)));
 							break;
 						case 4:
-							sprites5.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t),
-									StartActivity.bmpZombieAttack.get(t) }, i, sprites5, ((Zombies) object)));
+							sprites5.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t), StartActivity.bmpZombieAttack.get(t) }, i, sprites5,
+									((Zombies) object)));
 							break;
 
 						default:
@@ -409,12 +407,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					}
 				}
 
-				ZOMBIESENDTIME = -1;	
-				zombies.remove(0);							
-			}else{
-				
+				ZOMBIESENDTIME = -1;
+				zombies.remove(0);
+			} else {
+
 			}
-			
 
 			// 800-280 = 520 /5 = 104
 			// 280+104*n (n=1....5)
@@ -524,8 +521,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	private void createSpriteOwlx(int i, Owls owl) {
-		spritesOwl.add(createSpriteOwl(new Bitmap[] { StartActivity.bmpOwl.get(owl), StartActivity.bmpOwlAttacked.get(owl),
-				StartActivity.bmpOwl_Jammed.get(owl) }, i, spritesOwl, owl));
+		spritesOwl.add(createSpriteOwl(new Bitmap[] { StartActivity.bmpOwl.get(owl), StartActivity.bmpOwlAttacked.get(owl), StartActivity.bmpOwl_Jammed.get(owl) }, i, spritesOwl, owl));
 	}
 
 	private OwlSprite createSpriteOwl(Bitmap[] bmp, int i, ConcurrentLinkedQueue<OwlSprite> sprites, Owls o) {
@@ -615,6 +611,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	ZombieSprite victim = null;
+	private long COMBO_TRAIL_TIME = -1;
+	private int COMBO_COUNT = 0;
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
@@ -682,6 +680,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	public void shootAt(int rowIndex) {
 		try {
+			incrementComboSerie();
 			((OwlSprite) spritesOwl.toArray()[rowIndex]).fire();
 			int tempx = 0;
 			ZombieSprite tempsprite = null;
@@ -798,6 +797,57 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 
+	long timebuffer = 1000 * 1;
+
+	private void refreshComboSerieCheckForComboEnd() {
+		long time = new Date().getTime();
+		if (COMBO_TRAIL_TIME != -1 && time - COMBO_TRAIL_TIME >= timebuffer) {
+			doComboEnd();
+		}
+	}
+
+	private void doComboEnd() {
+		String text = "";
+		if (COMBO_COUNT < 3) {
+		} else if (COMBO_COUNT < 5) {
+			text = "WOOW!!! ";
+			score += COMBO_COUNT * 2;
+		} else if (COMBO_COUNT < 10) {
+			text = "AMAZING!!! ";
+			score += COMBO_COUNT * 3;
+
+		} else if (COMBO_COUNT < 15) {
+			text = "UNBELIEAVABLE!!! ";
+			score += COMBO_COUNT * 4;
+		} else {
+			text = "INSANE!!!";
+			score += COMBO_COUNT * 5;
+		}
+		if (COMBO_COUNT < 3) {
+		} else {
+			text = text + COMBO_COUNT + " COMBO!!!";
+			((GameGameActivity) context).showMiddleInfoTextCombo(text);
+		}
+		COMBO_TRAIL_TIME = -1;
+		COMBO_COUNT = 0;
+	}
+
+	private void incrementComboSerie() {
+		long time = new Date().getTime();
+		System.out.println("refreshComboSerie");
+		System.out.println("time - COMBO_TRAIL_TIME:" + (time - COMBO_TRAIL_TIME));
+		System.out.println("COMBO_COUNT:" + COMBO_COUNT);
+		if (COMBO_TRAIL_TIME == -1) {
+			COMBO_TRAIL_TIME = time;
+			COMBO_COUNT++;
+		} else if (time - COMBO_TRAIL_TIME < timebuffer) {
+			COMBO_TRAIL_TIME = time;
+			COMBO_COUNT++;
+		} else {
+		}
+
+	}
+
 	int perc10 = (int) (220.0f * StartActivity.deviceWidth / 1200.0f);
 	int perc50 = (int) (510.0f * StartActivity.deviceWidth / 1200.0f);
 	public static boolean success;
@@ -830,9 +880,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			if (owl == Owls.owlMachineGun) {
 				t = randomGenerator.nextInt(2);
 			} else if (owl == Owls.owlSniper) {
-				t = randomGenerator.nextInt(4);
+				t = randomGenerator.nextInt(3);
 			} else {
-				t = randomGenerator.nextInt(10);
+				t = randomGenerator.nextInt(5);
 			}
 		} else if (tempx < perc50) {
 			if (owl == Owls.owlMachineGun) {
@@ -855,8 +905,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public void update() {
 		try {
 			synchronized (getHolder()) {
-				((GameGameActivity)context).refreshJAMMEDTIMEArray();
-
+				((GameGameActivity) context).refreshJAMMEDTIMEArray();
+				refreshComboSerieCheckForComboEnd();
 				createZombieWaveSprites();
 
 				// ----------------------------------------------------------------------

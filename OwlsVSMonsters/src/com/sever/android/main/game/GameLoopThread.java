@@ -6,7 +6,7 @@ import android.view.SurfaceHolder;
 
 @SuppressLint("WrongCall")
 public class GameLoopThread extends Thread {
-	public static final int FPS = 20;
+	public static final int FPS = 15;
 	private GameView view;
 	private boolean running = false;
 	private boolean sleeping = false;

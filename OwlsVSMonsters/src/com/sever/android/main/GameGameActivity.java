@@ -374,6 +374,21 @@ public class GameGameActivity extends Activity {
 		mHandler.post(r);
 	}
 
+	public void showMiddleInfoTextCombo(final String text) {
+		System.out.println("showMiddleInfoTextCombo:" + text);
+		final Runnable r = new Runnable() {
+			public void run() {
+				TextView tv = (TextView) findViewById(R.id.textView7);
+				tv.setText(text);
+				tv.setTextColor(Color.RED);
+				tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, tSizeScore * 1);
+				tv.setVisibility(View.VISIBLE);
+				startAnimation(tv, R.anim.alpha);
+			}
+		};
+		mHandler.post(r);
+	}
+
 	public void showMiddleInfoText(final String text) {
 		final Runnable r = new Runnable() {
 			public void run() {
@@ -524,7 +539,7 @@ public class GameGameActivity extends Activity {
 		System.out.println(this + ":doClickWrong:" + index);
 		answer[index] = false;
 		if (calculateButton(index)) {
-			getGameView().shootAt(index);
+			getGameView().fire(index);
 			prepareEquation(index);
 		} else {
 			getGameView().shootFailed();
