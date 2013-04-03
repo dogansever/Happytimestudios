@@ -2,8 +2,8 @@ package com.sever.android.main.sprite;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.sever.android.main.GameView;
 import com.sever.android.main.StartActivity;
+import com.sever.android.main.game.GameView;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

@@ -11,9 +11,9 @@ import android.graphics.Paint.Style;
 import android.graphics.Rect;
 
 import com.sever.android.main.GameGameActivity;
-import com.sever.android.main.GameLoopThread;
-import com.sever.android.main.GameView;
 import com.sever.android.main.StartActivity;
+import com.sever.android.main.game.GameLoopThread;
+import com.sever.android.main.game.GameView;
 
 public class ZombieSprite {
 	// direction = 0 up, 1 left, 2 down, 3 right,

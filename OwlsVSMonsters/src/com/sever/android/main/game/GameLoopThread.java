@@ -1,10 +1,12 @@
-package com.sever.android.main;
+package com.sever.android.main.game;
 
+import android.annotation.SuppressLint;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
+@SuppressLint("WrongCall")
 public class GameLoopThread extends Thread {
-	public static final int FPS = 10;
+	public static final int FPS = 20;
 	private GameView view;
 	private boolean running = false;
 	private boolean sleeping = false;

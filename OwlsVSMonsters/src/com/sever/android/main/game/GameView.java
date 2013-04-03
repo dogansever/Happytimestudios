@@ -1,4 +1,4 @@
-package com.sever.android.main;
+package com.sever.android.main.game;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,6 +9,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,6 +19,10 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.sever.android.main.GameGameActivity;
+import com.sever.android.main.MenuActivity;
+import com.sever.android.main.StageEndActivity;
+import com.sever.android.main.StartActivity;
 import com.sever.android.main.sprite.FreeSprite;
 import com.sever.android.main.sprite.HitChanceSprite;
 import com.sever.android.main.sprite.HitSprite;
@@ -27,7 +32,10 @@ import com.sever.android.main.sprite.OwlSprite;
 import com.sever.android.main.sprite.ProgressSprite;
 import com.sever.android.main.sprite.WarningSprite;
 import com.sever.android.main.sprite.ZombieSprite;
+import com.sever.android.main.utils.Owls;
+import com.sever.android.main.utils.Zombies;
 
+@SuppressLint("WrongCall")
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public GameLoopThread gameLoopThread;
 	public List<ArrayList<Object>> zombies = new ArrayList<ArrayList<Object>>();
@@ -46,9 +54,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public int score = 0;
 	public int point = 0;
 
-	public void cancelTimer() {
-		timerAnimation.cancel();
-	}
 
 	public int incrementScore(int index) {
 		if (GameView.hitCount > 0) {
@@ -159,7 +164,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			gameLoopThread.setRunning(true);
 			prepareRowCoordinates();
 			prepareOwls();
-			createZombieWaveSprites();
 			createSpritesOwl();
 			createFreeSprites();
 			showStartingText();
@@ -318,13 +322,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		freeSprites.clear();
 	}
 
-	public Timer timerAnimation;
-	private Runnable r;
 	private boolean justcametolife = false;
 	public long timePause;
 	public long timeResumed;
 	public long delayInSeconds;
 	private long timeFired;
+	private long ZOMBIESENDTIME = -1;
 
 	private void createZombieWaveSprites() {
 		try {
@@ -344,113 +347,74 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			// return;
 			// }
 
-			final ArrayList<Object> wave = zombies.get(0);
-			System.out.println("zombies.size():" + zombies.size());
-			zombies.remove(0);
-			delayInSeconds = (Integer) wave.get(0);
+			if(ZOMBIESENDTIME == -1){
+				final ArrayList<Object> wave = zombies.get(0);
+//				System.out.println("zombies.size():" + zombies.size());
+//				zombies.remove(0);
+				delayInSeconds = (Integer) wave.get(0);
+				ZOMBIESENDTIME = delayInSeconds * GameLoopThread.FPS;								
+			}
+			else if(--ZOMBIESENDTIME == 0){
 
-			r = new Runnable() {
-				public void run() {
-					try {
-						synchronized (this) {
-							while (!gameLoopThread.isRunning()) {
-								try {
-									System.out.println("wait:notRunning");
-									wait();
-									System.out.println("continue");
-								} catch (Exception e) {
-								}
-							}
+				final ArrayList<Object> wave = zombies.get(0);
+				System.out.println("zombies.size():" + zombies.size());
+				int i = 0;
+				int t = 0;
+				System.out.println("new sprite wave is being send.");
+				for (Object object : wave) {
+					if (object instanceof Integer) {
+					} else {
+						if (((Zombies) object) == Zombies.nozombie) {
+							i++;
+							continue;
+						} else if (((Zombies) object) == Zombies.zombie1) {
+							t = 0;
+						} else if (((Zombies) object) == Zombies.zombie2) {
+							t = 1;
+						} else if (((Zombies) object) == Zombies.zombie3) {
+							t = 2;
+						} else if (((Zombies) object) == Zombies.zombie4) {
+							t = 3;
+						} else if (((Zombies) object) == Zombies.zombie5) {
+							t = 4;
+						} else if (((Zombies) object) == Zombies.zombie6) {
+							t = 5;
 						}
-						synchronized (this) {
-							while (gameLoopThread.isSleeping()) {
-								try {
-									System.out.println("wait:sleeping");
-									wait();
-									System.out.println("continue");
-								} catch (Exception e) {
-								}
-							}
+						switch (i) {
+						case 0:
+							sprites.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t),
+									StartActivity.bmpZombieAttack.get(t) }, i, sprites, ((Zombies) object)));
+							break;
+						case 1:
+							sprites2.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t),
+									StartActivity.bmpZombieAttack.get(t) }, i, sprites2, ((Zombies) object)));
+							break;
+						case 2:
+							sprites3.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t),
+									StartActivity.bmpZombieAttack.get(t) }, i, sprites3, ((Zombies) object)));
+							break;
+						case 3:
+							sprites4.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t),
+									StartActivity.bmpZombieAttack.get(t) }, i, sprites4, ((Zombies) object)));
+							break;
+						case 4:
+							sprites5.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t),
+									StartActivity.bmpZombieAttack.get(t) }, i, sprites5, ((Zombies) object)));
+							break;
+
+						default:
+							break;
 						}
-
-						synchronized (this) {
-							if (justcametolife) {
-								justcametolife = false;
-								try {
-									long t = delayInSeconds * 1000 - (timePause - timeFired);
-									System.out.println("createSprites: timePause - timeFired:" + t);
-									System.out.println("createSprites: wait:" + t);
-									wait(t);
-								} catch (Exception e) {
-								}
-							}
-						}
-
-						int i = 0;
-						int t = 0;
-						System.out.println("new sprite wave is being send.");
-						for (Object object : wave) {
-							if (object instanceof Integer) {
-							} else {
-								if (((Zombies) object) == Zombies.nozombie) {
-									i++;
-									continue;
-								} else if (((Zombies) object) == Zombies.zombie1) {
-									t = 0;
-								} else if (((Zombies) object) == Zombies.zombie2) {
-									t = 1;
-								} else if (((Zombies) object) == Zombies.zombie3) {
-									t = 2;
-								} else if (((Zombies) object) == Zombies.zombie4) {
-									t = 3;
-								} else if (((Zombies) object) == Zombies.zombie5) {
-									t = 4;
-								} else if (((Zombies) object) == Zombies.zombie6) {
-									t = 5;
-								}
-								switch (i) {
-								case 0:
-									sprites.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t),
-											StartActivity.bmpZombieAttack.get(t) }, i, sprites, ((Zombies) object)));
-									break;
-								case 1:
-									sprites2.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t),
-											StartActivity.bmpZombieAttack.get(t) }, i, sprites2, ((Zombies) object)));
-									break;
-								case 2:
-									sprites3.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t),
-											StartActivity.bmpZombieAttack.get(t) }, i, sprites3, ((Zombies) object)));
-									break;
-								case 3:
-									sprites4.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t),
-											StartActivity.bmpZombieAttack.get(t) }, i, sprites4, ((Zombies) object)));
-									break;
-								case 4:
-									sprites5.add(createSprite(new Bitmap[] { StartActivity.bmpZombie.get(t), StartActivity.bmpZombieDie.get(t),
-											StartActivity.bmpZombieAttack.get(t) }, i, sprites5, ((Zombies) object)));
-									break;
-
-								default:
-									break;
-								}
-								i++;
-							}
-						}
-
-						createZombieWaveSprites();
-					} catch (Exception e) {
+						i++;
 					}
 				}
-			};
-			TimerTask task = new TimerTask() {
-				@Override
-				public void run() {
-					r.run();
-				}
-			};
-			timerAnimation = new Timer();
-			timerAnimation.schedule(task, 1000 * delayInSeconds);
-			timeFired = new Date().getTime();
+
+				ZOMBIESENDTIME = -1;	
+				zombies.remove(0);							
+			}else{
+				
+			}
+			
 
 			// 800-280 = 520 /5 = 104
 			// 280+104*n (n=1....5)
@@ -891,6 +855,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public void update() {
 		try {
 			synchronized (getHolder()) {
+				((GameGameActivity)context).refreshJAMMEDTIMEArray();
+
+				createZombieWaveSprites();
 
 				// ----------------------------------------------------------------------
 				boolean bt = false;
@@ -1097,12 +1064,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				gameLoopThread.notify();
 			}
 		} catch (Exception e) {
-		}
-		if (r != null) {
-			synchronized (r) {
-				justcametolife = true;
-				r.notify();
-			}
 		}
 	}
 

@@ -18,8 +18,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.TypedValue;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -30,7 +28,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.sever.android.main.game.GameLoopThread;
+import com.sever.android.main.game.GameView;
 import com.sever.android.main.sprite.OwlSprite;
+import com.sever.android.main.utils.Operation;
 
 public class GameGameActivity extends Activity {
 	private boolean paused = false;
@@ -50,7 +51,6 @@ public class GameGameActivity extends Activity {
 		getGameView().releaseBitmaps();
 		destroyed = true;
 		MenuActivity.MENU2ON = true;
-		getGameView().cancelTimer();
 	}
 
 	/** Called when the activity is first created. */
@@ -89,7 +89,7 @@ public class GameGameActivity extends Activity {
 		context = this;
 		destroyed = false;
 		prepared = false;
-//		MenuActivity.stopMenuSound();
+		// MenuActivity.stopMenuSound();
 		((StartActivity) StartActivity.context).playMusicSound();
 
 		setContentView(R.layout.splash);
@@ -380,6 +380,7 @@ public class GameGameActivity extends Activity {
 				TextView tv = (TextView) findViewById(R.id.textView7);
 				tv.setText(text);
 				tv.setTextColor(Color.GREEN);
+				tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, tSizeScore);
 				tv.setVisibility(View.VISIBLE);
 				startAnimation(tv, R.anim.alpha);
 			}
@@ -697,8 +698,82 @@ public class GameGameActivity extends Activity {
 	public final Handler mHandler = new Handler();
 	public long timeFired;
 	public long timePause;
+	public long JAMMED_TIME_MAX = GameLoopThread.FPS * 3;
+	public long[] JAMMED_TIME = new long[5];
 	private Runnable[] r = new Runnable[5];
 	public static boolean justcametolife = false;
+
+	public void refreshJAMMEDTIMEArray() {
+		refreshJAMMEDTIME(0);
+		refreshJAMMEDTIME(1);
+		refreshJAMMEDTIME(2);
+		refreshJAMMEDTIME(3);
+		refreshJAMMEDTIME(4);
+	}
+
+	public void refreshJAMMEDTIME(final int i) {
+		if (--JAMMED_TIME[i] == 0) {
+			LinearLayout layoutTemp = null;
+			Button buttonWrong = null;
+			Button buttonRight = null;
+			switch (i) {
+			case 0:
+				layoutTemp = (LinearLayout) findViewById(R.id.linearLayout3);
+				buttonWrong = (Button) findViewById(R.id.button1);
+				buttonRight = (Button) findViewById(R.id.button2);
+				break;
+			case 1:
+				layoutTemp = (LinearLayout) findViewById(R.id.LinearLayout02);
+				buttonWrong = (Button) findViewById(R.id.Button01);
+				buttonRight = (Button) findViewById(R.id.Button02);
+				break;
+			case 2:
+				layoutTemp = (LinearLayout) findViewById(R.id.LinearLayout04);
+				buttonWrong = (Button) findViewById(R.id.Button03);
+				buttonRight = (Button) findViewById(R.id.Button04);
+				break;
+			case 3:
+				layoutTemp = (LinearLayout) findViewById(R.id.LinearLayout06);
+				buttonWrong = (Button) findViewById(R.id.Button05);
+				buttonRight = (Button) findViewById(R.id.Button06);
+				break;
+			case 4:
+				layoutTemp = (LinearLayout) findViewById(R.id.LinearLayout08);
+				buttonWrong = (Button) findViewById(R.id.Button07);
+				buttonRight = (Button) findViewById(R.id.Button08);
+				break;
+
+			default:
+				break;
+			}
+
+			final LinearLayout layout = layoutTemp;
+			final Button buttonWrongF = buttonWrong;
+			final Button buttonRightF = buttonRight;
+
+			if (layout != null) {
+
+				final Runnable r2 = new Runnable() {
+					public void run() {
+						layout.setVisibility(View.GONE);
+						buttonWrongF.setEnabled(true);
+						buttonRightF.setEnabled(true);
+						prepareEquation(i);
+						((OwlSprite) getGameView().spritesOwl.toArray()[i]).jammedEnd();
+						layout.invalidate();
+						buttonWrongF.invalidate();
+						buttonRightF.invalidate();
+					}
+				};
+				final Thread t = new Thread() {
+					public void run() {
+						mHandler.post(r2);
+					}
+				};
+				t.start();
+			}
+		}
+	}
 
 	private void disableButton(final int i) {
 		System.out.println(this + ":disableButton:" + i);
@@ -739,66 +814,31 @@ public class GameGameActivity extends Activity {
 		default:
 			break;
 		}
-		layoutTemp.setVisibility(View.VISIBLE);
-		buttonWrong.setEnabled(false);
-		buttonRight.setEnabled(false);
+		// layoutTemp.setVisibility(View.VISIBLE);
+		// buttonWrong.setEnabled(false);
+		// buttonRight.setEnabled(false);
 		final LinearLayout layout = layoutTemp;
 		final Button buttonWrongF = buttonWrong;
 		final Button buttonRightF = buttonRight;
 
-		r[i] = new Runnable() {
-			public void run() {
-				synchronized (this) {
-					while (paused) {
-						try {
-							System.out.println(this + ":wait:sleeping");
-							wait();
-						} catch (Exception e) {
-						}
-					}
-				}
+		JAMMED_TIME[i] = JAMMED_TIME_MAX;
 
-				synchronized (this) {
-					if (justcametolife) {
-						justcametolife = false;
-						try {
-							long t = 10 * 1000 - (timePause - timeFired);
-							System.out.println(this + ":timePause - timeFired:" + t);
-							wait(t);
-						} catch (Exception e) {
-						}
-					}
-				}
+		if (layout != null) {
 
-				final Runnable r2 = new Runnable() {
-					public void run() {
-						layout.setVisibility(View.GONE);
-						buttonWrongF.setEnabled(true);
-						buttonRightF.setEnabled(true);
-						prepareEquation(i);
-						((OwlSprite) getGameView().spritesOwl.toArray()[i]).jammedEnd();
-						layout.invalidate();
-						buttonWrongF.invalidate();
-						buttonRightF.invalidate();
-					}
-				};
-				final Thread t = new Thread() {
-					public void run() {
-						mHandler.post(r2);
-					}
-				};
-				t.start();
-			}
-		};
-		TimerTask task = new TimerTask() {
-			@Override
-			public void run() {
-				r[i].run();
-			}
-		};
-		timerAnimation = new Timer();
-		timerAnimation.schedule(task, 1000 * 5);
-		timeFired = new Date().getTime();
+			final Runnable r2 = new Runnable() {
+				public void run() {
+					layout.setVisibility(View.VISIBLE);
+					buttonWrongF.setEnabled(false);
+					buttonRightF.setEnabled(false);
+				}
+			};
+			final Thread t = new Thread() {
+				public void run() {
+					mHandler.post(r2);
+				}
+			};
+			t.start();
+		}
 	}
 
 	private Timer timerAnimation;

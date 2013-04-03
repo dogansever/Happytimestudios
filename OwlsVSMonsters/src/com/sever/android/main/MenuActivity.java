@@ -29,6 +29,8 @@ import android.widget.RelativeLayout;
 import com.google.ads.AdRequest;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
+import com.sever.android.main.game.GameView;
+import com.sever.android.main.utils.DBWriteUtil;
 
 public class MenuActivity extends Activity {
 	private static final int STAGE_COUNT = 4;

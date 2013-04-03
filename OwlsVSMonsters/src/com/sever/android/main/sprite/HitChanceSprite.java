@@ -7,8 +7,8 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
 
-import com.sever.android.main.GameView;
 import com.sever.android.main.StartActivity;
+import com.sever.android.main.game.GameView;
 
 public class HitChanceSprite extends FreeSprite {
 	private static final int BMP_COLUMNS = 3;

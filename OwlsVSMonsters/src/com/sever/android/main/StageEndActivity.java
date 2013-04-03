@@ -2,6 +2,9 @@ package com.sever.android.main;
 
 import java.util.Date;
 
+import com.sever.android.main.game.GameView;
+import com.sever.android.main.utils.DBWriteUtil;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;

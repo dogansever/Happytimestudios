@@ -6,8 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-import com.sever.android.main.GameView;
 import com.sever.android.main.StartActivity;
+import com.sever.android.main.game.GameView;
 
 public class MissSprite extends FreeSprite {
 	private static final int BMP_COLUMNS = 4;

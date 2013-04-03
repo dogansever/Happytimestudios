@@ -1,4 +1,4 @@
-package com.sever.android.main;
+package com.sever.android.main.utils;
 
 import java.util.Date;
 
@@ -14,8 +14,8 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 	static final String gameTable = "gameTable";
 	static final String stageColumn = "stageColumn";
 	static final String levelColumn = "levelColumn";
-	static final String scoreColumn = "scoreColumn";
-	static final String scoreStarColumn = "scoreStarColumn";
+	public static final String scoreColumn = "scoreColumn";
+	public static final String scoreStarColumn = "scoreStarColumn";
 	static final String dateColumn = "dateColumn";
 
 	public DBWriteUtil(Context context) {
