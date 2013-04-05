@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import android.annotation.SuppressLint;
@@ -14,6 +12,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -97,6 +98,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	static final int PLAY_AREA_ROWS = 5;
 	static final int PLAY_AREA_PADDING_TOP = 10;
 	static final int PLAY_AREA_PADDING_BOTTOM = 10;
+	public static boolean WRONG_ANSWER = false;
 	public static ArrayList<Integer> rowQueue = new ArrayList<Integer>();
 	public float percentage = 0.50f;
 	private Context context;
@@ -442,31 +444,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	public void createFreeSpritesJammed(int index) {
-		freeSprites.add(createJammed(index));
-	}
-
-	public FreeSprite createJammed(int index) {
-		System.out.println("createJammed:" + index);
-		return new HitSprite(freeSprites, this, index, StartActivity.jammedBmp);
+		((OwlSprite) spritesOwl.toArray()[index]).doJammed();
 	}
 
 	public void createFreeSpritesHit(int index) {
-		freeSprites.add(createHit(index));
+		((OwlSprite)spritesOwl.toArray()[index]).doHit();
 	}
 
-	public FreeSprite createHit(int index) {
-		System.out.println("createHit:" + index);
-		return new HitSprite(freeSprites, this, index, StartActivity.hitBmp);
-	}
 
 	public void createFreeSpritesMiss(int index) {
-		freeSprites.add(createMiss(index));
+		((OwlSprite)spritesOwl.toArray()[index]).doMiss();
 	}
 
-	public FreeSprite createMiss(int index) {
-		System.out.println("createMiss:" + index);
-		return new MissSprite(freeSprites, this, index, StartActivity.missBmp);
-	}
 
 	protected void createFreeSprites() {
 		freeSprites.add(createHitChance(0));
@@ -480,7 +469,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	private ProgressSprite createStageProcess() {
 		System.out.println("createStageProcess:");
-		int x = (int) (getWidth() * 0.025f);
+		int x = (int) (getWidth() * 0.015f);
 		// int x = (int) (20);// width of pause
 		int y = 1;// padding of pause button
 		return new ProgressSprite(freeSprites, this, x, y, StartActivity.bmpProgress, StartActivity.bmpProgressHead);
@@ -488,10 +477,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	private LifeProgressSprite createLifeProgress() {
 		System.out.println("createLifeProgress:");
-		int xw = (int) (getWidth() * 0.045f);
+		int xw = (int) (getWidth() * 0.035f);
 		// int xw = (int) (40);
 		int x = (int) (((FreeSprite) freeSprites.toArray()[5]).getWidth()) + xw + (int) (xw * ProgressSprite.bmpPercentage);//
-		int y = 1;
+		int y = 1;// padding of pause button
 		return new LifeProgressSprite(freeSprites, this, x, y, StartActivity.bmpProgressLife, StartActivity.bmpProgressOwl);
 	}
 
@@ -539,9 +528,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		// canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
 		try {
-			Rect dst = new Rect(0, 0, getWidth(), getHeight());
-			canvas.drawBitmap(StartActivity.bmpBack, null, dst, null);
 			synchronized (getHolder()) {
+				Rect dst = new Rect(0, 0, getWidth(), getHeight());
+				canvas.drawBitmap(StartActivity.bmpBack, null, dst, null);
 				for (Iterator<OwlSprite> it = spritesOwl.iterator(); it.hasNext();) {
 					OwlSprite sprite = it.next();
 					try {
@@ -549,8 +538,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					} catch (Exception e) {
 					}
 				}
-			}
-			synchronized (getHolder()) {
 				for (Iterator<ZombieSprite> it = sprites.iterator(); it.hasNext();) {
 					ZombieSprite sprite = it.next();
 					try {
@@ -558,8 +545,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					} catch (Exception e) {
 					}
 				}
-			}
-			synchronized (getHolder()) {
 				for (Iterator<ZombieSprite> it = sprites2.iterator(); it.hasNext();) {
 					ZombieSprite sprite = it.next();
 					try {
@@ -567,8 +552,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					} catch (Exception e) {
 					}
 				}
-			}
-			synchronized (getHolder()) {
 				for (Iterator<ZombieSprite> it = sprites3.iterator(); it.hasNext();) {
 					ZombieSprite sprite = it.next();
 					try {
@@ -576,8 +559,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					} catch (Exception e) {
 					}
 				}
-			}
-			synchronized (getHolder()) {
 				for (Iterator<ZombieSprite> it = sprites4.iterator(); it.hasNext();) {
 					ZombieSprite sprite = it.next();
 					try {
@@ -585,9 +566,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					} catch (Exception e) {
 					}
 				}
-			}
 
-			synchronized (getHolder()) {
 				for (Iterator<ZombieSprite> it = sprites5.iterator(); it.hasNext();) {
 					ZombieSprite sprite = it.next();
 					try {
@@ -595,8 +574,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					} catch (Exception e) {
 					}
 				}
-			}
-			synchronized (getHolder()) {
 				for (Iterator<FreeSprite> it = freeSprites.iterator(); it.hasNext();) {
 					FreeSprite sprite = it.next();
 					try {
@@ -604,10 +581,42 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					} catch (Exception e) {
 					}
 				}
+
+				drawText("LEVEL: " + MenuActivity.level, canvas, 10, 50);
+				drawText("HIGHSCORE: " + MenuActivity.highscore, canvas, 10, 75);
+				drawText("SCORE: " + MenuActivity.score, canvas, 10, 100);
+				if (GameGameActivity.RIGHTCOUNT >= GameGameActivity.RIGHTCOUNT_3X) {
+					drawText("3X", canvas, 10, 125, Color.RED);
+				} else if (GameGameActivity.RIGHTCOUNT >= GameGameActivity.RIGHTCOUNT_2X) {
+					drawText("2X", canvas, 10, 125, Color.RED);
+				}
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void drawText(String text, Canvas canvas, float x, float y, int color, int alpha, int textsize) {
+		if (alpha <= 0)
+			return;
+
+		Paint paint = new Paint();
+		paint.setColor(color);
+		paint.setStyle(Style.FILL);
+		paint.setTypeface(StartActivity.context.face);
+		paint.setAlpha(alpha <= 0 ? 0 : alpha);
+		paint.setTextSize(textsize);
+		canvas.drawText(text, x, y, paint);
+	}
+
+	public void drawText(String text, Canvas canvas, float x, float y, int color) {
+		drawText(text, canvas, x, y, color, 255, 25);
+
+	}
+
+	public void drawText(String text, Canvas canvas, float x, float y) {
+		drawText(text, canvas, x, y, Color.WHITE);
 	}
 
 	ZombieSprite victim = null;
@@ -676,11 +685,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	public void shootFailed() {
 		((StartActivity) StartActivity.context).fireFailedSound();
+		WRONG_ANSWER = true;
 	}
 
 	public void shootAt(int rowIndex) {
 		try {
-			incrementComboSerie();
 			((OwlSprite) spritesOwl.toArray()[rowIndex]).fire();
 			int tempx = 0;
 			ZombieSprite tempsprite = null;
@@ -801,8 +810,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	private void refreshComboSerieCheckForComboEnd() {
 		long time = new Date().getTime();
-		if (COMBO_TRAIL_TIME != -1 && time - COMBO_TRAIL_TIME >= timebuffer) {
+		if (WRONG_ANSWER || (COMBO_TRAIL_TIME != -1 && time - COMBO_TRAIL_TIME >= timebuffer)) {
 			doComboEnd();
+			WRONG_ANSWER = false;
 		}
 	}
 
@@ -825,6 +835,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		if (COMBO_COUNT < 3) {
 		} else {
+			MenuActivity.score = score;
 			text = text + COMBO_COUNT + " COMBO!!!";
 			((GameGameActivity) context).showMiddleInfoTextCombo(text);
 		}
@@ -1122,6 +1133,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	public void fire(int index) {
+		incrementComboSerie();
 		if (((OwlSprite) spritesOwl.toArray()[index]).owl == Owls.owlSniper) {
 			shootAt(index);
 			shootAt(index);

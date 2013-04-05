@@ -34,6 +34,8 @@ import com.sever.android.main.sprite.OwlSprite;
 import com.sever.android.main.utils.Operation;
 
 public class GameGameActivity extends Activity {
+	private static boolean SHOW_INFO_2X = false;
+	private static boolean SHOW_INFO_3X = false;
 	private boolean paused = false;
 	private boolean[] answer = new boolean[5];
 	private boolean[] answerCorrect = new boolean[5];
@@ -121,7 +123,6 @@ public class GameGameActivity extends Activity {
 			tSizeScore = 30;
 			tSizePoint = 30;
 		}
-		hidePointTexts();
 
 		// Button pause = (Button) findViewById(R.id.button3);
 		// pause.getLayoutParams().height = StartActivity.deviceWidth / 16;
@@ -129,36 +130,8 @@ public class GameGameActivity extends Activity {
 
 		LinearLayout linearLayout1 = (LinearLayout) findViewById(R.id.linearLayout1);
 		linearLayout1.getLayoutParams().width = (int) (315.0f * StartActivity.deviceWidth / 1200.0f);
-		LinearLayout linearLayout15 = (LinearLayout) findViewById(R.id.linearLayout15);
-		linearLayout15.getLayoutParams().width = (int) (750.0f * StartActivity.deviceWidth / 1200.0f);
 
-		TextView x2 = (TextView) findViewById(R.id.TextView22);
-		x2.setTextSize(TypedValue.COMPLEX_UNIT_PX, tSizeEquations);
-		TextView x3 = (TextView) findViewById(R.id.TextView23);
-		x3.setTextSize(TypedValue.COMPLEX_UNIT_PX, tSizeEquations);
-		x3.setVisibility(View.INVISIBLE);
-		x2.setVisibility(View.INVISIBLE);
-
-		TextView tv = (TextView) findViewById(R.id.textView6);
-		tv.setTypeface(StartActivity.context.face);
-		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, tSizeScore);
-
-		tv = (TextView) findViewById(R.id.TextView21);
-		tv.setTypeface(StartActivity.context.face);
-		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, tSizeScore);
-		if (MenuActivity.highscore > 0) {
-			tv.setText("Highscore: " + MenuActivity.highscore);
-		} else {
-			tv.setVisibility(View.INVISIBLE);
-		}
-
-		tv = (TextView) findViewById(R.id.TextView22);
-		tv.setTypeface(StartActivity.context.face);
-		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, tSizeScore);
-		tv = (TextView) findViewById(R.id.TextView23);
-		tv.setTypeface(StartActivity.context.face);
-		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, tSizeScore);
-		tv = (TextView) findViewById(R.id.textView7);// middletext
+		TextView tv = (TextView) findViewById(R.id.textView7);// middletext
 		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, tSizeScore);
 		tv.setTypeface(StartActivity.context.face);
 		tv.setVisibility(View.INVISIBLE);
@@ -249,37 +222,19 @@ public class GameGameActivity extends Activity {
 	}
 
 	public void refreshShow2x3x() {
-		TextView x2 = (TextView) findViewById(R.id.TextView22);
-		TextView x3 = (TextView) findViewById(R.id.TextView23);
 		if (GameGameActivity.RIGHTCOUNT >= GameGameActivity.RIGHTCOUNT_3X) {
-			if (x3.getVisibility() != View.VISIBLE) {
-				x3.setVisibility(View.VISIBLE);
-				startAnimation(x3, R.anim.alpha_stay);
+			if (!SHOW_INFO_3X) {
 				showMiddleInfoText2x3x("3X");
-			}
-			if (x2.getVisibility() == View.VISIBLE) {
-				x2.setVisibility(View.INVISIBLE);
-				startAnimation(x2, R.anim.alpha_vanish);
+				SHOW_INFO_3X = true;
 			}
 		} else if (GameGameActivity.RIGHTCOUNT >= GameGameActivity.RIGHTCOUNT_2X) {
-			if (x2.getVisibility() != View.VISIBLE) {
-				x2.setVisibility(View.VISIBLE);
-				startAnimation(x2, R.anim.alpha_stay);
+			if (!SHOW_INFO_2X) {
 				showMiddleInfoText2x3x("2X");
-			}
-			if (x3.getVisibility() == View.VISIBLE) {
-				x3.setVisibility(View.INVISIBLE);
-				startAnimation(x3, R.anim.alpha_vanish);
+				SHOW_INFO_2X = true;
 			}
 		} else {
-			if (x2.getVisibility() == View.VISIBLE) {
-				x2.setVisibility(View.INVISIBLE);
-				startAnimation(x2, R.anim.alpha_vanish);
-			}
-			if (x3.getVisibility() == View.VISIBLE) {
-				x3.setVisibility(View.INVISIBLE);
-				startAnimation(x3, R.anim.alpha_vanish);
-			}
+			SHOW_INFO_3X = false;
+			SHOW_INFO_2X = false;
 		}
 	}
 
@@ -292,6 +247,7 @@ public class GameGameActivity extends Activity {
 	}
 
 	private void createGame() {
+		MenuActivity.score = 0;
 		RIGHTCOUNT = 0;
 		WRONGCOUNT = 0;
 		refreshShow2x3x();
@@ -305,59 +261,6 @@ public class GameGameActivity extends Activity {
 		}
 		GameView game = new GameView(this);
 		relativeLayout.addView(game);
-		updateScore();
-	}
-
-	public void hidePointTexts() {
-		TextView tv = null;
-		tv = (TextView) findViewById(R.id.TextView24);
-		tv.setTypeface(StartActivity.context.face);
-		tv.setVisibility(View.INVISIBLE);
-		tv = (TextView) findViewById(R.id.TextView25);
-		tv.setTypeface(StartActivity.context.face);
-		tv.setVisibility(View.INVISIBLE);
-		tv = (TextView) findViewById(R.id.TextView26);
-		tv.setTypeface(StartActivity.context.face);
-		tv.setVisibility(View.INVISIBLE);
-		tv = (TextView) findViewById(R.id.TextView27);
-		tv.setTypeface(StartActivity.context.face);
-		tv.setVisibility(View.INVISIBLE);
-		tv = (TextView) findViewById(R.id.TextView28);
-		tv.setTypeface(StartActivity.context.face);
-		tv.setVisibility(View.INVISIBLE);
-	}
-
-	public void showPointText(final int index) {
-		final Runnable r = new Runnable() {
-			public void run() {
-				TextView tv = null;
-				switch (index) {
-				case 0:
-					tv = (TextView) findViewById(R.id.TextView24);
-					break;
-				case 1:
-					tv = (TextView) findViewById(R.id.TextView25);
-					break;
-				case 2:
-					tv = (TextView) findViewById(R.id.TextView26);
-					break;
-				case 3:
-					tv = (TextView) findViewById(R.id.TextView27);
-					break;
-				case 4:
-					tv = (TextView) findViewById(R.id.TextView28);
-					break;
-
-				default:
-					break;
-				}
-				tv.setText("+" + getGameView().getPoint());
-				tv.setVisibility(View.VISIBLE);
-				tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, tSizePoint);
-				startAnimation(tv, R.anim.slide_top_to_bottom);
-			}
-		};
-		mHandler.post(r);
 	}
 
 	public void showMiddleInfoText2x3x(final String text) {
@@ -421,12 +324,6 @@ public class GameGameActivity extends Activity {
 			}
 		};
 		mHandler.post(r);
-	}
-
-	public void updateScore() {
-		MenuActivity.score = getGameView().getScore();
-		TextView tv = (TextView) findViewById(R.id.textView6);
-		tv.setText("Score: " + MenuActivity.score);
 	}
 
 	private void prepareEquation(int i) {

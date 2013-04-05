@@ -2,4 +2,6 @@ after 1.0.9
 zombie end ve fire jam lerde timerlar kaldırıldı
 FPS arttı
 combo puanlama eklendi
+textler canvasa yazıldı
+
 

@@ -11,6 +11,7 @@ import android.graphics.Paint.Style;
 import android.graphics.Rect;
 
 import com.sever.android.main.GameGameActivity;
+import com.sever.android.main.MenuActivity;
 import com.sever.android.main.StartActivity;
 import com.sever.android.main.game.GameLoopThread;
 import com.sever.android.main.game.GameView;
@@ -62,10 +63,9 @@ public class ZombieSprite {
 		if (killed)
 			return;
 		GameGameActivity.RIGHTCOUNT++;
-		gameView.incrementScore(index);
+		MenuActivity.score = gameView.incrementScore(index);
 		alpha = 255;
 		// GameGameActivity.context.showPointText(index);
-		GameGameActivity.context.updateScore();
 		killed = true;
 		this.bmp = bmpDie;
 		currentFrame = 0;
@@ -158,11 +158,11 @@ public class ZombieSprite {
 		return this;
 	}
 
-//	public ZombieSprite makeFallBack() {
-//		x -= xSpeed * 200;
-//		// currentFrame = 0;
-//		return this;
-//	}
+	// public ZombieSprite makeFallBack() {
+	// x -= xSpeed * 200;
+	// // currentFrame = 0;
+	// return this;
+	// }
 
 	public ZombieSprite makeZombieRun() {
 		walking = false;
@@ -236,8 +236,12 @@ public class ZombieSprite {
 		Paint p = new Paint();
 		canvas.drawColor(Color.TRANSPARENT);
 		canvas.drawBitmap(bmp, src, dst, null);
-		alpha -= alpha / 10;
-		drawText("+" + (GameGameActivity.context.getGameView().getPoint()), canvas, x + width * bmpPercentage * 0.5f, y + height * bmpPercentage * 0.5f - (255 - alpha) / 5, alpha);
+		alpha -= alpha / 5;
+		String txt = "+" + (GameGameActivity.context.getGameView().getPoint());
+		float xtxt = x + width * bmpPercentage * 0.5f;
+		float ytxt = y + height * bmpPercentage * 0.5f - (255 - alpha) / 5;
+		int sizetxt = 20;
+		gameView.drawText(txt, canvas, xtxt, ytxt, Color.WHITE, alpha, sizetxt);
 	}
 
 	private int getAnimationRow() {
@@ -250,21 +254,4 @@ public class ZombieSprite {
 		return x2 > x && x2 < x + width * bmpPercentage && y2 > y && y2 < y + height * bmpPercentage;
 	}
 
-	private void drawText(String text, Canvas canvas, float x, float y, int alpha) {
-		if (alpha <= 0)
-			return;
-
-		Paint paint = new Paint();
-		paint.setColor(Color.WHITE);
-		paint.setStyle(Style.FILL);
-		// Typeface chops =
-		// Typeface.createFromAsset(PhysicsActivity.context.getAssets(),
-		// "FEASFBRG.TTF");
-		// paint.setTypeface(chops);
-		paint.setTypeface(StartActivity.context.face);
-		paint.setColor(Color.WHITE);
-		paint.setAlpha(alpha <= 0 ? 0 : alpha);
-		paint.setTextSize(20);
-		canvas.drawText(text, x, y, paint);
-	}
 }

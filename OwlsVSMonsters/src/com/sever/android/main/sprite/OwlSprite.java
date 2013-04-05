@@ -3,12 +3,14 @@ package com.sever.android.main.sprite;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.sever.android.main.GameGameActivity;
 import com.sever.android.main.StartActivity;
 import com.sever.android.main.game.GameView;
 import com.sever.android.main.utils.Owls;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 
@@ -149,6 +151,30 @@ public class OwlSprite {
 	}
 
 	private float bmpPercentage = (float) (StartActivity.deviceHeight / 800.0f);
+	private int alpha = 0;
+	private int color = 0;
+	private String text = "";
+
+	public void doJammed() {
+		alpha = 255;
+		text = "JAMMED!";
+		color = Color.RED;
+	}
+
+	public void doHit() {
+		alpha = 255;
+		text = "HIT!";
+		color = Color.GREEN;
+	}
+
+	public void doMiss() {
+		if (alpha == 255 && text.equals("HIT!")) {
+		} else {
+			alpha = 255;
+			text = "MISS!";
+			color = Color.YELLOW;
+		}
+	}
 
 	public void onDraw(Canvas canvas) {
 		update();
@@ -157,6 +183,12 @@ public class OwlSprite {
 		Rect src = new Rect(srcX, srcY, srcX + width, srcY + height);
 		Rect dst = new Rect(x, y, (int) (x + width * bmpPercentage), (int) (y + height * bmpPercentage));
 		canvas.drawBitmap(bmp, src, dst, null);
+
+		alpha -= alpha / 8;
+		float xtxt = x + width * bmpPercentage * 0.75f;
+		float ytxt = y + height * bmpPercentage * 0.5f - (255 - alpha) / 5;
+		int sizetxt = 20;
+		gameView.drawText(text, canvas, xtxt, ytxt, color, alpha, sizetxt);
 	}
 
 	private int getAnimationRow() {
