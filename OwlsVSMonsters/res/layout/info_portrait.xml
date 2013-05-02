@@ -28,13 +28,13 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:paddingRight="20px"
-            android:paddingTop="10px" >
+            android:paddingRight="20dip"
+            android:paddingTop="10dip" >
 
             <Button
                 android:id="@+id/button1"
-                android:layout_width="152px"
-                android:layout_height="50px"
+                android:layout_width="76dip"
+                android:layout_height="25dip"
                 android:background="@drawable/close_button_xml" >
             </Button>
         </LinearLayout>

@@ -142,11 +142,6 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:orientation="vertical"
                     android:visibility="visible" >
-
-                    <ProgressBar
-                        android:id="@+id/progressBar2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -269,11 +264,6 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:orientation="vertical"
                     android:visibility="visible" >
-
-                    <ProgressBar
-                        android:id="@+id/progressBar1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -396,11 +386,6 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:orientation="vertical"
                     android:visibility="visible" >
-
-                    <ProgressBar
-                        android:id="@+id/progressBar3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -523,11 +508,6 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:orientation="vertical"
                     android:visibility="visible" >
-
-                    <ProgressBar
-                        android:id="@+id/progressBar4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -650,11 +630,6 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:orientation="vertical"
                     android:visibility="visible" >
-
-                    <ProgressBar
-                        android:id="@+id/progressBar5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
@@ -670,8 +645,8 @@
 
             <Button
                 android:id="@+id/button3"
-                android:layout_width="50px"
-                android:layout_height="50px"
+                android:layout_width="50dip"
+                android:layout_height="50dip"
                 android:background="@drawable/pause"
                 android:onClick="doPauseClick" />
         </LinearLayout>

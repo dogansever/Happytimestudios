@@ -23,17 +23,17 @@
 
             <Button
                 android:id="@+id/button1"
-                android:layout_width="50px"
-                android:layout_height="50px"
-                android:layout_margin="5px"
+                android:layout_width="50dip"
+                android:layout_height="50dip"
+                android:layout_margin="5dip"
                 android:background="@drawable/info"
                 android:onClick="doInfoClick" />
 
             <Button
                 android:id="@+id/Button01sound"
-                android:layout_width="50px"
-                android:layout_height="50px"
-                android:layout_marginTop="5px"
+                android:layout_width="50dip"
+                android:layout_height="50dip"
+                android:layout_marginTop="5dip"
                 android:background="@drawable/sound_on"
                 android:onClick="doSoundClick" />
         </LinearLayout>

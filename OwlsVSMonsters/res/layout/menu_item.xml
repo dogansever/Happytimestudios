@@ -16,8 +16,8 @@
 
             <ImageButton
                 android:id="@+id/imageButton1"
-                android:layout_width="200px"
-                android:layout_height="200px"/>
+                android:layout_width="200dip"
+                android:layout_height="200dip"/>
 
         </LinearLayout>
 

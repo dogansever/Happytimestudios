@@ -471,7 +471,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		System.out.println("createStageProcess:");
 		int x = (int) (getWidth() * 0.015f);
 		// int x = (int) (20);// width of pause
-		int y = 1;// padding of pause button
+		int y = 5;// padding of pause button
 		return new ProgressSprite(freeSprites, this, x, y, StartActivity.bmpProgress, StartActivity.bmpProgressHead);
 	}
 
@@ -480,7 +480,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		int xw = (int) (getWidth() * 0.035f);
 		// int xw = (int) (40);
 		int x = (int) (((FreeSprite) freeSprites.toArray()[5]).getWidth()) + xw + (int) (xw * ProgressSprite.bmpPercentage);//
-		int y = 1;// padding of pause button
+		int y = 5;// padding of pause button
 		return new LifeProgressSprite(freeSprites, this, x, y, StartActivity.bmpProgressLife, StartActivity.bmpProgressOwl);
 	}
 
@@ -582,13 +582,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 					}
 				}
 
-				drawText("LEVEL: " + MenuActivity.level, canvas, 10, 50);
-				drawText("HIGHSCORE: " + MenuActivity.highscore, canvas, 10, 75);
-				drawText("SCORE: " + MenuActivity.score, canvas, 10, 100);
+				drawText("LEVEL: " + MenuActivity.level, canvas, 10, 75);
+				drawText("HIGHSCORE: " + MenuActivity.highscore, canvas, 10, 100);
+				drawText("SCORE: " + MenuActivity.score, canvas, 10, 125);
 				if (GameGameActivity.RIGHTCOUNT >= GameGameActivity.RIGHTCOUNT_3X) {
-					drawText("3X", canvas, 10, 125, Color.RED);
+					drawText("3X", canvas, 10, 150, Color.RED);
 				} else if (GameGameActivity.RIGHTCOUNT >= GameGameActivity.RIGHTCOUNT_2X) {
-					drawText("2X", canvas, 10, 125, Color.RED);
+					drawText("2X", canvas, 10, 150, Color.RED);
 				}
 
 			}
