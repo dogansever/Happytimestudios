@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sever.main"
-    android:versionCode="25"
-    android:versionName="1.4.2" >
+    android:versionCode="27"
+    android:versionName="1.4.4" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <supports-screens
         android:largeScreens="true"
@@ -69,6 +70,11 @@
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         <uses-library android:name="android.test.runner" />
 
+        <activity
+            android:name="com.geosophic.view.Geosophic_View"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
         <activity
             android:name="com.google.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"

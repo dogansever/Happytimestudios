@@ -39,6 +39,7 @@ public class MathProblemsActivity extends Activity {
 	protected static int CNTDOWN = 3;
 	private static int INDEX = 0;
 	static String TIME;
+	static long TIMEInMs;
 	private long STARTDATE;
 	private long ENDDATE;
 	private boolean finished;
@@ -56,6 +57,7 @@ public class MathProblemsActivity extends Activity {
 	private boolean DIALOG_VISIBLE;
 	private MediaPlayer mp2;
 	private MediaPlayer mp1;
+	public static String info = "";
 
 	/** Called when the activity is first created. */
 	@Override
@@ -359,6 +361,7 @@ public class MathProblemsActivity extends Activity {
 		if (INDEX + 1 == MathProblemsActivity.COUNT) {
 			float time = new Float(ENDDATE - STARTDATE) / 1000.0f;
 			int penalty = (COUNT - RIGHTCOUNT) * 5;
+			MathProblemsActivity.TIMEInMs = ENDDATE - STARTDATE + (COUNT - RIGHTCOUNT) * 5000;
 			MathProblemsActivity.TIME = String.format("%10.4f", time + penalty).replace(".", ",");
 			String _2TIME = String.format("%01.4f", time).replace(".", ",");
 			String message = getString(R.string.result_string).replace("_TIME", TIME).replace("_2TIME", _2TIME).replace("_PENALTY", "" + penalty)
@@ -405,7 +408,7 @@ public class MathProblemsActivity extends Activity {
 		alertDialog.setButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				EditText input = (EditText) view.findViewById(R.id.editText1);
-				String info = input.getText().toString();
+				info = input.getText().toString();
 
 				SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 				String dateStr = formatter.format(new Date());
@@ -413,14 +416,17 @@ public class MathProblemsActivity extends Activity {
 				MainScreenActivity.dbDBWriteUtil.addScore(TIME, "" + new Date().getTime(), "" + COUNT, info);
 
 				info = input.getText().toString();
-				info = info.trim().equals("") ? "OWLY" : info.trim();
-				String playerName = info;
-				int points = getPoints();
-				if (highscore)
-					new LeaderBoardUtil().leaderboardSave(playerName, points, COUNT);
+//				if (highscore) {
+//					double score = Double.parseDouble(((String) MainScreenActivity.dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 0)).replace(",", "."));
+//					MathProblemsActivity.TIMEInMs = (long) (score * 1000.0f);
+//					new LeaderBoardUtil().leaderboardSave(MathProblemsActivity.TIMEInMs);
+//				}
 				finish();
 			}
 		});
+
+		EditText input = (EditText) view.findViewById(R.id.editText1);
+		input.setText(info);
 		alertDialog.show();
 	}
 

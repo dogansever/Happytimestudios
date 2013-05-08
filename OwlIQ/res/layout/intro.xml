@@ -76,28 +76,52 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5px"
-                    android:text="@string/leaderboard"
+                    android:text="Nick: "
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                <RadioGroup
-                    android:id="@+id/radioGroupLeader"
+                <TextView
+                    android:id="@+id/textViewPlayername"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
+                    android:padding="5px"
+                    android:text="------"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                    <RadioButton
-                        android:id="@+id/radio0Leader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="Local " />
+                <Button
+                    android:id="@+id/Button03"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5px"
+                    android:layout_weight="1"
+                    android:background="@drawable/start_xml"
+                    android:text="Refresh"
+                    android:textColor="#000011"
+                    android:textColorHighlight="#777777"
+                    android:textStyle="bold" />
 
-                    <RadioButton
-                        android:id="@+id/radio1Leader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Online " />
-                </RadioGroup>
+                <Button
+                    android:id="@+id/Button01"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5px"
+                    android:layout_weight="1"
+                    android:background="@drawable/start_xml"
+                    android:text="Rename"
+                    android:textColor="#000011"
+                    android:textColorHighlight="#777777"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/Button02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5px"
+                    android:layout_weight="1"
+                    android:background="@drawable/start_xml"
+                    android:text="List"
+                    android:textColor="#000011"
+                    android:textColorHighlight="#777777"
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
 
@@ -169,19 +193,7 @@
                     android:layout_margin="5px"
                     android:layout_weight="1"
                     android:background="@drawable/start_xml"
-                    android:text="Send"
-                    android:textColor="#000011"
-                    android:textColorHighlight="#777777"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/Button01"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5px"
-                    android:layout_weight="1"
-                    android:background="@drawable/start_xml"
-                    android:text="Relist"
+                    android:text="Send Online"
                     android:textColor="#000011"
                     android:textColorHighlight="#777777"
                     android:textStyle="bold" />

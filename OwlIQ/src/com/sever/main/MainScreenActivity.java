@@ -8,6 +8,10 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -39,12 +43,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.geosophic.service.Geosophic_Activity;
 import com.google.ads.AdRequest;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
-import com.playtomic.android.api.PlaytomicScore;
 
-public class MainScreenActivity extends Activity {
+public class MainScreenActivity extends Geosophic_Activity {
 
 	public static MainScreenActivity context;
 	private static final int RESET = 0;
@@ -129,6 +133,7 @@ public class MainScreenActivity extends Activity {
 		if (hasFocus) {
 			try {
 				mp1.start();
+				new LeaderBoardUtil().leaderBoardRefreshNicknameSync();
 			} catch (Exception e) {
 			}
 		} else {
@@ -218,15 +223,40 @@ public class MainScreenActivity extends Activity {
 			}
 		});
 
-		Button buttonRelist = (Button) findViewById(R.id.Button01);
+		Button buttonRename = (Button) findViewById(R.id.Button01);
+		buttonRename.setTypeface(MainScreenActivity.face);
+		buttonRename.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 20);
+		buttonRename.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				String title = "Change your nickname!";
+				String message = "Hey, From now on call me as:";
+				int icon = R.drawable.owl3;
+				showNickname(title, message, icon);
+			}
+		});
+
+		Button buttonRefresh = (Button) findViewById(R.id.Button03);
+		buttonRefresh.setTypeface(MainScreenActivity.face);
+		buttonRefresh.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 20);
+		buttonRefresh.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				new LeaderBoardUtil().leaderBoardRefreshNicknameSync();
+			}
+		});
+
+		Button buttonRelist = (Button) findViewById(R.id.Button02);
 		buttonRelist.setTypeface(MainScreenActivity.face);
 		buttonRelist.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 20);
 		buttonRelist.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				MathProblemsActivity.REFRESH = true;
-				prepareScoresList();
+				new LeaderBoardUtil().leaderBoardShow();
 			}
 		});
 
@@ -237,30 +267,13 @@ public class MainScreenActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-
-				String title = "Send your best!";
-				String message = "Hey, I am fast!";
-				int icon = R.drawable.owl3;
 				double score = Double.parseDouble(((String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 0)).replace(",", "."));
-				String time = String.format("%01.4f", score);
-				MathProblemsActivity.TIME = time;
-				String name = (String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 2);
-				name = (String) name.subSequence(0, name.indexOf(","));
-				showTime(title, message, name, icon, true);
-
+				MathProblemsActivity.TIMEInMs = (long) (score * 1000.0f);
+				new LeaderBoardUtil().leaderboardSave(MathProblemsActivity.TIMEInMs);
 			}
 		});
 
 		dbDBWriteUtil = new DBWriteUtil(this);
-
-		RadioButton myOption1Leader = (RadioButton) findViewById(R.id.radio0Leader);
-		RadioButton myOption2Leader = (RadioButton) findViewById(R.id.radio1Leader);
-		myOption1Leader.setTypeface(MainScreenActivity.face);
-		myOption1Leader.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
-		myOption2Leader.setTypeface(MainScreenActivity.face);
-		myOption2Leader.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
-		myOption1Leader.setOnClickListener(myOptionLeaderBoardOnClickListener);
-		myOption2Leader.setOnClickListener(myOptionLeaderBoardOnClickListener);
 
 		RadioButton myOption1 = (RadioButton) findViewById(R.id.radio0);
 		RadioButton myOption2 = (RadioButton) findViewById(R.id.radio1);
@@ -294,6 +307,10 @@ public class MainScreenActivity extends Activity {
 		tv = (TextView) findViewById(R.id.textViewLeader);
 		tv.setTypeface(MainScreenActivity.face);
 		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 12);
+		tv = (TextView) findViewById(R.id.textViewPlayername);
+		tv.setTypeface(MainScreenActivity.face);
+		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 16);
+
 	}
 
 	@Override
@@ -338,54 +355,65 @@ public class MainScreenActivity extends Activity {
 
 	private void prepareScoresListOnline() {
 
-		if (!MathProblemsActivity.REFRESHING && (LeaderBoardUtil.scoreList == null || MathProblemsActivity.REFRESH)) {
-			new LeaderBoardUtil().leaderBoardList(MathProblemsActivity.COUNT);
-		}
+		try {
+			if (!MathProblemsActivity.REFRESHING && (LeaderBoardUtil.scoreList == null || MathProblemsActivity.REFRESH)) {
+				new LeaderBoardUtil().leaderBoardList();
+			}
 
-		LinearLayout linearLayout6 = (LinearLayout) findViewById(R.id.linearLayout6);
-		linearLayout6.removeAllViews();
-		if (LeaderBoardUtil.scoreList == null)
-			return;
+			LinearLayout linearLayout6 = (LinearLayout) findViewById(R.id.linearLayout6);
+			linearLayout6.removeAllViews();
+			if (LeaderBoardUtil.scoreList == null)
+				return;
 
-		boolean best = false;
-		boolean bestDone = false;
-		for (PlaytomicScore ps : LeaderBoardUtil.scoreList) {
-			if (!bestDone) {
-				best = checkForBestTime(ps.getName(), ps.getPoints());
-			} else {
-				best = false;
+			boolean best = false;
+			for (int i = 0; i < LeaderBoardUtil.scoreList.length(); i++) {
+				JSONObject o = (JSONObject) LeaderBoardUtil.scoreList.getJSONObject(i);
+				System.out.println(LeaderBoardUtil.scoreList.toString());
+				JSONArray ranking = o.getJSONArray("ranking");
+				for (int j = 0; j < ranking.length(); j++) {
+					JSONObject ro = (JSONObject) ranking.getJSONObject(j);
+					best = o.getJSONObject("playerInfo").getString("userNickname").equals(ro.getString("userNickname"));
+
+					LinearLayout view = (LinearLayout) this.getLayoutInflater().inflate(R.layout.list_item2, null);
+					TextView textView1 = (TextView) view.findViewById(R.id.textView1);
+					if (best) {
+						textView1.setTextColor(Color.RED);
+					}
+					textView1.setTypeface(MainScreenActivity.face);
+					textView1.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
+					textView1.setText("" + ro.getString("userRank") + ".");
+					TextView textView2 = (TextView) view.findViewById(R.id.textView2);
+					if (best) {
+						textView2.setTextColor(Color.RED);
+					}
+					textView2.setTypeface(MainScreenActivity.face);
+					textView2.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
+					// double score =
+					// Double.parseDouble((ps.getCustomValue(LeaderBoardUtil.SCORE)).replace(",",
+					// "."));
+					String time = ro.getString("scoreValue");
+					textView2.setText(time + " ");
+					TextView textView3 = (TextView) view.findViewById(R.id.textView3);
+					if (best) {
+						textView3.setTextColor(Color.RED);
+					}
+					textView3.setTypeface(MainScreenActivity.face);
+					textView3.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
+					textView3.setText(ro.getString("userNickname") + ", " + ro.getString("scoreDate") + " ");
+					linearLayout6.addView(view);
+				}
+				if (i == 0)
+					break;
+
 			}
-			LinearLayout view = (LinearLayout) this.getLayoutInflater().inflate(R.layout.list_item2, null);
-			TextView textView1 = (TextView) view.findViewById(R.id.textView1);
-			if (best) {
-				bestDone = true;
-				textView1.setTextColor(Color.RED);
-			}
-			textView1.setTypeface(MainScreenActivity.face);
-			textView1.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
-			textView1.setText("" + ps.getRank() + ".");
-			TextView textView2 = (TextView) view.findViewById(R.id.textView2);
-			if (best) {
-				bestDone = true;
-				textView2.setTextColor(Color.RED);
-			}
-			textView2.setTypeface(MainScreenActivity.face);
-			textView2.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
-			// double score =
-			// Double.parseDouble((ps.getCustomValue(LeaderBoardUtil.SCORE)).replace(",",
-			// "."));
-			String time = MathProblemsActivity.getTimeFromPoints(ps.getPoints());
-			textView2.setText(time + " ");
-			TextView textView3 = (TextView) view.findViewById(R.id.textView3);
-			if (best) {
-				bestDone = true;
-				textView3.setTextColor(Color.RED);
-			}
-			textView3.setTypeface(MainScreenActivity.face);
-			textView3.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
-			textView3.setText(ps.getName() + ", " + ps.getRelativeDate() + " ");
-			linearLayout6.addView(view);
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
+	}
+
+	public void refreshNickname() {
+		TextView tv = (TextView) findViewById(R.id.textViewPlayername);
+		tv.setText(LeaderBoardUtil.nickname);
 	}
 
 	public void prepareScoresList() {
@@ -411,7 +439,7 @@ public class MainScreenActivity extends Activity {
 			textView2.setText(time + " ");
 			TextView textView3 = (TextView) view.findViewById(R.id.textView3);
 			textView3.setTypeface(MainScreenActivity.face);
-			textView3.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 15);
+			textView3.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 20);
 			textView3.setText((String) contentValues.get(DBWriteUtil.infoColumn) + " ");
 			linearLayout6.addView(view);
 		}
@@ -446,23 +474,6 @@ public class MainScreenActivity extends Activity {
 			}
 			refreshScore();
 			LeaderBoardUtil.scoreList = null;
-			prepareScoresList();
-		}
-
-	};
-	RadioButton.OnClickListener myOptionLeaderBoardOnClickListener = new RadioButton.OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			RadioButton myOption1 = (RadioButton) findViewById(R.id.radio0Leader);
-			RadioButton myOption2 = (RadioButton) findViewById(R.id.radio1Leader);
-			if (myOption1.isChecked()) {
-				MathProblemsActivity.ONLINE = false;
-			} else if (myOption2.isChecked()) {
-				MathProblemsActivity.ONLINE = true;
-			}
-			refreshScore();
-			MathProblemsActivity.REFRESH = false;
 			prepareScoresList();
 		}
 
@@ -635,7 +646,31 @@ public class MainScreenActivity extends Activity {
 				info = info.trim().equals("") ? "OWLY" : info.trim();
 				String playerName = info;
 				int points = MathProblemsActivity.getPoints();
-				new LeaderBoardUtil().leaderboardSave(playerName, points, MathProblemsActivity.COUNT);
+				new LeaderBoardUtil().leaderboardSave(MathProblemsActivity.TIMEInMs);
+			}
+		});
+		alertDialog.show();
+	}
+
+	private void showNickname(String title, String message, int icon) {
+		AlertDialog alertDialog = new AlertDialog.Builder(this).setIcon(icon).create();
+		alertDialog.setTitle(title);
+		alertDialog.setCancelable(false);
+		alertDialog.setMessage(message);
+		final LinearLayout view = (LinearLayout) MainScreenActivity.this.getLayoutInflater().inflate(R.layout.input, null);
+		EditText input = (EditText) view.findViewById(R.id.editText1);
+		input.setText(LeaderBoardUtil.nickname);
+		input.setEnabled(true);
+		alertDialog.setView(view);
+		alertDialog.setButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				EditText input = (EditText) view.findViewById(R.id.editText1);
+				String info = input.getText().toString().trim();
+				if (info.equals("")) {
+				} else {
+					new LeaderBoardUtil().leaderBoardUpdateNickname(info);
+				}
+
 			}
 		});
 		alertDialog.show();

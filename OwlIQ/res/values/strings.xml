@@ -10,7 +10,7 @@
     <string name="result_string">Score: _TIME seconds\n (_2TIME + _PENALTY
 		penalty)\nAccuracy: _ACC</string>
     <string name="problem_count">Problems #</string>
-    <string name="leaderboard">LeaderBoard</string>
+    <string name="leaderboard">Online</string>
     <string name="go">Go</string>
     <string name="new_record">New Record!</string>
     <string name="try_again">Nice Try! Try Harder!</string>
