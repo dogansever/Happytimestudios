@@ -83,21 +83,28 @@ public class MathProblemsActivity extends Activity {
 		button2.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 12);
 		linearLayout4 = (LinearLayout) findViewById(R.id.linearLayout4);
 		scrollView = (ScrollView) findViewById(R.id.scrollView1);
-		button1.setOnClickListener(new OnClickListener() {
+		
+		OnClickListener buttonClickListener = new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				ANSWER = false;
-				calculate();
-			}
-		});
-		button2.setOnClickListener(new OnClickListener() {
+				switch (arg0.getId()) {
+				case R.id.button1:
+					ANSWER = false;
+					calculate();
+					break;
+				case R.id.button2:
+					ANSWER = true;
+					calculate();
+					break;
 
-			@Override
-			public void onClick(View v) {
-				ANSWER = true;
-				calculate();
+				default:
+					break;
+				}
 			}
-		});
+		};
+		
+		button1.setOnClickListener(buttonClickListener);
+		button2.setOnClickListener(buttonClickListener);
 
 		int topHeight = MainScreenActivity.deviceHeight / 12;
 		int bottomHeight = MainScreenActivity.deviceHeight / 6;
@@ -416,11 +423,15 @@ public class MathProblemsActivity extends Activity {
 				MainScreenActivity.dbDBWriteUtil.addScore(TIME, "" + new Date().getTime(), "" + COUNT, info);
 
 				info = input.getText().toString();
-//				if (highscore) {
-//					double score = Double.parseDouble(((String) MainScreenActivity.dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 0)).replace(",", "."));
-//					MathProblemsActivity.TIMEInMs = (long) (score * 1000.0f);
-//					new LeaderBoardUtil().leaderboardSave(MathProblemsActivity.TIMEInMs);
-//				}
+				if (highscore) {
+					MainScreenActivity.context.doSendButtonClick();
+					// double score = Double.parseDouble(((String)
+					// MainScreenActivity.dbDBWriteUtil.getBestScore("" +
+					// MathProblemsActivity.COUNT, 0)).replace(",", "."));
+					// MathProblemsActivity.TIMEInMs = (long) (score * 1000.0f);
+					// new
+					// LeaderBoardUtil().leaderboardSave(MathProblemsActivity.TIMEInMs);
+				}
 				finish();
 			}
 		});

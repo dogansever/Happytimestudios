@@ -7,6 +7,7 @@ import org.jbox2d.collision.PolygonDef;
 import org.jbox2d.common.Vec2;
 
 import com.sever.ramsandgoats.game.GameView;
+import com.sever.ramsandgoats.util.PhysicsWorldManager;
 import com.sever.ramsandgoats.util.SpriteBmp;
 
 public class SoccerBallSprite extends FreeSprite {
@@ -58,5 +59,15 @@ public class SoccerBallSprite extends FreeSprite {
 			return;
 		getBody().setLinearVelocity(new Vec2(getBody().getLinearVelocity().x * frictionConstantx, getBody().getLinearVelocity().y * frictionConstanty));
 		System.out.println("stabilizeVelocity:(" + getBody().getLinearVelocity().x + "," + getBody().getLinearVelocity().y + ")");
+	}
+	
+	public void restartSprite(float x, float y) {
+		PhysicsWorldManager.mWorld.bodies.remove(body);
+		PhysicsWorldManager.mWorld.world.destroyBody(body);
+		destroyShape();
+		this.x = x;
+		this.y = y;
+		noPositionUpdate = false;
+		addSprite(x, y);
 	}
 }

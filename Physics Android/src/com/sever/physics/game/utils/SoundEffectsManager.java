@@ -8,7 +8,6 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 
 import com.sever.physic.PhysicsActivity;
-import com.sever.physic.PhysicsApplication;
 import com.sever.physic.R;
 
 public class SoundEffectsManager {
@@ -87,7 +86,7 @@ public class SoundEffectsManager {
 	}
 
 	public static void startGameEndAmbianceSound(Context context) {
-		System.out.println("startIngameAmbianceSound");
+		LogUtil.log("startIngameAmbianceSound");
 		if (mp1 == null) {
 			mp1 = MediaPlayer.create(context, R.raw.meditatewithchoir);
 			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -97,9 +96,9 @@ public class SoundEffectsManager {
 		if (!mp1.isPlaying())
 			mp1.start();
 	}
-	
+
 	public static void startBossTimeAmbianceSound(Context context) {
-		System.out.println("startIngameAmbianceSound");
+		LogUtil.log( "startBossTimeAmbianceSound");
 		if (mp1 == null) {
 			mp1 = MediaPlayer.create(context, R.raw.toppriority);
 			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -111,7 +110,7 @@ public class SoundEffectsManager {
 	}
 
 	public static void startGameOverAmbianceSound(Context context) {
-		System.out.println("startIngameAmbianceSound");
+		LogUtil.log( "startGameOverAmbianceSound");
 		if (mp1 == null) {
 			mp1 = MediaPlayer.create(context, R.raw.peopleinexile);
 			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -123,7 +122,7 @@ public class SoundEffectsManager {
 	}
 
 	public static void startIngameAmbianceSound(Context context) {
-		System.out.println("startIngameAmbianceSound");
+		LogUtil.log( "startIngameAmbianceSound");
 		if (mp1 == null) {
 			mp1 = MediaPlayer.create(context, R.raw.accelerator);
 			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -135,7 +134,7 @@ public class SoundEffectsManager {
 	}
 
 	public static void startIntroAmbianceSound(Context context) {
-		System.out.println("startIntroAmbianceSound");
+		LogUtil.log( "startIntroAmbianceSound");
 		if (mp1 == null) {
 			mp1 = MediaPlayer.create(context, R.raw.acoustica);
 			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -147,7 +146,7 @@ public class SoundEffectsManager {
 	}
 
 	public static void stopSound() {
-		System.out.println("stopSound");
+		LogUtil.log( "stopSound");
 		if (mp1 != null) {
 			mp1.pause();
 			mp1.stop();

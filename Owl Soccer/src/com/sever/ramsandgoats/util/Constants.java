@@ -13,6 +13,7 @@ public class Constants {
 	public static float extraWidth = GameApplication.deviceWidth * 0.0f;
 	public static float extraWidthOffset = 0;
 	public static float extraHeightOffset = 0;
+	public static float penaltyAreaWidth = 250;
 
 	public static final float boundhxyScreen = 500.0f;
 	public static final float boundhxy = boundhxyScreen / pixelpermeter;
@@ -37,9 +38,9 @@ public class Constants {
 	public static final float setAsBoxhy = setAsBoxhyScreen / pixelpermeter;
 
 	public static final float gravityx = 0.0f * pixelpermeter;
-	public static final float gravityy = -10.0f * pixelpermeter;
+	public static final float gravityy = -20.0f * pixelpermeter;
 	public static final float gravityThrottle = 0.5f * pixelpermeter;
-	public static final float gravityPushPlayer = 40.0f * pixelpermeter;
+	public static final float gravityPushPlayer = 50.0f * pixelpermeter;
 
 	public static int quakePower = 0;
 	public static int quakePowerMax = 10;

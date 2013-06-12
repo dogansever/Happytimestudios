@@ -1,7 +1,6 @@
 package com.sever.physics.game.sprites;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jbox2d.collision.PolygonDef;
@@ -9,12 +8,10 @@ import org.jbox2d.collision.PolygonDef;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import com.sever.physic.PhysicsApplication;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
-import com.sever.physics.game.utils.WeaponsManager;
 
 public class BoxSprite extends FreeSprite {
 

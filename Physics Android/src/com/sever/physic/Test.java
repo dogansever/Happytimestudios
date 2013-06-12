@@ -5,6 +5,8 @@ import android.os.SystemClock;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.MotionEvent;
 
+import com.sever.physics.game.utils.LogUtil;
+
 
 public class Test extends ActivityInstrumentationTestCase2 {
 
@@ -16,7 +18,7 @@ public class Test extends ActivityInstrumentationTestCase2 {
 	}
 
 	public void simulateClick() {
-		System.out.println("simulateClick");
+		LogUtil.log("simulateClick");
 		try {
 			inst = new Instrumentation();
 		} catch (Exception e) {

@@ -1,7 +1,5 @@
 package com.sever.physics.game.utils;
 
-import com.sever.physic.IntroActivity;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -23,13 +21,13 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		// System.out.println("onCreate:" + this);
+		// LogUtil.log("onCreate:" + this);
 		createTables(db);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// System.out.println("onUpgrade:" + this);
+		// LogUtil.log("onUpgrade:" + this);
 		// dropTables(db);
 		// onCreate(db);
 	}
@@ -118,7 +116,23 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 
 			}
 		} else {
-			System.out.println("Something wrong with addScore method!!!");
+			// update username
+			SQLiteDatabase db = null;
+			try {
+				db = this.getWritableDatabase();
+				ContentValues cv = new ContentValues();
+				cv.put(DBWriteUtil.usernameColumn, usernameColumn);
+				db.update(gameTable, cv, DBWriteUtil.usernameColumn + " = ? ", new String[] { username });
+			} catch (Exception e) {
+			} finally {
+				try {
+					if (db != null && !db.isOpen()) {
+						db.close();
+					}
+				} catch (Exception e) {
+				}
+
+			}
 		}
 
 	}
@@ -127,7 +141,7 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 		String username = (String) getBestScore(2);
 		String score = (String) getBestScore(0);
 		if (Integer.parseInt(score) < Integer.parseInt(scoreColumn)) {
-			new LeaderBoardUtil().leaderboardSave(username, scoreColumn, IntroActivity.uniqueDeviceId, stageColumn);
+			new LeaderBoardUtil().leaderboardSave(scoreColumn, false);
 			SQLiteDatabase db = null;
 			try {
 				db = this.getWritableDatabase();
@@ -147,7 +161,7 @@ public class DBWriteUtil extends SQLiteOpenHelper {
 
 			}
 		} else {
-			System.out.println("Something wrong with addScore method!!!");
+			LogUtil.log("Something wrong with addScore method!!!");
 		}
 
 	}

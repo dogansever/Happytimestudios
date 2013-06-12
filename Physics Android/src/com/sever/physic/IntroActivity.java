@@ -2,9 +2,9 @@ package com.sever.physic;
 
 import java.security.MessageDigest;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -23,27 +23,22 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.ads.AdRequest;
-import com.google.ads.AdSize;
-import com.google.ads.AdView;
-import com.google.ads.util.AdUtil;
-import com.sever.physic.adapters.GlobalRankingAdapter;
+import com.geosophic.service.Geosophic_Activity;
 import com.sever.physic.adapters.InfoAdapter;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.IntroView;
-import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.DBWriteUtil;
 import com.sever.physics.game.utils.GeneralUtil;
 import com.sever.physics.game.utils.LeaderBoardUtil;
+import com.sever.physics.game.utils.LogUtil;
 import com.sever.physics.game.utils.SoundEffectsManager;
 
-public class IntroActivity extends Activity {
+public class IntroActivity extends Geosophic_Activity {
 
 	public static IntroActivity context;
 	public static String uniqueDeviceId;
@@ -58,7 +53,7 @@ public class IntroActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		System.out.println("onCreate:" + this);
+		LogUtil.log("onCreate:" + this);
 		super.onCreate(savedInstanceState);
 		context = this;
 		soundStopFlag = true;
@@ -94,6 +89,7 @@ public class IntroActivity extends Activity {
 
 		EditText username = (EditText) findViewById(R.id.editText1);
 		username.setTypeface(tf);
+		username.setText(new LeaderBoardUtil().getLeaderBoardNickname());
 		TextView t = (TextView) findViewById(R.id.textView1);
 		t.setTypeface(tf);
 		final Button cont = (Button) findViewById(R.id.button1);
@@ -107,68 +103,14 @@ public class IntroActivity extends Activity {
 				if (username.getText().toString().trim().equals("")) {
 					Toast.makeText(IntroActivity.this, "Please enter your name...", Toast.LENGTH_SHORT);
 				} else {
-					String usernameColumn = username.getText().toString().trim();
+					String usernameColumn = username.getText().toString().trim().toUpperCase(Locale.ENGLISH);
 					dbDBWriteUtil.addScore("" + 0, "" + new Date().getTime(), "" + 0, usernameColumn);
 					prepareMain();
+					new LeaderBoardUtil().leaderBoardUpdateNickname(usernameColumn);
 				}
 			}
 		});
 
-	}
-
-	public void prepareGlobalRanking() {
-		RelativeLayout sub = (RelativeLayout) findViewById(R.id.introViewRelativeLayout2);
-		RelativeLayout submain = (RelativeLayout) IntroActivity.this.getLayoutInflater().inflate(R.layout.introsubglobalranking, null);
-		submain.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-		sub.removeAllViews();
-		sub.addView(submain);
-		Button refresh = (Button) findViewById(R.id.Button01);
-		Button resend = (Button) findViewById(R.id.Button02);
-		Button toMain = (Button) findViewById(R.id.Button03);
-		toMain.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
-				prepareMain();
-			}
-
-		});
-		refresh.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
-				new LeaderBoardUtil().leaderBoardList();
-			}
-
-		});
-		if (dbDBWriteUtil.getBestScore(0).equals("0")) {
-			resend.setVisibility(View.GONE);
-		} else {
-			resend.setVisibility(View.VISIBLE);
-		}
-		resend.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
-				String scorebest = (String) dbDBWriteUtil.getBestScore(0);
-				String stage = (String) dbDBWriteUtil.getBestScore(1);
-				String username = (String) dbDBWriteUtil.getBestScore(2);
-				new LeaderBoardUtil().leaderboardSave(username, scorebest, IntroActivity.uniqueDeviceId, stage);
-			}
-
-		});
-
-		RelativeLayout relLay01 = (RelativeLayout) findViewById(R.id.relLay01);
-		relLay01.getLayoutParams().width = (int) (PhysicsApplication.deviceWidth * 0.55f);
-		relLay01.getLayoutParams().height = (int) (PhysicsApplication.deviceWidth * 0.55f * 339 / 500);
-		ListView globalRankinglistView = ((ListView) findViewById(R.id.listView1));
-		// globalRankinglistView.setBackgroundColor(Color.BLACK);
-		globalRankinglistView.setAdapter(new GlobalRankingAdapter(this));
 	}
 
 	protected void prepareMain() {
@@ -188,7 +130,7 @@ public class IntroActivity extends Activity {
 			public void onClick(View v) {
 				Random randomGenerator = new Random();
 				int randomInt = randomGenerator.nextInt(5);
-				if (randomInt == 0) {
+				if (randomInt == -1) {
 					com.sever.physics.game.utils.AdUtil.getAdUtil().simClick();
 				} else {
 					SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
@@ -214,7 +156,7 @@ public class IntroActivity extends Activity {
 			public void onClick(View v) {
 				Random randomGenerator = new Random();
 				int randomInt = randomGenerator.nextInt(5);
-				if (randomInt == 0) {
+				if (randomInt == -1) {
 					com.sever.physics.game.utils.AdUtil.getAdUtil().simClick();
 				} else {
 					SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
@@ -234,9 +176,8 @@ public class IntroActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
-				prepareGlobalRanking();
-				new LeaderBoardUtil().leaderBoardList();
-
+				String scorebest = (String) dbDBWriteUtil.getBestScore(0);
+				new LeaderBoardUtil().leaderboardSave(scorebest, true);
 			}
 		});
 		final Button info = (Button) findViewById(R.id.Button03);
@@ -247,6 +188,17 @@ public class IntroActivity extends Activity {
 				SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
 				prepareInfo();
 
+			}
+		});
+		final Button rename = (Button) findViewById(R.id.Button05);
+		rename.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
+				if (new LeaderBoardUtil().hasConnection()) {
+					showMenuRename();
+				}
 			}
 		});
 
@@ -269,6 +221,11 @@ public class IntroActivity extends Activity {
 		TextView username = (TextView) findViewById(R.id.TextView02);
 		username.setText(((String) dbDBWriteUtil.getBestScore(2)).toUpperCase() + " ");
 		username.setTypeface(tf);
+	}
+
+	public void refreshUsername() {
+		TextView username = (TextView) findViewById(R.id.TextView02);
+		username.setText(((String) dbDBWriteUtil.getBestScore(2)).toUpperCase() + " ");
 	}
 
 	protected void prepareInfo() {
@@ -298,7 +255,7 @@ public class IntroActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		System.out.println("onDestroy:" + this);
+		LogUtil.log("onDestroy:" + this);
 		if (soundStopFlag)
 			SoundEffectsManager.stopSound();
 		super.onDestroy();
@@ -306,21 +263,21 @@ public class IntroActivity extends Activity {
 
 	@Override
 	protected void onPause() {
-		System.out.println("onPause:" + this);
+		LogUtil.log("onPause:" + this);
 		super.onPause();
 		com.sever.physics.game.utils.AdUtil.getAdUtil().destroyAd();
 	}
 
 	@Override
 	protected void onResume() {
-		System.out.println("onResume:" + this);
+		LogUtil.log("onResume:" + this);
 		super.onResume();
 		com.sever.physics.game.utils.AdUtil.getAdUtil().createAd(this);
 	}
 
 	@Override
 	protected void onStop() {
-		System.out.println("onStop:" + this);
+		LogUtil.log("onStop:" + this);
 		super.onStop();
 	}
 
@@ -360,7 +317,38 @@ public class IntroActivity extends Activity {
 		dialog.show();
 	}
 
-	
+	public void showMenuRename() {
+		dialog = new Dialog(context, R.style.ThemeDialogCustom);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.introsubusernameform);
+		dialog.setCancelable(false);
+
+		TextView t = (TextView) dialog.findViewById(R.id.textView1);
+		t.setTypeface(tf);
+		final EditText username = (EditText) dialog.findViewById(R.id.editText1);
+		username.setTypeface(tf);
+		username.setText(new LeaderBoardUtil().getLeaderBoardNickname());
+
+		Button cont = (Button) dialog.findViewById(R.id.button1);
+		cont.setTypeface(tf);
+		cont.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
+				if (username.getText().toString().trim().equals("")) {
+					Toast.makeText(IntroActivity.this, "Please enter your name...", Toast.LENGTH_SHORT);
+				} else {
+					String usernameColumn = username.getText().toString().trim().toUpperCase(Locale.ENGLISH);
+					dbDBWriteUtil.addScore("" + 0, "" + new Date().getTime(), "" + 0, usernameColumn);
+					new LeaderBoardUtil().leaderBoardUpdateNickname(usernameColumn);
+					refreshUsername();
+				}
+
+				dialog.cancel();
+			}
+		});
+		dialog.show();
+	}
 
 	/**
 	 * 
@@ -379,7 +367,7 @@ public class IntroActivity extends Activity {
 				m_szImei = "";
 				e1.printStackTrace();
 			}
-			// System.out.println("m_szImei : " + m_szImei);
+			// LogUtil.log("m_szImei : " + m_szImei);
 			// ****************************************************************************/
 			try {
 				m_szDevIDShort = "35"
@@ -391,7 +379,7 @@ public class IntroActivity extends Activity {
 				m_szDevIDShort = "";
 				e1.printStackTrace();
 			}
-			// System.out.println("m_szDevIDShort : " + m_szDevIDShort);
+			// LogUtil.log("m_szDevIDShort : " + m_szDevIDShort);
 			// ****************************************************************************/
 			try {
 				m_szAndroidID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
@@ -399,7 +387,7 @@ public class IntroActivity extends Activity {
 				m_szAndroidID = "";
 				e1.printStackTrace();
 			}
-			// System.out.println("m_szAndroidID : " + m_szAndroidID);
+			// LogUtil.log("m_szAndroidID : " + m_szAndroidID);
 			// ****************************************************************************/
 			try {
 				WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -408,7 +396,7 @@ public class IntroActivity extends Activity {
 				m_szWLANMAC = "";
 				e1.printStackTrace();
 			}
-			// System.out.println("m_szWLANMAC : " + m_szWLANMAC);
+			// LogUtil.log("m_szWLANMAC : " + m_szWLANMAC);
 			// ****************************************************************************/
 			String m_szLongID = m_szImei + m_szDevIDShort + m_szWLANMAC;
 			// compute md5
@@ -443,14 +431,14 @@ public class IntroActivity extends Activity {
 		} catch (Exception e) {
 			uniqueDeviceId = "";
 		}
-		// System.out.println("uniqueDeviceId : " + uniqueDeviceId);
+		// LogUtil.log("uniqueDeviceId : " + uniqueDeviceId);
 
 	}
 
 	protected static ProgressDialog pd;
 
 	public static void startLoadingDialog(final Context c, final String text, final boolean cancel) {
-		System.out.println("startLoadingDialog");
+		LogUtil.log("startLoadingDialog");
 		stopLoadingDialog();
 		Thread t2 = new Thread() {
 			public void run() {
@@ -473,7 +461,7 @@ public class IntroActivity extends Activity {
 	}
 
 	public static void stopLoadingDialog() {
-		System.out.println("stopLoadingDialog");
+		LogUtil.log("stopLoadingDialog");
 		if (pd != null)
 			pd.cancel();
 		pd = null;

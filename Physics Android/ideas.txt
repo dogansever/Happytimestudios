@@ -1,33 +1,9 @@
-IDEAS TO IMPLEMENT
+more balanced and easier throttle control
 
-done:
-Triple bomb gun (small bombs)
-super shock gun (push on wide radius)
-reduce bomb power and radius for small bomb
-big bomb gun
-explode bomb in sudden change in velocity
-explosions cost life
-hovering
-enemies moving and flying on you
-locking missiles locking on player
-leaving behind baits for incoming missiles
-multi touch support
-when destroyed, enemy will fly burning and explode if hits ground or somewhere
-explode effect on player
-main page design
-global ranking page design
-info page design (weapon infos and locked weapons)
-Weapon reloading
-implement explosive mines
-
-secondary:
 hook gun for player(revolt joint)
 picking carrying releasing objects
 weapon shortcuts
 put some explosive things around
 
-primary:
-implement sounds(robot sounds,explosions,firing,throttle,next stage,gameover,game start,weapon swap)
-draw graphics
 
 

@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.Constants;
+import com.sever.physics.game.utils.LogUtil;
 import com.sever.physics.game.utils.PhysicsWorld;
 import com.sever.physics.game.utils.SoundEffectsManager;
 
@@ -53,7 +54,7 @@ public class PhysicsActivity extends Activity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		System.out.println("onCreate:" + this);
+		LogUtil.log( "onCreate:" + this);
 		super.onCreate(savedInstanceState);
 		context = this;
 
@@ -115,7 +116,7 @@ public class PhysicsActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		System.out.println("onDestroy:" + this);
+		LogUtil.log("onDestroy:" + this);
 		// SoundEffectsManager.stopSound();
 		super.onDestroy();
 	}

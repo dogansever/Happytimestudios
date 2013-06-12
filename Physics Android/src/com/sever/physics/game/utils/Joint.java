@@ -1,6 +1,7 @@
 package com.sever.physics.game.utils;
 
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.joints.DistanceJointDef;
 import org.jbox2d.dynamics.joints.PulleyJointDef;
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
@@ -30,6 +31,14 @@ public class Joint {
 		jointDef.initialize(b1.getBody(), b2.getBody(), b1.getBody().getWorldCenter());
 		jointDef.maxMotorTorque = 1.0f;
 		jointDef.enableMotor = true;
+		PhysicsActivity.mWorld.world.createJoint(jointDef);
+	}
+
+	public void createDistanceJoint(FreeSprite b1, FreeSprite b2) {
+		DistanceJointDef jointDef = new DistanceJointDef();
+		Vec2 anchor1 = b1.getBody().getWorldCenter();
+		Vec2 anchor2 = b2.getBody().getWorldCenter();
+		jointDef.initialize(b1.getBody(), b2.getBody(), anchor1, anchor2);
 		PhysicsActivity.mWorld.world.createJoint(jointDef);
 	}
 

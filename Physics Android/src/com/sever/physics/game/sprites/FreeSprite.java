@@ -99,7 +99,7 @@ public class FreeSprite {
 	}
 
 	public void killSprite() {
-		// System.out.println("Killing:" + this);
+		// LogUtil.log("Killing:" + this);
 
 		if (!(this instanceof PlayerSprite)) {
 			releaseShiftLockOnMe();
@@ -150,13 +150,13 @@ public class FreeSprite {
 	}
 
 	public void shiftLockOnME() {
-		// System.out.println("shiftLockOnME:" + this);
+		// LogUtil.log("shiftLockOnME:" + this);
 		if (gameView.getPlayerSprite() != null)
 			((PlayerSprite) gameView.getPlayerSprite()).sprite = this;
 	}
 
 	public void releaseShiftLockOnMe() {
-		// System.out.println("releaseShiftLockOnMe:");
+		// LogUtil.log("releaseShiftLockOnMe:");
 		if (gameView.getPlayerSprite() != null)
 			((PlayerSprite) gameView.getPlayerSprite()).sprite = null;
 	}
@@ -167,7 +167,7 @@ public class FreeSprite {
 //				createDynamicBody(x, y);
 //			else
 //				createStaticBody(x, y);
-//			// System.out.println("getBody():" + body + " " +
+//			// LogUtil.log("getBody():" + body + " " +
 //			// this.getClass().getName());
 //		}
 		return body;
@@ -216,7 +216,7 @@ public class FreeSprite {
 	// force.set(force.mul((float) (body.getMass() * -10.0 *
 	// Constants.gravityy)));
 	// body.applyImpulse(force, body.getWorldCenter());
-	// // System.out.println("!!!Kicked it!!!:" + index + ", force:x:" +
+	// // LogUtil.log("!!!Kicked it!!!:" + index + ", force:x:" +
 	// // force.x + ", y:" + force.y);
 	// }
 
@@ -254,8 +254,9 @@ public class FreeSprite {
 					mirrorMatrix.preScale(-1.0f, 1.0f);
 					spriteBmp.bmpFrame = Bitmap.createBitmap(spriteBmp.bmpFrame, 0, 0, spriteBmp.bmpFrame.getWidth(), spriteBmp.bmpFrame.getHeight(), mirrorMatrix, false);
 				}
-
-				canvas.drawBitmap(spriteBmp.bmpFrame, m, null);
+				Paint mPaint = new Paint();
+				mPaint.setAntiAlias(true);
+				canvas.drawBitmap(spriteBmp.bmpFrame, m, mPaint);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -305,7 +306,7 @@ public class FreeSprite {
 			force.normalize(); // force direction always point to source
 			force.set(force.mul(body.getMass() * pullG));
 			body.applyForce(force, body.getWorldCenter());
-			// System.out.println("applyForce:" + force);
+			// LogUtil.log("applyForce:" + force);
 		}
 	}
 

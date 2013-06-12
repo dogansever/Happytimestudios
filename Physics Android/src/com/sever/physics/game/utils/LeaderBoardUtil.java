@@ -1,121 +1,214 @@
 package com.sever.physics.game.utils;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.logging.Logger;
+
+import org.json.JSONArray;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.playtomic.android.api.PlaytomicLeaderboards;
-import com.playtomic.android.api.PlaytomicRequestListener;
-import com.playtomic.android.api.PlaytomicResponse;
-import com.playtomic.android.api.PlaytomicScore;
+import com.geosophic.service.Geosophic_NicknameResponse;
+import com.geosophic.service.Geosophic_ServiceController;
 import com.sever.physic.IntroActivity;
 
 public class LeaderBoardUtil {
 	private static final Logger log = Logger.getLogger(LeaderBoardUtil.class.getName());
-	private static final String HIGHSCORES = "HIGHSCORES";
-	public static ArrayList<PlaytomicScore> scoreList;
+	public static JSONArray scoreList;
 	public static String INFO = "INFO";
 	public static String SCORE = "SCORE";
+	public static int leaderboardSchemaId = getLSId();
+	public static int neighbours = 5;
+	public static int scoreInMs = 5;
+	public static String nickname = "Tap refresh";
+	public static String nicknameNew = "nickname";
+	public static boolean saveAndShow = false;
 
 	public void leaderboardSave(Object... args) {
-		try {
-			log.info("\nLeaderboard Save");
-			if (!hasConnection(IntroActivity.context))
-				return;
-			PlaytomicLeaderboards leaderboards = new PlaytomicLeaderboards();
-
-			// we need to set a listener
-			leaderboards.setRequestListener(new PlaytomicRequestListener<PlaytomicScore>() {
-				@Override
-				public void onRequestFinished(PlaytomicResponse playtomicResponse) {
-					if (playtomicResponse.getSuccess()) {
-						// we call a function for successed cases
-						requestLeaderBoardSaveFinished();
-					} else {
-						// we call a function for failed cases
-						requestLeaderBoardSaveFailed(playtomicResponse.getErrorCode(), playtomicResponse.getErrorMessage());
-					}
-				}
-
-			});
-
-			String playerName = (String) args[0];
-			int points = Integer.parseInt((String) args[1]);
-			String unique = (String) args[2];
-			String stage = (String) args[3];
-
-			PlaytomicScore score = new PlaytomicScore(unique + "-" + playerName, points);
-			LinkedHashMap<String, String> customData = score.getCustomData();
-			// customData.put("playerName", playerName);
-			customData.put("stage", stage);
-
-			if (exists(score)) {
-				Toast.makeText(IntroActivity.context, "Hey You already sent it before! No need to repeat!", Toast.LENGTH_SHORT).show();
-				return;
-			}
-			IntroActivity.startLoadingDialog(IntroActivity.context, "", false);
-			leaderboards.save(HIGHSCORES, score, true, true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private boolean exists(PlaytomicScore score) {
-		try {
-			for (PlaytomicScore sc : scoreList) {
-				if (sc.getName().equals(score.getName()) && score.getPoints() == sc.getPoints()) {
-					return true;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	private void requestLeaderBoardSaveFinished() {
-		log.info("\nSave score success");
-		IntroActivity.stopLoadingDialog();
-		Toast.makeText(IntroActivity.context, "Hey You did it! A New High Score!!!", Toast.LENGTH_SHORT).show();
-	}
-
-	private void requestLeaderBoardSaveFailed(int errorCode, String message) {
-		log.info("\nLeaderboard save failed to save because of errorcode #" + errorCode + " - Message:" + message);
-		IntroActivity.stopLoadingDialog();
-		Toast.makeText(IntroActivity.context, "Oops! It looks like Server is down right now.!!!", Toast.LENGTH_SHORT).show();
-	}
-
-	public void leaderBoardList() {
-		log.info("\nLeaderboard List");
-		if (!hasConnection(IntroActivity.context))
+		LogUtil.log("\nLeaderboard Save");
+		if (!hasConnection())
 			return;
-		IntroActivity.startLoadingDialog(IntroActivity.context, "", false);
-		PlaytomicLeaderboards leaderboards = new PlaytomicLeaderboards();
 
-		// we need to set a listener
-		leaderboards.setRequestListener(new PlaytomicRequestListener<PlaytomicScore>() {
-
-			@Override
-			public void onRequestFinished(PlaytomicResponse playtomicResponse) {
-				if (playtomicResponse.getSuccess()) {
-					// we call a function for successed cases
-					requestLeaderBoardListFinished(playtomicResponse.getData());
-				} else {
-					// we call a function for failed cases
-					requestLeaderBoardListFailed(playtomicResponse.getErrorCode(), playtomicResponse.getErrorMessage());
-				}
-			}
-		});
-
-		leaderboards.list(HIGHSCORES, true, "alltime", 1, 50, null);
+		try {
+			leaderboardSchemaId = getLSId();
+			scoreInMs = Integer.parseInt((String) args[0]);
+			saveAndShow = (Boolean) args[1];
+			new SaveOperation().execute();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
 	}
 
-	private boolean hasConnection(Context ctx) {
+	private class GetNameOperation extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			LogUtil.log("GetNameOperation.doInBackground");
+			IntroActivity.startLoadingDialog(IntroActivity.context, "", false);
+			try {
+				nickname = Geosophic_ServiceController.getPlayerNickname();
+			} catch (Exception e) {
+				e.printStackTrace();
+				return "Error";
+			}
+			return "Executed";
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			LogUtil.log("GetNameOperation.onPostExecute");
+			IntroActivity.stopLoadingDialog();
+			if (result.equals("Executed")) {
+				// Toast.makeText(IntroActivity.context,
+				// "Hey! It is done!", Toast.LENGTH_SHORT).show();
+			}
+			if (result.equals("Error")) {
+				Toast.makeText(IntroActivity.context, "Oops! It looks like Server is down right now.!!!", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+
+	private class UpdateNameOperation extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			LogUtil.log("UpdateNameOperation.doInBackground");
+			// IntroActivity.startLoadingDialog(IntroActivity.context,
+			// "", false);
+			try {
+				Geosophic_NicknameResponse nicknameResponse = Geosophic_ServiceController.updateUserNickname(nicknameNew);
+				if (nicknameResponse.isNicknameAvailable()) {
+					// Toast.makeText(IntroActivity.context,
+					// "Hey! Rename is done!", Toast.LENGTH_SHORT).show();
+					nickname = nicknameNew;
+				} else {
+					return nicknameResponse.getSuggestedNickname();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				return "Error";
+			}
+			return "Executed";
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			LogUtil.log("UpdateNameOperation.onPostExecute");
+			// IntroActivity.stopLoadingDialog();
+			if (result.equals("Executed")) {
+				Toast.makeText(IntroActivity.context, "Hey! Rename is done!", Toast.LENGTH_SHORT).show();
+			} else if (result.equals("Error")) {
+				Toast.makeText(IntroActivity.context, "Oops! It looks like Server is down right now.!!!", Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(IntroActivity.context, "Hey! This name is not available! Try " + result + "?", Toast.LENGTH_LONG).show();
+
+			}
+		}
+	}
+
+	private class SaveOperation extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			LogUtil.log("SaveOperation.doInBackground");
+			IntroActivity.startLoadingDialog(IntroActivity.context, "", false);
+			try {
+				if (Geosophic_ServiceController.isServiceActive())
+					Geosophic_ServiceController.postScore(leaderboardSchemaId, scoreInMs);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return "Error";
+			}
+			return "Executed";
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			LogUtil.log("SaveOperation.onPostExecute");
+			IntroActivity.stopLoadingDialog();
+			if (result.equals("Executed")) {
+				// Toast.makeText(IntroActivity.context,
+				// "Hey! It is done! Relist you may do!",
+				// Toast.LENGTH_SHORT).show();
+				if (saveAndShow)
+					leaderBoardShow();
+			}
+			if (result.equals("Error")) {
+				Toast.makeText(IntroActivity.context, "Oops! It looks like Server is down right now.!!!", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+
+	public void leaderBoardUpdateNickname(String newname) {
+		LogUtil.log("\nLeaderboard Update Nickname");
+		if (!hasConnection())
+			return;
+
+		nicknameNew = newname;
+		new UpdateNameOperation().execute();
+
+	}
+
+	public void leaderBoardRefreshNicknameSync() {
+		LogUtil.log("\nLeaderboard Refresh Nickname");
+		if (!hasConnection())
+			return;
+
+		nickname = Geosophic_ServiceController.getPlayerNickname();
+		if (nickname.equalsIgnoreCase("null")) {
+			nickname = "Owly";
+			Toast.makeText(IntroActivity.context, "Hey, World has to know you! Send Online your best and Rename!", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	public String getLeaderBoardNickname() {
+		LogUtil.log("\ngetLeaderBoardNickname()");
+		if (!hasConnection())
+			return "";
+
+		nickname = Geosophic_ServiceController.getPlayerNickname();
+		if (nickname.equalsIgnoreCase("null")) {
+			nickname = "Owly";
+			Toast.makeText(IntroActivity.context, "Hey, World has to know you! Send Online your best and Rename!", Toast.LENGTH_SHORT).show();
+		}
+		return nickname;
+	}
+
+	public void leaderBoardRefreshNickname() {
+		LogUtil.log("\nLeaderboard Refresh Nickname");
+		if (!hasConnection())
+			return;
+
+		new GetNameOperation().execute();
+
+	}
+
+	public void leaderBoardShow() {
+		LogUtil.log("\nLeaderboard Show");
+		if (!hasConnection())
+			return;
+
+		leaderboardSchemaId = getLSId();
+		try {
+			Geosophic_ServiceController.showLeaderboardView(leaderboardSchemaId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private static int getLSId() {
+		return 547;
+	}
+
+	public boolean hasConnection() {
+		return hasConnection(IntroActivity.context);
+	}
+
+	public boolean hasConnection(Context ctx) {
 		ConnectivityManager conMgr = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo i = conMgr.getActiveNetworkInfo();
 		boolean res = true;
@@ -125,23 +218,10 @@ public class LeaderBoardUtil {
 			res = false;
 		else if (!i.isAvailable())
 			res = false;
-		System.out.println("hasConnection:" + res);
+		// LogUtil.log("hasConnection:" + res);
 		if (!res)
 			Toast.makeText(ctx, "You are not ONLINE!!!", Toast.LENGTH_SHORT).show();
 		return res;
-	}
-
-	private void requestLeaderBoardListFinished(ArrayList<PlaytomicScore> data) {
-		scoreList = data;
-		IntroActivity.stopLoadingDialog();
-		IntroActivity.context.prepareGlobalRanking();
-	}
-
-	private void requestLeaderBoardListFailed(int errorCode, String message) {
-		scoreList = new ArrayList<PlaytomicScore>();
-		log.info("Leaderboard list failed to list because of errorcode #" + errorCode + " - Message:" + message);
-		IntroActivity.stopLoadingDialog();
-		Toast.makeText(IntroActivity.context, "Oops! It looks like Server is down right now!!!", Toast.LENGTH_SHORT).show();
 	}
 
 }

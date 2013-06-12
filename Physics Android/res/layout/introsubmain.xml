@@ -66,6 +66,12 @@
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <Button
+                android:id="@+id/Button05"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/buttonsmain12" />
+
+            <Button
                 android:id="@+id/Button02"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

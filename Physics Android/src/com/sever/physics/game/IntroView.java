@@ -12,7 +12,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.sever.physic.IntroActivity;
-import com.sever.physic.PhysicsActivity;
 import com.sever.physic.PreStartActivity;
 
 public class IntroView extends SurfaceView implements SurfaceHolder.Callback {

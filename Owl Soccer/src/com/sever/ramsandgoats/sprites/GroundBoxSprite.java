@@ -31,7 +31,7 @@ public class GroundBoxSprite extends FreeSprite {
 	public void createShape(float hx, float hy) {
 		PolygonDef wallDef = new PolygonDef();
 		wallDef.setAsBox(hx / Constants.pixelpermeter, hy / Constants.pixelpermeter);
-		wallDef.friction = 0.5f;
+		wallDef.friction = 1.0f;
 		wallDef.restitution = 0.2f;
 
 		getBody().createShape(wallDef);

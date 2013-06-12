@@ -119,7 +119,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		// left goal post
 		addGroundBoxStatic(0, 270, 50, 10);
 		// right goal post
-		addGroundBoxStatic(1024, 270, 50, 10);
+		addGroundBoxStatic(Constants.upperBoundxScreen, 270, 50, 10);
 
 		// addPlanet(this.getWidth() * 0.5f, this.getHeight() * 0.75f);
 		// addBall(400, 150);
@@ -128,8 +128,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		// addBox2(500, 500);
 		// addBox2(500, 150);
 		addPlayer(200, 210, true);
-		addBall(500, 210);
 		addPlayer(900, 210, false);
+		addBall(500, 210);
 	}
 
 	public ConcurrentLinkedQueue<FreeSprite> playerSprite = new ConcurrentLinkedQueue<FreeSprite>();
@@ -252,6 +252,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	private void update() {
 		PhysicsWorldManager.mWorld.update();
+		if (checkForGoal()) {
+			((SoccerBallSprite) getBall()).restartSprite(500, 500);
+		}
 	}
 
 	@Override
@@ -353,7 +356,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	public FreeSprite getBall() {
-		return (FreeSprite) playerSprite.toArray()[1];
+		return (FreeSprite) playerSprite.toArray()[2];
 	}
 
+	public boolean checkForGoal() {
+		if (getBall().x < 20 || getBall().x > 1024 - 20) {
+			if (getBall().y < 300) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

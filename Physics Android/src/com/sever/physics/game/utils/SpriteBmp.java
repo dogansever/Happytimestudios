@@ -21,7 +21,7 @@ public class SpriteBmp {
 	public SpriteBmp(ArrayList<Bitmap> bmp, ArrayList<int[]> colsrows) {
 		super();
 		if (bmp.size() != colsrows.size()) {
-			System.out.println("SpriteBmp input error");
+			LogUtil.log("SpriteBmp input error");
 			return;
 		}
 
@@ -61,8 +61,8 @@ public class SpriteBmp {
 		try {
 			return bmpArray.get(bmpIndex);
 		} catch (Exception e) {
-			System.out.println("bmpArray:" + bmpArray);
-			System.out.println("bmpIndex:" + bmpIndex);
+			LogUtil.log("bmpArray:" + bmpArray);
+			LogUtil.log("bmpIndex:" + bmpIndex);
 			e.printStackTrace();
 			return null;
 		}

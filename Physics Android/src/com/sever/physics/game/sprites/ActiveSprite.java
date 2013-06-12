@@ -18,7 +18,7 @@ import com.sever.physics.game.utils.WeaponsManager;
 public class ActiveSprite extends FreeSprite {
 
 	public int velocity_MAX = 50;
-	public float frictionConstant = 0.85f;//1.0f no friction
+	public float frictionConstant = 0.85f;// 1.0f no friction
 	public int life_AGG = +1;
 	public int life_MAX = 100;
 	public int life = life_MAX;
@@ -28,8 +28,9 @@ public class ActiveSprite extends FreeSprite {
 	public FireArrowSprite fireArrowSprite;
 
 	public int fuel;
+	public boolean throttlePermitted;
 	public int fuel_AGG = +1;
-	public final int fuel_MAX = 100;
+	public int fuel_MAX = 100;
 	public int firePower;
 	public int firePowerOld;
 	public int firePower_AGG = +1;
@@ -108,7 +109,7 @@ public class ActiveSprite extends FreeSprite {
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
 		bmp.add(BitmapManager.fuelBar);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
-		colsrows.add(new int[] { 10, 1 });
+		colsrows.add(new int[] { 10, 2 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		fuelBarSprite = new FuelBarSprite(this, gameView, spriteBmp, x, y);
 	}
@@ -143,7 +144,7 @@ public class ActiveSprite extends FreeSprite {
 
 	public void checkVelocity() {
 		float max = velocity_MAX;
-		// System.out.println("getBody().getLinearVelocity():(x,y) (" +
+		// LogUtil.log("getBody().getLinearVelocity():(x,y) (" +
 		// getBody().getLinearVelocity().x + "," +
 		// getBody().getLinearVelocity().y + ")");
 		if (getBody().getLinearVelocity().x < -max) {
@@ -205,7 +206,7 @@ public class ActiveSprite extends FreeSprite {
 		body.applyImpulse(force, body.getWorldCenter());
 
 		checkVelocity();
-		// System.out.println("!!!Kicked it!!!:" + index + ", force:x:" +
+		// LogUtil.log("!!!Kicked it!!!:" + index + ", force:x:" +
 		// force.x + ", y:" + force.y);
 	}
 
@@ -229,6 +230,11 @@ public class ActiveSprite extends FreeSprite {
 		if (!fly)
 			return;
 		throttle(0);
+		smoker();
+
+	}
+
+	private void smoker() {
 		if (smokeFreqInFPS-- == 0) {
 			if (wt == WeaponTypes.BOSS3) {
 				// gameView.addSmoke(x - width* 0.4f, y - height * 0.3f);
@@ -249,11 +255,13 @@ public class ActiveSprite extends FreeSprite {
 	public void throttleLeft() {
 		facingRigth = false;
 		throttle(2);
+		smoker();
 	}
 
 	public void throttleRight() {
 		facingRigth = true;
 		throttle(3);
+		smoker();
 	}
 
 	public boolean isMissileFacingRight(FreeSprite target) {
@@ -282,7 +290,7 @@ public class ActiveSprite extends FreeSprite {
 		float yt = (firePower * fireMultiplier / firePower_MAX) * force.y;
 		Vec2 v = new Vec2(xt, yt);
 
-		// System.out.println("getVelocityVec: x:" + v.x + ", y:" + v.y);
+		// LogUtil.log("getVelocityVec: x:" + v.x + ", y:" + v.y);
 		return v;
 	}
 
@@ -321,8 +329,8 @@ public class ActiveSprite extends FreeSprite {
 		float yt = (firePowerx * fireMultiplier / firePower_MAX) * force.y;
 		Vec2 v = new Vec2(xt, yt);
 
-		// System.out.println("force():(" + force.x + "," + force.y + ")");
-		// System.out.println("getVelocityVec():(" + xt + "," + yt + ")");
+		// LogUtil.log("force():(" + force.x + "," + force.y + ")");
+		// LogUtil.log("getVelocityVec():(" + xt + "," + yt + ")");
 		return v;
 	}
 

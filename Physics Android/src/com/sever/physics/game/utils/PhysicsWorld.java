@@ -7,8 +7,6 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 
-import com.sever.physic.PhysicsActivity;
-
 public class PhysicsWorld {
 	public ArrayList<Body> bodies = new ArrayList<Body>();
 	public AABB worldAABB;

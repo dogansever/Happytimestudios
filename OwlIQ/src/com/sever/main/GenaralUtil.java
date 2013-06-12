@@ -9,6 +9,7 @@ import android.util.Patterns;
 
 public class GenaralUtil {
 
+	public static String publisherID = "a151a466abc6a53";
 	public static String getEmail(Context context) {
 		String email = "";
 		Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+

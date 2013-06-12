@@ -1,7 +1,6 @@
 package com.sever.physics.game;
 
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.view.SurfaceHolder;
 
 import com.sever.physics.game.utils.Constants;
@@ -59,7 +58,7 @@ public class GameLoopThread extends Thread {
 				}
 			}
 			sleepTime = ticksPS - (System.currentTimeMillis() - startTime);
-			// System.out.println("sleepTime:" + sleepTime + " ms");
+			// LogUtil.log("sleepTime:" + sleepTime + " ms");
 			try {
 				if (sleepTime > 0)
 					sleep(sleepTime);
@@ -76,7 +75,7 @@ public class GameLoopThread extends Thread {
 		if (now - framesTimer > 1000) {
 			framesTimer = now;
 			framesCountAvg = framesCount;
-			System.out.println("framesCountAvg:" + framesCountAvg);
+//			LogUtil.log("framesCountAvg:" + framesCountAvg);
 			framesCount = 0;
 		}
 	}

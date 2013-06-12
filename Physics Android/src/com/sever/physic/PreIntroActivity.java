@@ -1,8 +1,5 @@
 package com.sever.physic;
 
-import com.sever.physics.game.utils.SoundEffectsManager;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,13 +8,17 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-public class PreIntroActivity extends Activity {
+import com.geosophic.service.Geosophic_Activity;
+import com.sever.physics.game.utils.LogUtil;
+import com.sever.physics.game.utils.SoundEffectsManager;
+
+public class PreIntroActivity extends Geosophic_Activity {
 
 	public final Handler mHandler = new Handler();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		System.out.println("onCreate:" + this);
+		LogUtil.log("onCreate:" + this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.preintro);
 		SoundEffectsManager.startIntroAmbianceSound(PreIntroActivity.this);
@@ -57,14 +58,14 @@ public class PreIntroActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		System.out.println("onDestroy:" + this);
+		LogUtil.log("onDestroy:" + this);
 		super.onDestroy();
 		clearBackground();
 	}
 
 	@Override
 	protected void onResume() {
-		System.out.println("onResume:" + this);
+		LogUtil.log("onResume:" + this);
 		super.onResume();
 		drawBackground();
 	}
@@ -85,18 +86,18 @@ public class PreIntroActivity extends Activity {
 
 			@Override
 			public void onAnimationStart(Animation animation) {
-				System.out.println("onAnimationStart");
+				LogUtil.log("onAnimationStart");
 			}
 
 			@Override
 			public void onAnimationRepeat(Animation animation) {
-				System.out.println("onAnimationRepeat");
+				LogUtil.log("onAnimationRepeat");
 
 			}
 
 			@Override
 			public void onAnimationEnd(Animation animation) {
-				System.out.println("onAnimationEnd");
+				LogUtil.log("onAnimationEnd");
 				// ImageView im = (ImageView) findViewById(R.id.imageView1);
 				// im.setBackgroundResource(R.drawable.house_full);
 				// Animation hyperspaceJumpAnimation =
@@ -111,7 +112,7 @@ public class PreIntroActivity extends Activity {
 
 	@Override
 	protected void onStop() {
-		System.out.println("onStop:" + this);
+		LogUtil.log("onStop:" + this);
 		super.onStop();
 		clearBackground();
 	}
@@ -124,7 +125,7 @@ public class PreIntroActivity extends Activity {
 
 	@Override
 	protected void onPause() {
-		System.out.println("onPause:" + this);
+		LogUtil.log("onPause:" + this);
 		super.onPause();
 		clearBackground();
 //		SoundEffectsManager.stopSound();

@@ -69,7 +69,7 @@ public class CollectItemPointerSprite extends FreeSprite {
 
 			angle = (float) Math.atan2(ty, tx);
 			angle = (float) Math.toRadians(360 - Math.toDegrees(angle));
-			// System.out.println("angle:" + Math.toDegrees(angle));
+			// LogUtil.log("angle:" + Math.toDegrees(angle));
 			if (hideFlagx && hideFlagy)
 				return;
 

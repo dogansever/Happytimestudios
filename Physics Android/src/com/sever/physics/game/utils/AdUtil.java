@@ -23,8 +23,8 @@ public class AdUtil {
 	public AdView adView;
 
 	public void createAd(Activity a) {
-		System.out.println("createAd");
-		adView = new AdView(a, AdSize.BANNER, "a15121f41d20fd7");
+		LogUtil.log("createAd");
+		adView = new AdView(a, AdSize.BANNER, "a151a46ea1cd8a4");
 		LinearLayout layout = (LinearLayout) a.findViewById(R.id.linearLayoutAdview);
 		layout.removeAllViews();
 		layout.addView(adView);
@@ -32,7 +32,7 @@ public class AdUtil {
 	}
 
 	public void destroyAd() {
-		System.out.println("destroyAd");
+		LogUtil.log("destroyAd");
 		adView.destroy();
 	}
 

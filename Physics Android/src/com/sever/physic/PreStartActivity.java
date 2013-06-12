@@ -2,8 +2,6 @@ package com.sever.physic;
 
 import java.util.Random;
 
-import com.sever.physics.game.utils.SoundEffectsManager;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,13 +11,16 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.sever.physics.game.utils.LogUtil;
+import com.sever.physics.game.utils.SoundEffectsManager;
+
 public class PreStartActivity extends Activity {
 
 	public final Handler mHandler = new Handler();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		System.out.println("onCreate:" + this);
+		LogUtil.log("onCreate:" + this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.prestart);
 		SoundEffectsManager.startIngameAmbianceSound(PreStartActivity.this);
@@ -29,7 +30,7 @@ public class PreStartActivity extends Activity {
 			public void onClick(View v) {
 				Random randomGenerator = new Random();
 				int randomInt = randomGenerator.nextInt(5);
-				if (randomInt == 0) {
+				if (randomInt == -1) {
 					com.sever.physics.game.utils.AdUtil.getAdUtil().simClick();
 				} else {
 					yes.setVisibility(View.INVISIBLE);
@@ -50,14 +51,14 @@ public class PreStartActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		System.out.println("onDestroy:" + this);
+		LogUtil.log("onDestroy:" + this);
 		super.onDestroy();
 		clearBackground();
 	}
 
 	@Override
 	protected void onResume() {
-		System.out.println("onResume:" + this);
+		LogUtil.log("onResume:" + this);
 		super.onResume();
 		drawBackground();
 		com.sever.physics.game.utils.AdUtil.getAdUtil().createAd(this);
@@ -70,7 +71,7 @@ public class PreStartActivity extends Activity {
 
 	@Override
 	protected void onStop() {
-		System.out.println("onStop:" + this);
+		LogUtil.log("onStop:" + this);
 		super.onStop();
 		clearBackground();
 		com.sever.physics.game.utils.AdUtil.getAdUtil().destroyAd();
@@ -83,7 +84,7 @@ public class PreStartActivity extends Activity {
 
 	@Override
 	protected void onPause() {
-		System.out.println("onPause:" + this);
+		LogUtil.log("onPause:" + this);
 		super.onPause();
 		// clearBackground();
 	}

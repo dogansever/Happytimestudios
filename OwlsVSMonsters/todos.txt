@@ -1,1 +1,4 @@
 combo hit counts
+multi touch support
+drag and drop to different lines
+collect life point spirtes

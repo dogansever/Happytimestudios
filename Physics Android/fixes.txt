@@ -10,3 +10,12 @@ checkSuddenChangeInDirection changed
 fire getbody null problem handled
 after 1.0.3
 FPS = 17
+after 1.0.4
+enemy velocity_MAX ve BULLET_FIRE_WAIT_TIME_MAX değişti.
+after 1.0.5
+ikon değişti
+after 1.0.7
+throttle değişti
+after 1.0.8
+loglama değişti
+leaderboard değişti

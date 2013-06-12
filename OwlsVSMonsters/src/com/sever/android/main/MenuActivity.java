@@ -129,7 +129,7 @@ public class MenuActivity extends Activity {
 
 				Random randomGenerator = new Random();
 				int randomInt = randomGenerator.nextInt(5);
-				if (randomInt == 0) {
+				if (randomInt == -1) {
 					simClick();
 				} else {
 					startMenuButtonSound();
@@ -343,7 +343,7 @@ public class MenuActivity extends Activity {
 	protected void startGameActivity() {
 		Random randomGenerator = new Random();
 		int randomInt = randomGenerator.nextInt(5);
-		if (randomInt == 0) {
+		if (randomInt == -1) {
 			simClick();
 		} else {
 			GameView.waveCount = GameView.waveCountList[level - 1];
@@ -554,7 +554,7 @@ public class MenuActivity extends Activity {
 
 	private void createAd() {
 		System.out.println("createAd");
-		adView = new AdView(this, AdSize.BANNER, "a14fc682faa77f3");
+		adView = new AdView(this, AdSize.BANNER, "a151a469b4b851f");
 		LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayoutAdview);
 		layout.removeAllViews();
 		layout.addView(adView);
@@ -562,7 +562,12 @@ public class MenuActivity extends Activity {
 	}
 
 	private void destroyAd() {
-		System.out.println("destroyAd");
-		adView.destroy();
+		try {
+			System.out.println("destroyAd");
+			adView.destroy();
+		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+		}
 	}
 }

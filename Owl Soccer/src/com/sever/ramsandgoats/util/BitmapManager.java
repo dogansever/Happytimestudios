@@ -40,7 +40,7 @@ public class BitmapManager {
 		bmpStadiumMask = createScaledBitmap(R.drawable.stadium1280x720mask, (int) GameApplication.deviceWidth, (int) GameApplication.deviceHeight);
 		bmpStadiumCheering = createScaledBitmap(R.drawable.stadium1280x720cheering, (int) GameApplication.deviceWidth * 2, (int) GameApplication.deviceHeight);
 		bmpSky = createScaledBitmap(R.drawable.sky1280x200, 0, 0);
-		bmpBall = createScaledBitmap(R.drawable.football, 0, 0);
+		bmpBall = createScaledBitmap(R.drawable.football, 30, 30);
 		bmpPlayerIdle = createScaledBitmap(R.drawable.player_idle_x2x1, 0, 0);
 		bmpPlayerRunning = createScaledBitmap(R.drawable.player_walking_x4x1, 0, 0);
 		bmpPlayerKicking = createScaledBitmap(R.drawable.player_kicking_x4x1, 0, 0);

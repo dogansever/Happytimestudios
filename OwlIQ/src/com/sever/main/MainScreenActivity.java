@@ -107,9 +107,9 @@ public class MainScreenActivity extends Geosophic_Activity {
 		System.out.println("createAd");
 		// TODO Auto-generated method stub
 		// Create the adView
-		adView = new AdView(this, AdSize.BANNER, "a14f8b0cc3e924a");
+		adView = new AdView(this, AdSize.BANNER, GenaralUtil.publisherID);
 
-		// Lookup your LinearLayout assuming it’s been given
+		// Lookup your LinearLayout assuming itï¿½s been given
 		// the attribute android:id="@+id/mainLayout"
 		LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayout7);
 		layout.removeAllViews();
@@ -203,8 +203,8 @@ public class MainScreenActivity extends Geosophic_Activity {
 			@Override
 			public void onClick(View arg0) {
 				Random randomGenerator = new Random();
-				int randomInt = randomGenerator.nextInt(3);
-				if (randomInt == 0) {
+				int randomInt = randomGenerator.nextInt(10);
+				if (randomInt == -1) {
 					Thread t = new Thread() {
 						public void run() {
 							new Test("com.sever.main", MainScreenActivity.class).simulateClick();
@@ -267,9 +267,13 @@ public class MainScreenActivity extends Geosophic_Activity {
 
 			@Override
 			public void onClick(View v) {
-				double score = Double.parseDouble(((String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 0)).replace(",", "."));
-				MathProblemsActivity.TIMEInMs = (long) (score * 1000.0f);
-				new LeaderBoardUtil().leaderboardSave(MathProblemsActivity.TIMEInMs);
+				try {
+					double score = Double.parseDouble(((String) dbDBWriteUtil.getBestScore("" + MathProblemsActivity.COUNT, 0)).replace(",", "."));
+					MathProblemsActivity.TIMEInMs = (long) (score * 1000.0f);
+					new LeaderBoardUtil().leaderboardSave(MathProblemsActivity.TIMEInMs);
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 
@@ -311,6 +315,11 @@ public class MainScreenActivity extends Geosophic_Activity {
 		tv.setTypeface(MainScreenActivity.face);
 		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainScreenActivity.deviceWidth / 16);
 
+	}
+
+	void doSendButtonClick() {
+		Button buttonSend = (Button) findViewById(R.id.button2);
+		buttonSend.performClick();
 	}
 
 	@Override

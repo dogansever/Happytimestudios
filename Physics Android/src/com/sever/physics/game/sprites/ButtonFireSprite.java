@@ -53,14 +53,14 @@ public class ButtonFireSprite extends FreeSprite {
 
 		float range = spacing(xn - x, yn - y);
 		if (range < width / 2) {
-			// System.out.println("xn:" + xn + " x:" + x + " width:" + width +
+			// LogUtil.log("xn:" + xn + " x:" + x + " width:" + width +
 			// " yn:" + yn + " y:" + y + " range:" + range);
 			return true;
 		}
 
 		// if (xn > x - width / 2 && xn < x + width / 2 && yn > y - height / 2
 		// && yn < y + height / 2) {
-		// System.out.println("xn:" + xn + " x:" + x + " width:" + width +
+		// LogUtil.log("xn:" + xn + " x:" + x + " width:" + width +
 		// " yn:" + yn + " y:" + y + " height:" + height);
 		// return true;
 		// }

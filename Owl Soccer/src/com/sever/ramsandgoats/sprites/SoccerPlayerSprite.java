@@ -1,5 +1,6 @@
 package com.sever.ramsandgoats.sprites;
 
+import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jbox2d.collision.CircleDef;
@@ -14,6 +15,9 @@ import com.sever.ramsandgoats.util.Constants;
 import com.sever.ramsandgoats.util.SpriteBmp;
 
 public class SoccerPlayerSprite extends FreeSprite {
+
+	public int jumpCountCurrent = 0;
+	public int jumpCountMAX = 2;
 
 	public SoccerPlayerSprite(ConcurrentLinkedQueue<FreeSprite> playerSprite, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
@@ -70,8 +74,21 @@ public class SoccerPlayerSprite extends FreeSprite {
 	}
 
 	public void doJump() {
-		setBmpJumpingUp();
-		throttleUp();
+		if (++jumpCountCurrent <= jumpCountMAX) {
+			setBmpJumpingUp();
+			throttleUp();
+		} else {
+			checkJumpLandingStatus();
+		}
+	}
+
+	public void checkJumpLandingStatus() {
+		System.out.println("y:" + y);
+		System.out.println("height:" + height);
+		System.out.println("Constants.lowerBoundyScreen:" + Constants.lowerBoundyScreen);
+		if (y - height <= Constants.lowerBoundyScreen) {
+			jumpCountCurrent = 0;
+		}
 	}
 
 	public void checkJumpingStatus() {
@@ -88,12 +105,24 @@ public class SoccerPlayerSprite extends FreeSprite {
 
 	public void moveForward() {
 		setBmpRunning();
-		throttleRight();
+		if (facingRigth) {
+			if (this.x < Constants.upperBoundxScreen - Constants.penaltyAreaWidth) {
+				throttleRight();
+			}
+		} else {
+			if (this.x > Constants.penaltyAreaWidth) {
+				throttleLeftCPU();
+			}
+		}
 	}
 
 	public void moveBackward() {
 		setBmpRunning();
-		throttleLeft();
+		if (facingRigth) {
+			throttleLeft();
+		} else {
+			throttleRightCPU();
+		}
 
 	}
 
@@ -184,7 +213,7 @@ public class SoccerPlayerSprite extends FreeSprite {
 		float range = spacing(positionSrc.x - positionTarget.x, positionSrc.y - positionTarget.y);
 		if (range <= FIELD_RADIUS) {
 			Body body = sprite.getBody();
-			body.setAngularVelocity((float) (Math.random() * 90));
+			body.setAngularVelocity((float) (Math.random() * 45));
 			// body.setLinearVelocity(new Vec2(0, 0));
 			Vec2 force = new Vec2(0.0f, 1.0f);
 			// Vec2 force = new Vec2(positionTarget.x - positionSrc.x,
@@ -212,7 +241,9 @@ public class SoccerPlayerSprite extends FreeSprite {
 			Vec2 force = new Vec2(positionTarget.x - positionSrc.x, positionTarget.y - positionSrc.y);
 			force.normalize(); // force direction always point to source
 			force.set(force.mul((float) (body.getMass() * Constants.gravityPushPlayer)));
-			body.applyImpulse(force, body.getWorldCenter());
+			Vec2 v = body.getWorldCenter();
+			v.set(v.x, v.y - new Random().nextInt((int) (sprite.getHeightPhysical() * 0.5)));
+			body.applyImpulse(force, v);
 		}
 
 		// applyForce(sprite.getBody(), positionSrc, FIELD_RADIUS,
@@ -224,7 +255,6 @@ public class SoccerPlayerSprite extends FreeSprite {
 
 	public void stabilizeVelocity() {
 		getBody().setLinearVelocity(new Vec2(getBody().getLinearVelocity().x * frictionConstantx, getBody().getLinearVelocity().y * frictionConstanty));
-		System.out.println("stabilizeVelocity:(" + getBody().getLinearVelocity().x + "," + getBody().getLinearVelocity().y + ")");
 	}
 
 	public void throttle(int direction, float... f) {
@@ -270,7 +300,7 @@ public class SoccerPlayerSprite extends FreeSprite {
 	}
 
 	public void throttleUp() {
-		throttle(0, 7);
+		throttle(0, 14);
 	}
 
 	public void throttleDown() {
@@ -281,8 +311,16 @@ public class SoccerPlayerSprite extends FreeSprite {
 		throttle(2);
 	}
 
+	public void throttleLeftCPU() {
+		throttle(2, 7);
+	}
+
 	public void throttleRight() {
 		throttle(3);
+	}
+
+	public void throttleRightCPU() {
+		throttle(3, 7);
 	}
 
 	public int velocity_MAX = 50;
@@ -310,6 +348,32 @@ public class SoccerPlayerSprite extends FreeSprite {
 	public void onDraw(Canvas canvas) {
 		// setBmpIdle();
 		checkJumpingStatus();
+
+		// CPU Player
+		if (!facingRigth) {
+			checkIfBehindTheBall();
+		}
+
 		super.onDraw(canvas);
+	}
+
+	private void checkIfBehindTheBall() {
+		if (gameView.getBall().x >= this.x) {
+			moveBackward();
+		} else if (gameView.getBall().y > this.y && gameView.getBall().getBody().getLinearVelocity().x > 5) {
+			doJump();
+			moveBackward();
+		} else if (gameView.getBall().x > this.x && gameView.getBall().y < this.y) {
+			doJump();
+			moveBackward();
+		} else {
+			moveForward();
+		}
+
+		if (gameView.getBall().x > this.x && getDistanceFrom(gameView.getBall()) < getWidthPhysical() * 1.0f) {
+			doBallTrick();
+		} else if (getDistanceFrom(gameView.getBall()) < getWidthPhysical() * 1.0f && (gameView.getBall().y < this.y) && (gameView.getBall().x < this.x)) {
+			doBallKick();
+		}
 	}
 }

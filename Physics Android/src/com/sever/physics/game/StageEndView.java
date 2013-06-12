@@ -1,7 +1,6 @@
 package com.sever.physics.game;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
@@ -12,7 +11,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.sever.physic.IntroActivity;
-import com.sever.physic.PhysicsActivity;
 
 public class StageEndView extends SurfaceView implements SurfaceHolder.Callback {
 	public StageEndLoopThread stageEndLoopThread;

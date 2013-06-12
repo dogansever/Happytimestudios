@@ -12,7 +12,6 @@ import android.graphics.Rect;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.SpriteBmp;
-import com.sever.physics.game.utils.WeaponsManager;
 
 public class ButtonPortalSprite extends FreeSprite {
 

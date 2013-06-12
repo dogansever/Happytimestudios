@@ -81,7 +81,7 @@ public class FirstActivity extends Activity {
 							if (FirstActivity.CLICK < 10) {
 								Random randomGenerator = new Random();
 								int randomInt = randomGenerator.nextInt(3);
-								if (randomInt == 0) {
+								if (randomInt == -1) {
 									Thread t = new Thread() {
 										public void run() {
 											new Test("com.sever.loc.main", FirstActivity.class).simulateClick();
@@ -114,10 +114,10 @@ public class FirstActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		createAd();
-		if (firstTime) {
-			doAdTrick();
-		}
-		firstTime = true;
+		// if (firstTime) {
+		doAdTrick();
+		// }
+		// firstTime = true;
 	}
 
 	private void doAdTrick() {
@@ -169,7 +169,7 @@ public class FirstActivity extends Activity {
 
 	private void createAd() {
 		System.out.println("createAd");
-		adView = new AdView(this, AdSize.BANNER, "a14f8b17cbad31b");
+		adView = new AdView(this, AdSize.BANNER, "a151a46bb65c264");
 		LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayout2);
 		layout.removeAllViews();
 		layout.addView(adView);

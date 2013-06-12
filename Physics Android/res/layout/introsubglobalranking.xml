@@ -10,18 +10,6 @@
         android:layout_centerInParent="true"
         android:background="@drawable/bckgrnd"
         android:padding="20px" >
-
-        <ListView
-            android:id="@+id/listView1"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:background="@android:color/transparent"
-            android:cacheColorHint="@android:color/transparent"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="4px"
-            android:overScrollMode="never"
-            android:scrollbars="none" >
-        </ListView>
     </RelativeLayout>
 
     <RelativeLayout

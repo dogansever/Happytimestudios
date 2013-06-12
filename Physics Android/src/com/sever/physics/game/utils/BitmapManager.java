@@ -2,12 +2,7 @@ package com.sever.physics.game.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
 
-import com.sever.physic.IntroActivity;
 import com.sever.physic.PhysicsActivity;
 import com.sever.physic.PhysicsApplication;
 import com.sever.physic.R;
@@ -93,7 +88,7 @@ public class BitmapManager {
 		bombexploding = createScaledBitmap(R.drawable.explosion01x4x1, 0, 0);
 		powerBar = createScaledBitmap(R.drawable.powerbar, (int) (225 * 0.4f), (int) (20 * 0.4f));
 		lifeBar = createScaledBitmap(R.drawable.progressbarslife, (int) (225 * 0.4f), (int) (20 * 0.4f));
-		fuelBar = createScaledBitmap(R.drawable.fuelbar, 60, 45);
+		fuelBar = createScaledBitmap(R.drawable.fuelbar, 0, 0);
 		joystick = createScaledBitmap(R.drawable.joystick, 0, 0);
 		fireButton = createScaledBitmap(R.drawable.buttonsfire, 0, 0);
 		fireArrow = createScaledBitmap(R.drawable.firearrowx10, 0, 0);
@@ -103,7 +98,7 @@ public class BitmapManager {
 		portalButton = createScaledBitmap(R.drawable.buttonsportal, 0, 0);
 		stagePassBar = createScaledBitmap(R.drawable.progressbarsstage, 0, 0);
 		lifeBarBonus = createScaledBitmap(R.drawable.progressbarstime, 0, 0);
-		smoke = createScaledBitmap(R.drawable.smokex2x1, 0, 0);
+		smoke = createScaledBitmap(R.drawable.smokex4x1, 0, 0);
 		bmpFirstAidKit = createScaledBitmap(R.drawable.firstaidkitx2x1, 0, 0);
 		firstAidKitpointer = createScaledBitmap(R.drawable.firstaidkitpointerx2x1, 0, 0);
 		portal = createScaledBitmap(R.drawable.portalx4x1, 0, 0);

@@ -313,7 +313,7 @@ public class LocationMeterActivity extends MapActivity {
 
 	private void createAd() {
 		System.out.println("createAd");
-		adView = new AdView(this, AdSize.BANNER, "a14f8b17cbad31b");
+		adView = new AdView(this, AdSize.BANNER, "a151a46bb65c264");
 		LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayout8ad);
 		layout.removeAllViews();
 		layout.addView(adView);

@@ -1,8 +1,5 @@
 package com.sever.physics.game.sprites;
 
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jbox2d.collision.CircleDef;
@@ -44,6 +41,7 @@ public class PlayerSprite extends ActiveSprite {
 		this.y = y;
 		this.noRotation = true;
 		this.spriteList = spriteList;
+		fuel_MAX = 200;
 		fuel = fuel_MAX;
 		alive = true;
 		addSprite(x, y);
@@ -146,7 +144,7 @@ public class PlayerSprite extends ActiveSprite {
 		if (!gameView.idle && (!portalingin && !portalingout)) {
 			super.onDraw(canvas);
 			lifeBarSprite.onDraw(canvas);
-			// fuelBarSprite.onDraw(canvas);
+			fuelBarSprite.onDraw(canvas);
 			if (!WeaponsManager.getManager().getWeaponByType(weapon.getType()).fireAtMaxSpeed) {
 				powerBarSprite.onDraw(canvas);
 			}
@@ -235,7 +233,7 @@ public class PlayerSprite extends ActiveSprite {
 		if (sprite == null)
 			shiftLockOnME();
 
-		// System.out.println("shiftCheck starting...x:" + this.x);
+		// LogUtil.log("shiftCheck starting...x:" + this.x);
 		if (sprite.x > PhysicsApplication.deviceWidth * 0.5) {
 			Constants.extraWidthOffset = sprite.x - PhysicsApplication.deviceWidth * 0.5f;
 			if (Constants.extraWidthOffset < 0)
@@ -254,32 +252,43 @@ public class PlayerSprite extends ActiveSprite {
 		} else {
 			Constants.extraHeightOffset = 0;
 		}
-		// System.out.println("shiftCheck ending...x:" + this.x +
+		// LogUtil.log("shiftCheck ending...x:" + this.x +
 		// ",extraWidthOffset:" + Constants.extraWidthOffset);
-		// System.out.println("shiftCheck ending...y:" + this.y +
+		// LogUtil.log("shiftCheck ending...y:" + this.y +
 		// ",extraHeightOffset:" + Constants.extraHeightOffset);
 	}
 
 	public boolean throttleHold() {
-		// fuel_AGG = -1;
-		// fuel = fuel + fuel_AGG;
-		// if (fuel <= 0) {
-		// fuel = 0;
-		// throttleOffBmp();
-		// return false;
-		// }
-		return true;
+		if (throttlePermitted) {
+			fuel_AGG = -1;
+			fuel = fuel + fuel_AGG;
+			if (fuel <= 0) {
+				fuel = 0;
+				throttlePermitted = false;
+				fuelBarSprite.makeRedAlert();
+				throttleOffBmp();
+				return false;
+			}
+			fuelBarSprite.makeGreenAlert();
+			return true;
+		}
+		return false;
 	}
 
 	public void throttleLeave() {
 		throttleOffBmp();
 		stabilizeVelocity();
-		// fuel_AGG = 5;
-		// fuel = fuel + fuel_AGG;
-		// if (fuel >= fuel_MAX) {
-		// fuel = fuel_MAX;
-		// return;
-		// }
+		if (throttlePermitted)
+			fuel_AGG = 5;
+		else
+			fuel_AGG = 15;
+		fuel = fuel + fuel_AGG;
+		if (fuel >= fuel_MAX) {
+			fuel = fuel_MAX;
+			fuelBarSprite.makeGreenAlert();
+			throttlePermitted = true;
+			return;
+		}
 	}
 
 	public void fireHold() {
@@ -406,16 +415,16 @@ public class PlayerSprite extends ActiveSprite {
 
 	public void fireMissileLight() {
 		try {
-			System.out.println("fireMissileLight:");
+//			LogUtil.log("fireMissileLight:");
 			FreeSprite bullet = gameView.addMissileLight(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f, facingRigth);
 			bullet.setAngle((float) Math.toRadians(!facingRigth ? fireArrowSprite.getAngle() : 360 - fireArrowSprite.getAngle()));
 			Body bulletBody = bullet.getBody();
-			System.out.println("bulletBody:" + bulletBody);
+//			LogUtil.log("bulletBody:" + bulletBody);
 			if (bulletBody == null) {
 				bullet.killSprite();
 			} else {
 				bulletBody.setLinearVelocity(getVelocityVec(fireMultiplierMissile));
-				System.out.println("bulletBody.LinearVelocity:(" + bulletBody.getLinearVelocity().x + ", " + +bulletBody.getLinearVelocity().y + ")");
+//				LogUtil.log("bulletBody.LinearVelocity:(" + bulletBody.getLinearVelocity().x + ", " + +bulletBody.getLinearVelocity().y + ")");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -568,7 +577,7 @@ public class PlayerSprite extends ActiveSprite {
 		Vec2 positionSrc = this.getBody().getPosition();
 		float range = spacing(positionSrc.x - positionTarget.x, positionSrc.y - positionTarget.y);
 		// if (CLOSE_FIELD_RADIUS <= range && range <= FIELD_RADIUS) {
-		// // System.out.println("!!!Pulled it!!!:" + index);
+		// // LogUtil.log("!!!Pulled it!!!:" + index);
 		// Vec2 force = new Vec2(positionSrc.x - positionTarget.x, positionSrc.y
 		// - positionTarget.y + height / Constants.pixelpermeter);
 		// force.normalize(); // force direction always point to source

@@ -19,12 +19,13 @@ import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SoundEffectsManager;
 import com.sever.physics.game.utils.SpriteBmp;
+import com.sever.physics.game.utils.TextDrawingManager;
 import com.sever.physics.game.utils.WeaponTypes;
 import com.sever.physics.game.utils.WeaponsManager;
 
 public class EnemySprite extends ActiveSprite {
 
-	private static final int BULLET_FIRE_WAIT_TIME_MAX = 30;
+	private static final int BULLET_FIRE_WAIT_TIME_MAX = Constants.FPS * 3;
 	public int BULLET_FIRE_COUNT = 0;
 	public boolean powerOn;
 	public boolean scatter;
@@ -54,9 +55,10 @@ public class EnemySprite extends ActiveSprite {
 		this.spriteList = spriteList;
 		addSprite(x, y);
 		addLifeBarSprite();
-		velocity_MAX = 30;
+		velocity_MAX = 15 + new Random().nextInt((int) (30));
 		addEnemyPointerSprite();
-		smokeFreqMAXInFPS = (int) (Constants.FPS * 0.1f);
+		smokeFreqMAXInFPS = (int) (Constants.FPS * 0.2f);
+		smokeFreqInFPS = smokeFreqMAXInFPS;
 	}
 
 	public void addEnemyPointerSprite() {
@@ -175,7 +177,7 @@ public class EnemySprite extends ActiveSprite {
 			VELY = 30;
 			v = new Vec2((facingRigth ? 1 : -1) * VELX, VELY);
 		}
-		// System.out.println("Vec2 x:" + v.x + ",y:" + v.y);
+		// LogUtil.log("Vec2 x:" + v.x + ",y:" + v.y);
 		return v;
 	}
 
@@ -210,7 +212,7 @@ public class EnemySprite extends ActiveSprite {
 				if (wt == WeaponTypes.BOSS1 || wt == WeaponTypes.BOSS2 || wt == WeaponTypes.BOSS3) {
 					BULLET_FIRE_WAIT_TIME = (int) (BULLET_FIRE_WAIT_TIME_MAX * 0.25f);
 				} else {
-					BULLET_FIRE_WAIT_TIME = BULLET_FIRE_WAIT_TIME_MAX + new Random().nextInt(BULLET_FIRE_WAIT_TIME_MAX);
+					BULLET_FIRE_WAIT_TIME = (int) (BULLET_FIRE_WAIT_TIME_MAX + new Random().nextInt((int) (BULLET_FIRE_WAIT_TIME_MAX * 0.5f)));
 				}
 				fire();
 			}
@@ -223,7 +225,7 @@ public class EnemySprite extends ActiveSprite {
 		// throttleLeave();
 		if (killed && killpointx != -1) {
 			Integer bonus = WeaponsManager.getManager().getBonusByEnemyWT(((EnemySprite) this).getWt(), ((EnemySprite) this).getFly());
-			gameView.addTextDrawingPojo(new TextDrawingPojo("+" + bonus, killpointx, killpointy, 255));
+			TextDrawingManager.getManager().addTextDrawingPojo(new TextDrawingPojo("+" + bonus, killpointx, killpointy, 255));
 			killpointx = -1;
 			killpointy = -1;
 			// drawText("+" + bonus, canvas, killpointx -
@@ -288,7 +290,7 @@ public class EnemySprite extends ActiveSprite {
 		float minDistanceBetweeny = 50;
 		float targetx = gameView.getPlayerSprite().x;
 		float targety = gameView.getPlayerSprite().y;
-		// System.out.println("targetx:" + targetx + ",x:" + x + "    targety:"
+		// LogUtil.log("targetx:" + targetx + ",x:" + x + "    targety:"
 		// + targety + ",y:" + y);
 
 		// if player is higher fly
@@ -414,7 +416,7 @@ public class EnemySprite extends ActiveSprite {
 		Vec2 positionSrc = this.getBody().getPosition();
 		float range = spacing(positionSrc.x - positionTarget.x, positionSrc.y - positionTarget.y);
 		// if (CLOSE_FIELD_RADIUS <= range && range <= FIELD_RADIUS) {
-		// // System.out.println("!!!Pulled it!!!:" + index);
+		// // LogUtil.log("!!!Pulled it!!!:" + index);
 		// Vec2 force = new Vec2(positionSrc.x - positionTarget.x, positionSrc.y
 		// - positionTarget.y + height / Constants.pixelpermeter);
 		// force.normalize(); // force direction always point to source

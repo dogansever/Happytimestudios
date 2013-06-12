@@ -1,7 +1,5 @@
 package com.sever.physics.game.sprites;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.jbox2d.common.Vec2;
 
 import android.graphics.Bitmap;
@@ -101,7 +99,7 @@ public class FireArrowSprite extends FreeSprite {
 	}
 
 	public float getAngle() {
-		// System.out.println("getAngle():" + (angle + 45));
+		// LogUtil.log("getAngle():" + (angle + 45));
 		return angle + 45;
 	}
 

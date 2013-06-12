@@ -9,7 +9,6 @@ import android.graphics.Canvas;
 import com.sever.physics.game.GameView;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.WeaponTypes;
-import com.sever.physics.game.utils.WeaponsManager;
 
 public class MissileLockingSprite extends MissileSprite {
 
@@ -45,7 +44,7 @@ public class MissileLockingSprite extends MissileSprite {
 	}
 
 	public Vec2 getVelocityVec(FreeSprite target) {
-		// System.out.println("getLinearVelocity(): x:" +
+		// LogUtil.log("getLinearVelocity(): x:" +
 		// getBody().getLinearVelocity().x + ", y:" +
 		// getBody().getLinearVelocity().x);
 		Vec2 force = new Vec2(target.x - this.x, target.y - this.y);
@@ -55,7 +54,7 @@ public class MissileLockingSprite extends MissileSprite {
 		float yt = ActiveSprite.fireMultiplierMissileLocking * force.y;
 		Vec2 v = new Vec2(xt, yt);
 
-		// System.out.println("MissileLockingSprite getVelocityVec: x:" + v.x +
+		// LogUtil.log("MissileLockingSprite getVelocityVec: x:" + v.x +
 		// ", y:" + v.y);
 		return v;
 	}

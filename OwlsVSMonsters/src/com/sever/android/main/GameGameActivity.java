@@ -17,9 +17,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -33,7 +36,7 @@ import com.sever.android.main.game.GameView;
 import com.sever.android.main.sprite.OwlSprite;
 import com.sever.android.main.utils.Operation;
 
-public class GameGameActivity extends Activity {
+public class GameGameActivity extends Activity implements OnTouchListener {
 	private static boolean SHOW_INFO_2X = false;
 	private static boolean SHOW_INFO_3X = false;
 	private boolean paused = false;
@@ -44,6 +47,55 @@ public class GameGameActivity extends Activity {
 	public static boolean destroyed = true;
 	public boolean prepared = false;
 	public static GameGameActivity context;
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_UP:
+			System.out.println("ACTION_UP:" + v.getId());
+			break;
+		case MotionEvent.ACTION_POINTER_UP:
+			System.out.println("ACTION_POINTER_UP:" + v.getId());
+			break;
+		case MotionEvent.ACTION_DOWN:
+			// System.out.println("ACTION_DOWN:" + v.getId());
+			break;
+		case MotionEvent.ACTION_MOVE:
+			// System.out.println("ACTION_MOVE:" + v.getId());
+			break;
+		case MotionEvent.ACTION_MASK:
+			// System.out.println("ACTION_MASK:" + v.getId());
+			break;
+		case MotionEvent.ACTION_POINTER_DOWN:
+			// System.out.println("ACTION_POINTER_DOWN:" + v.getId());
+			break;
+		default:
+			break;
+		}
+
+		if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_POINTER_UP) {
+			switch (v.getId()) {
+			case R.id.button1:
+			case R.id.Button01:
+			case R.id.Button03:
+			case R.id.Button05:
+			case R.id.Button07:
+				doClickWrong(v);
+				break;
+			case R.id.button2:
+			case R.id.Button02:
+			case R.id.Button04:
+			case R.id.Button06:
+			case R.id.Button08:
+				doClickRight(v);
+				break;
+			default:
+				break;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	protected void onDestroy() {
@@ -404,6 +456,58 @@ public class GameGameActivity extends Activity {
 		layout04.setVisibility(View.GONE);
 		LinearLayout layout05 = (LinearLayout) findViewById(R.id.LinearLayout08);
 		layout05.setVisibility(View.GONE);
+		Button bwrong0 = (Button) findViewById(R.id.button1);
+		Button bwrong1 = (Button) findViewById(R.id.Button01);
+		Button bwrong2 = (Button) findViewById(R.id.Button03);
+		Button bwrong3 = (Button) findViewById(R.id.Button05);
+		Button bwrong4 = (Button) findViewById(R.id.Button07);
+		OnTouchListener touchListenerWrong = new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_UP) {
+					System.out.println("ACTION_UP:" + v.getId());
+					doClickWrong(v);
+				}
+				if (event.getAction() == MotionEvent.ACTION_POINTER_UP) {
+					System.out.println("ACTION_POINTER_UP:" + v.getId());
+					doClickWrong(v);
+				}
+				return false;
+			}
+		};
+		bwrong0.setOnTouchListener(this);
+		bwrong1.setOnTouchListener(this);
+		bwrong2.setOnTouchListener(this);
+		bwrong3.setOnTouchListener(this);
+		bwrong4.setOnTouchListener(this);
+
+		Button bright0 = (Button) findViewById(R.id.button2);
+		Button bright1 = (Button) findViewById(R.id.Button02);
+		Button bright2 = (Button) findViewById(R.id.Button04);
+		Button bright3 = (Button) findViewById(R.id.Button06);
+		Button bright4 = (Button) findViewById(R.id.Button08);
+		OnTouchListener touchListenerRight = new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_UP) {
+					System.out.println("ACTION_UP:" + v.getId());
+					doClickRight(v);
+				}
+				if (event.getAction() == MotionEvent.ACTION_POINTER_UP) {
+					System.out.println("ACTION_POINTER_UP:" + v.getId());
+					doClickRight(v);
+				}
+				return false;
+			}
+		};
+		bright0.setOnTouchListener(this);
+		bright1.setOnTouchListener(this);
+		bright2.setOnTouchListener(this);
+		bright3.setOnTouchListener(this);
+		bright4.setOnTouchListener(this);
+
 	}
 
 	public GameView getGameView() {
@@ -688,7 +792,7 @@ public class GameGameActivity extends Activity {
 	}
 
 	private void disableButton(final int i) {
-		System.out.println(this + ":disableButton:" + i);
+		Log.d("OWLSPACE", this + ":disableButton:" + i);
 		((OwlSprite) getGameView().spritesOwl.toArray()[i]).jammed();
 
 		getGameView().createFreeSpritesJammed(i);
@@ -880,7 +984,5 @@ public class GameGameActivity extends Activity {
 		}
 		startActivity(emailIntent);
 	}
-
-	private static final int SHARE = 1;
 
 }

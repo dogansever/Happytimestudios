@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.jbox2d.common.MathUtils;
 import org.jbox2d.common.Vec2;
 
 import android.content.Context;
@@ -17,7 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
@@ -29,7 +25,6 @@ import android.view.SurfaceView;
 import com.sever.physic.IntroActivity;
 import com.sever.physic.PhysicsActivity;
 import com.sever.physic.PhysicsApplication;
-import com.sever.physic.PreStartActivity;
 import com.sever.physics.game.pojo.TextDrawingPojo;
 import com.sever.physics.game.sprites.BonusLifeBarSprite;
 import com.sever.physics.game.sprites.BoxSprite;
@@ -55,9 +50,11 @@ import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.GameStates;
 import com.sever.physics.game.utils.Joint;
+import com.sever.physics.game.utils.LogUtil;
 import com.sever.physics.game.utils.SoundEffectsManager;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.StageManager;
+import com.sever.physics.game.utils.TextDrawingManager;
 import com.sever.physics.game.utils.WeaponTypes;
 import com.sever.physics.game.utils.WeaponsManager;
 
@@ -73,7 +70,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	public ConcurrentLinkedQueue<FreeSprite> playerSprite = new ConcurrentLinkedQueue<FreeSprite>();
 	public ConcurrentLinkedQueue<FreeSprite> nophysicsSprite = new ConcurrentLinkedQueue<FreeSprite>();
 	public ConcurrentLinkedQueue<FreeSprite> effectsSprite = new ConcurrentLinkedQueue<FreeSprite>();
-	public ConcurrentLinkedQueue<TextDrawingPojo> textDrawingPojoList = new ConcurrentLinkedQueue<TextDrawingPojo>();
 	public int score = 0;
 	public int point = 0;
 	private int scoreHigh = 0;
@@ -293,7 +289,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		ArrayList<Bitmap> bmp = new ArrayList<Bitmap>();
 		bmp.add(BitmapManager.smoke);
 		ArrayList<int[]> colsrows = new ArrayList<int[]>();
-		colsrows.add(new int[] { 2, 1 });
+		colsrows.add(new int[] { 4, 1 });
 		SpriteBmp spriteBmp = new SpriteBmp(bmp, colsrows);
 		FreeSprite sprite = new SmokeSprite(effectsSprite, this, spriteBmp, x, y);
 		effectsSprite.add(sprite);
@@ -619,7 +615,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		System.out.println("surfaceDestroyed");
+		LogUtil.log("surfaceDestroyed");
 		boolean retry = true;
 		gameLoopThread.setRunning(false);
 		timePause = new Date().getTime();
@@ -631,12 +627,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			}
 		}
 		threadStarted = false;
-		System.out.println("surfaceDestroyed:end");
+		LogUtil.log("surfaceDestroyed:end");
 	}
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		System.out.println("surfaceCreated");
+		LogUtil.log("surfaceCreated");
 		if (gameLoopThread.getState() == Thread.State.TERMINATED) {
 			gameLoopThread = new GameLoopThread(this, holder);
 			threadStarted = true;
@@ -653,7 +649,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-		System.out.println("surfaceChanged");
+		LogUtil.log("surfaceChanged");
 		if (!threadStarted) {
 			threadStarted = true;
 			gameLoopThread.setRunning(true);
@@ -734,12 +730,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				String nophysicsSprite = "nophysicsSprite:" + (System.currentTimeMillis() - t);
 
 				if (!endOfGame) {
-					drawText("STAGE: " + (StageManager.getManager().currentStage + 1), canvas, 10, 25);
-					drawText("SCORE: " + Constants.scoreTotal, canvas, 10, 50);
-					drawText(newWeaponUnlockedMessage, canvas, 10, 75, 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX <= 0 ? 0 : 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX,
-							Paint.Align.LEFT, NEXT_STAGE_WAIT_TIME % 2 == 0 ? Color.GREEN : Color.YELLOW);
-					drawText(newStageUpMessage, canvas, 10, 100, 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX <= 0 ? 0 : 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX,
-							Paint.Align.LEFT, NEXT_STAGE_WAIT_TIME % 2 == 0 ? Color.RED : Color.YELLOW);
+					TextDrawingManager.getManager().drawText("STAGE: " + (StageManager.getManager().currentStage + 1), canvas, 10, 25);
+					TextDrawingManager.getManager().drawText("SCORE: " + Constants.scoreTotal, canvas, 10, 50);
+					TextDrawingManager.getManager().drawText(newWeaponUnlockedMessage, canvas, 10, 75,
+							255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX <= 0 ? 0 : 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX, Paint.Align.LEFT,
+							NEXT_STAGE_WAIT_TIME % 2 == 0 ? Color.GREEN : Color.YELLOW);
+					TextDrawingManager.getManager().drawText(newStageUpMessage, canvas, 10, 100,
+							255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX <= 0 ? 0 : 255 * NEXT_STAGE_WAIT_TIME / NEXT_STAGE_WAIT_TIME_MAX, Paint.Align.LEFT,
+							NEXT_STAGE_WAIT_TIME % 2 == 0 ? Color.RED : Color.YELLOW);
+					if (!((PlayerSprite) getPlayerSprite()).throttlePermitted) {
+						TextDrawingManager.getManager().drawText("WARNING!!!THROTTLE OVERHEAT!!!", canvas, 10, 125, 255, Paint.Align.LEFT, Color.RED, Color.YELLOW);
+					}
 				}
 
 				int xd = 100;
@@ -766,23 +767,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 					drawTextStageGameEnd(canvas);
 				}
 
-				for (TextDrawingPojo tdpojo : textDrawingPojoList) {
-					if (tdpojo.alpha > 0) {
-						drawText(tdpojo, canvas);
-						tdpojo.alpha -= 5;
-					} else {
-						textDrawingPojoList.remove(tdpojo);
-					}
-				}
+				TextDrawingManager.getManager().onDraw(canvas);
 
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void addTextDrawingPojo(TextDrawingPojo tdpojo) {
-		textDrawingPojoList.add(tdpojo);
 	}
 
 	private void drawTextStageGameOver(Canvas canvas) {
@@ -852,49 +842,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 		paint.setTextSize(50);
 		paint.setTextAlign(Paint.Align.CENTER);
 		canvas.drawText("Stage:" + (StageManager.getManager().currentStage + 2), PhysicsApplication.deviceWidth * 0.5f, PhysicsApplication.deviceHeight * 0.5f, paint);
-	}
-
-	private void drawText(String text, Canvas canvas, float x, float y, int alpha, Align align, int... color) {
-		if (alpha <= 0)
-			return;
-
-		Paint paint = new Paint();
-		paint.setStyle(Style.FILL);
-		paint.setTypeface(IntroActivity.tf);
-		paint.setColor(color.length == 0 ? Color.WHITE : color[0]);
-		paint.setAlpha(alpha <= 0 ? 0 : alpha);
-		paint.setTextSize(20);
-		paint.setTextAlign(align);
-		canvas.drawText(text, x, y, paint);
-	}
-
-	private void drawText(String text, Canvas canvas, float x, float y) {
-		Paint paint = new Paint();
-		paint.setColor(Color.WHITE);
-		paint.setStyle(Style.FILL);
-		paint.setTypeface(IntroActivity.tf);
-		paint.setColor(Color.WHITE);
-		paint.setTextSize(25);
-		// paint.setTextAlign(Paint.Align.CENTER);
-		canvas.drawText(text, x, y, paint);
-	}
-
-	private void drawText(TextDrawingPojo tdpojo, Canvas canvas) {
-		if (tdpojo.alpha <= 0)
-			return;
-
-		Paint paint = new Paint();
-		paint.setStyle(Style.FILL);
-		paint.setTypeface(IntroActivity.tf);
-		paint.setColor(tdpojo.color);
-		paint.setAlpha(tdpojo.alpha <= 0 ? 0 : tdpojo.alpha);
-		paint.setTextSize(20);
-		paint.setTextAlign(tdpojo.align);
-
-		canvas.drawText(tdpojo.text, tdpojo.x - Constants.extraWidthOffset, PhysicsApplication.deviceHeight - tdpojo.y + Constants.extraHeightOffset - getPlayerSprite().height - (255 - tdpojo.alpha),
-				paint);
-
-		tdpojo.alpha -= 5;
 	}
 
 	private void draw(Canvas canvas, ConcurrentLinkedQueue<FreeSprite> freeSprites2) {
@@ -1052,7 +999,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			}
 
 			String touchStatus = "Action: " + actionString + " Index: " + actionIndex + " ID: " + id + " X: " + x + " Y: " + (PhysicsApplication.deviceHeight - y);
-			// System.out.println(touchStatus);
+			// LogUtil.log(touchStatus);
 		}
 		return true;
 	}
@@ -1160,10 +1107,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 				fs.killSprite();
 
 				float killpointx = (float) (getPlayerSprite().x + Math.random() * 20);
-				float killpointy = (float) (getPlayerSprite().y + Math.random() * 20);
+				float killpointy = (float) (getPlayerSprite().y + getPlayerSprite().height + Math.random() * 20);
 				Constants.scoreTotal += gain;
 
-				addTextDrawingPojo(new TextDrawingPojo("+" + gain, killpointx, killpointy, 255));
+				TextDrawingManager.getManager().addTextDrawingPojo(new TextDrawingPojo("+" + gain, killpointx, killpointy, 255));
 			}
 		}
 
@@ -1206,7 +1153,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 	}
 
 	private void checkSpaceTrash() {
-		// System.out.println("checkSpaceTrash():freeSprites.size():" +
+		// LogUtil.log("checkSpaceTrash():freeSprites.size():" +
 		// freeSprites.size());
 		if (freeSprites.size() < 6) {
 			sendSpaceTrash();
@@ -1249,9 +1196,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			// endOfGame = false;
 			// nextStage();
 
-			addTextDrawingPojo(new TextDrawingPojo("MISSION COMPLETE", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
+			TextDrawingManager.getManager().addTextDrawingPojo(
+					new TextDrawingPojo("MISSION COMPLETE", (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
 			for (char ch : "MISSION COMPLETE".toCharArray()) {
-				addTextDrawingPojo(new TextDrawingPojo("" + ch, (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
+				TextDrawingManager.getManager().addTextDrawingPojo(
+						new TextDrawingPojo("" + ch, (float) (Math.random() * Constants.upperBoundxScreen), (float) (Math.random() * Constants.upperBoundyScreen), 255));
 
 			}
 
@@ -1260,7 +1209,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			newStagePointx = (float) (getPlayerSprite().x + +Math.random() * 20);
 			newStagePointy = (float) (getPlayerSprite().y + +Math.random() * 20);
 
-			addTextDrawingPojo(new TextDrawingPojo("Total Score " + (Constants.scoreTotal - Constants.scoreStage), newStagePointx, newStagePointy, 255));
+			TextDrawingManager.getManager().addTextDrawingPojo(new TextDrawingPojo("Total Score " + (Constants.scoreTotal - Constants.scoreStage), newStagePointx, newStagePointy, 255));
 
 			idleGame();
 			// SoundEffectsManager.getManager().playGAME_OVER(context);
@@ -1311,9 +1260,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 			Constants.scoreStageBonus = (StageManager.getManager().currentStage + 1) * 1000;
 			Constants.scoreTotal += Constants.scoreTimeBonus + Constants.scoreLifeBonus + Constants.scoreStageBonus;
 
-			addTextDrawingPojo(new TextDrawingPojo("+" + Constants.scoreLifeBonus, newStagePointx + 10, newStagePointy + 35, 255));
-			addTextDrawingPojo(new TextDrawingPojo("+" + Constants.scoreTimeBonus, newStagePointx + 20, newStagePointy + 60, 255));
-			addTextDrawingPojo(new TextDrawingPojo("+" + Constants.scoreStageBonus, newStagePointx + 30, newStagePointy + 85, 255));
+			TextDrawingManager.getManager().addTextDrawingPojo(new TextDrawingPojo("+" + Constants.scoreLifeBonus, newStagePointx + 10, newStagePointy + 35, 255));
+			TextDrawingManager.getManager().addTextDrawingPojo(new TextDrawingPojo("+" + Constants.scoreTimeBonus, newStagePointx + 20, newStagePointy + 60, 255));
+			TextDrawingManager.getManager().addTextDrawingPojo(new TextDrawingPojo("+" + Constants.scoreStageBonus, newStagePointx + 30, newStagePointy + 85, 255));
 
 			int levelPrev = Integer.parseInt((String) IntroActivity.dbDBWriteUtil.getBestScore(1));
 			IntroActivity.dbDBWriteUtil.updateScoreIfNewBestAchieved("" + Constants.scoreTotal, "" + new Date().getTime(), "" + (StageManager.getManager().currentStage + 1));
@@ -1390,7 +1339,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Gam
 
 	public void finishGame() {
 		SoundEffectsManager.stopSound();
-		System.out.println("finishGame()");
+//		LogUtil.log("finishGame()");
 		gameLoopThread.setRunning(false);
 		releaseBitmaps();
 		Intent intent = new Intent(context, IntroActivity.class);
