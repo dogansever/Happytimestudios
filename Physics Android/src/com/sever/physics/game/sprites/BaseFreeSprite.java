@@ -14,17 +14,37 @@ import android.graphics.Rect;
 
 import com.sever.physic.PhysicsActivity;
 import com.sever.physic.PhysicsApplication;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.utils.Constants;
-import com.sever.physics.game.utils.WeaponTypes;
+import com.sever.physics.game.utils.SpriteBmp;
 
-public class FreeSprite extends BaseFreeSprite {
+public class BaseFreeSprite {
 
+	public int FADE_LIFE = 100;
+	public int BULLET_FIRE_WAIT_TIME = 100;
+	public GameViewImp gameView;
+
+	public float x = 0;
+	public float y = 0;
+	public float width;
 	public float widthExplosion;
-	public boolean portalingout = false;
-	public boolean portalingin = false;
-	public WeaponTypes wt;
+	public float height;
+	// public int index;
+	public float angle;
+	public boolean noRotation = false;
+	public boolean invisible = false;
+	public boolean noPositionUpdate = false;
+	public boolean fades = false;
+	public boolean explodes = false;
+	public boolean implodes = false;
+	public boolean facingRigth = false;
+	public boolean manualFrameSet = false;
+	public boolean manualAngleSet = false;
+	public boolean dynamic;
+	public boolean hasbody = false;
+	public SpriteBmp spriteBmp;
 
-	protected ConcurrentLinkedQueue<FreeSprite> spriteList;
+	protected ConcurrentLinkedQueue<BaseFreeSprite> spriteList;
 	protected Body body;
 
 	public void freeBitmaps() {
@@ -44,14 +64,14 @@ public class FreeSprite extends BaseFreeSprite {
 	public void fireBullet() {
 	}
 
-	public void push(FreeSprite sprite) {
+	public void push(BaseFreeSprite sprite) {
 	}
 
-	public void pull(FreeSprite sprite) {
+	public void pull(BaseFreeSprite sprite) {
 
 	}
 
-	public void pull(FreeSprite sprite, Vec2 positionSrc) {
+	public void pull(BaseFreeSprite sprite, Vec2 positionSrc) {
 
 	}
 
@@ -75,35 +95,19 @@ public class FreeSprite extends BaseFreeSprite {
 	}
 
 	public void killSprite() {
-		// LogUtil.log("Killing:" + this);
-
-		if (!(this instanceof PlayerSprite)) {
-			releaseShiftLockOnMe();
-			spriteList.remove(this);
-			PhysicsActivity.mWorld.bodies.remove(body);
-			PhysicsActivity.mWorld.world.destroyBody(body);
-			destroyShape();
-			freeBitmaps();
-		} else if (this instanceof PlayerSprite && !gameView.idle) {
-			// ((PlayerSprite) this).setAlive(false);
-			// Constants.playerKilledCount++;
-			// PhysicsActivity.mWorld.bodies.remove(body);
-			// PhysicsActivity.mWorld.world.destroyBody(body);
-			// destroyShape();
-		}
-
+		spriteList.remove(this);
+		PhysicsActivity.mWorld.bodies.remove(body);
+		PhysicsActivity.mWorld.world.destroyBody(body);
+		destroyShape();
+		freeBitmaps();
 	}
 
 	public void destroySprite() {
-		if (!(this instanceof PlayerSprite)) {
-			releaseShiftLockOnMe();
-			spriteList.remove(this);
-			PhysicsActivity.mWorld.bodies.remove(body);
-			PhysicsActivity.mWorld.world.destroyBody(body);
-			destroyShape();
-			freeBitmaps();
-		}
-
+		spriteList.remove(this);
+		PhysicsActivity.mWorld.bodies.remove(body);
+		PhysicsActivity.mWorld.world.destroyBody(body);
+		destroyShape();
+		freeBitmaps();
 	}
 
 	public void createDynamicBody(float x, float y) {
@@ -125,30 +129,8 @@ public class FreeSprite extends BaseFreeSprite {
 			body.destroyShape(getBody().getShapeList());
 	}
 
-	public void shiftLockOnME() {
-		// LogUtil.log("shiftLockOnME:" + this);
-		if (gameView.getPlayerSprite() != null)
-			((PlayerSprite) gameView.getPlayerSprite()).sprite = this;
-	}
-
-	public void releaseShiftLockOnMe() {
-		// LogUtil.log("releaseShiftLockOnMe:");
-		if (gameView.getPlayerSprite() != null)
-			((PlayerSprite) gameView.getPlayerSprite()).sprite = null;
-	}
-
 	public Body getBody() {
-		// if (body == null && hasbody) {
-		// if (dynamic)
-		// createDynamicBody(x, y);
-		// else
-		// createStaticBody(x, y);
-		// // LogUtil.log("getBody():" + body + " " +
-		// // this.getClass().getName());
-		// }
 		return body;
-		// int index = PhysicsActivity.mWorld.bodies.indexOf(body);
-		// return PhysicsActivity.mWorld.bodies.get(index);
 	}
 
 	private void updateBitmap() {
@@ -181,20 +163,6 @@ public class FreeSprite extends BaseFreeSprite {
 				this.angle = body.getAngle();
 		}
 	}
-
-	// protected void kickout(Vec2 positionSrc) {
-	// Body body = getBody();
-	// Vec2 positionTarget = body.getPosition();
-	// Vec2 force = new Vec2(positionSrc.x / Constants.pixelpermeter -
-	// positionTarget.x, positionTarget.y - positionSrc.y /
-	// Constants.pixelpermeter);
-	// force.normalize(); // force direction always point to source
-	// force.set(force.mul((float) (body.getMass() * -10.0 *
-	// Constants.gravityy)));
-	// body.applyImpulse(force, body.getWorldCenter());
-	// // LogUtil.log("!!!Kicked it!!!:" + index + ", force:x:" +
-	// // force.x + ", y:" + force.y);
-	// }
 
 	public void onDraw(Canvas canvas) {
 		try {
@@ -266,7 +234,7 @@ public class FreeSprite extends BaseFreeSprite {
 		return (float) Math.sqrt(x * x + y * y);
 	}
 
-	public float getDistance(FreeSprite sprite) {
+	public float getDistance(BaseFreeSprite sprite) {
 		Body body = sprite.getBody();
 		Vec2 positionTarget = body.getPosition();
 		Vec2 positionSrc = this.getBody().getPosition();
@@ -274,7 +242,7 @@ public class FreeSprite extends BaseFreeSprite {
 		return range;
 	}
 
-	public void applyForce(FreeSprite sprite, Vec2 positionSrc, float FIELD_RADIUS, float pullG, Vec2 force) {
+	public void applyForce(BaseFreeSprite sprite, Vec2 positionSrc, float FIELD_RADIUS, float pullG, Vec2 force) {
 		Body body = sprite.getBody();
 		Vec2 positionTarget = body.getPosition();
 		float range = spacing(positionSrc.x - positionTarget.x, positionSrc.y - positionTarget.y);
@@ -286,7 +254,7 @@ public class FreeSprite extends BaseFreeSprite {
 		}
 	}
 
-	public boolean applyForce(FreeSprite sprite, Vec2 positionSrc, float FIELD_RADIUS, float pullG) {
+	public boolean applyForce(BaseFreeSprite sprite, Vec2 positionSrc, float FIELD_RADIUS, float pullG) {
 		Body body = sprite.getBody();
 		Vec2 positionTarget = body.getPosition();
 		float range = spacing(positionSrc.x - positionTarget.x, positionSrc.y - positionTarget.y);
@@ -300,7 +268,7 @@ public class FreeSprite extends BaseFreeSprite {
 		return false;
 	}
 
-	public void applyForce(FreeSprite sprite, Vec2 positionSrc, float pullG) {
+	public void applyForce(BaseFreeSprite sprite, Vec2 positionSrc, float pullG) {
 		Body body = sprite.getBody();
 		Vec2 positionTarget = body.getPosition();
 		Vec2 force = new Vec2(positionSrc.x - positionTarget.x, positionSrc.y - positionTarget.y);
@@ -357,7 +325,7 @@ public class FreeSprite extends BaseFreeSprite {
 		getBody().getShapeList().m_restitution = r;
 	}
 
-	public void aimAt(FreeSprite target) {
+	public void aimAt(BaseFreeSprite target) {
 		float tx = target.x - x;
 		float ty = target.y - y;
 		angle = (float) Math.atan2(ty, tx);

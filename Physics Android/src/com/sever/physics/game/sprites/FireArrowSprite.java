@@ -7,7 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
 
@@ -17,7 +17,7 @@ public class FireArrowSprite extends FreeSprite {
 	public float ystick2 = 0;
 	private ActiveSprite activeSprite;
 
-	public FireArrowSprite(ActiveSprite activeSprite, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+	public FireArrowSprite(ActiveSprite activeSprite, GameViewImp gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();

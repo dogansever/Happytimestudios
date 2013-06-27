@@ -11,8 +11,9 @@ import android.graphics.Canvas;
 
 import com.sever.physic.PhysicsActivity;
 import com.sever.physic.PhysicsApplication;
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.utils.Constants;
+import com.sever.physics.game.utils.GameViewUtils;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.Weapon;
 import com.sever.physics.game.utils.WeaponTypes;
@@ -32,7 +33,7 @@ public class PlayerSprite extends ActiveSprite {
 	public static int portalTimeInFPS;
 	public static int portalTimeInFPSMax = Constants.FPS * 1;
 
-	public PlayerSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+	public PlayerSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameViewImp gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
@@ -385,12 +386,12 @@ public class PlayerSprite extends ActiveSprite {
 
 	public void fireGrenadeTriple() {
 		try {
-			FreeSprite bullet = gameView.addGrenadeTriple(x + (PhysicsActivity.context.facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f);
+			FreeSprite bullet = gameView.addGrenadeTriple(x + (GameViewUtils.facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f);
 			Body bulletBody = bullet.getBody();
 			if (bulletBody == null) {
 				bullet.killSprite();
 			} else {
-				bulletBody.setLinearVelocity(PhysicsActivity.context.velocityVec);
+				bulletBody.setLinearVelocity(GameViewUtils.velocityVec);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -415,16 +416,18 @@ public class PlayerSprite extends ActiveSprite {
 
 	public void fireMissileLight() {
 		try {
-//			LogUtil.log("fireMissileLight:");
+			// LogUtil.log("fireMissileLight:");
 			FreeSprite bullet = gameView.addMissileLight(x + (facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f, facingRigth);
 			bullet.setAngle((float) Math.toRadians(!facingRigth ? fireArrowSprite.getAngle() : 360 - fireArrowSprite.getAngle()));
 			Body bulletBody = bullet.getBody();
-//			LogUtil.log("bulletBody:" + bulletBody);
+			// LogUtil.log("bulletBody:" + bulletBody);
 			if (bulletBody == null) {
 				bullet.killSprite();
 			} else {
 				bulletBody.setLinearVelocity(getVelocityVec(fireMultiplierMissile));
-//				LogUtil.log("bulletBody.LinearVelocity:(" + bulletBody.getLinearVelocity().x + ", " + +bulletBody.getLinearVelocity().y + ")");
+				// LogUtil.log("bulletBody.LinearVelocity:(" +
+				// bulletBody.getLinearVelocity().x + ", " +
+				// +bulletBody.getLinearVelocity().y + ")");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -483,12 +486,12 @@ public class PlayerSprite extends ActiveSprite {
 
 	public void fireCapsule() {
 		try {
-			FreeSprite bullet = gameView.addCapsule(x + (PhysicsActivity.facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f);
+			FreeSprite bullet = gameView.addCapsule(x + (GameViewUtils.facingRigth ? 1 : -1) * width * 0.9f, y + height * 0.0f);
 			Body bulletBody = bullet.getBody();
 			if (bulletBody == null) {
 				bullet.killSprite();
 			} else {
-				bulletBody.setLinearVelocity(getVelocityVecWithAngle(fireMultiplierMissile, PhysicsActivity.context.angleGrenadeCapsule));
+				bulletBody.setLinearVelocity(getVelocityVecWithAngle(fireMultiplierMissile, GameViewUtils.angleGrenadeCapsule));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -617,19 +620,19 @@ public class PlayerSprite extends ActiveSprite {
 	}
 
 	protected void fireGrenadeTripleThread() {
-		PhysicsActivity.countGrenadeTriple = 0;
-		PhysicsActivity.facingRigth = facingRigth;
-		PhysicsActivity.velocityVec = getVelocityVec(fireMultiplierBomb, firePowerOld);
-		PhysicsActivity.waitGrenadeTripleInFPSTicking = 0;
-		PhysicsActivity.onGrenadeTriple = true;
+		GameViewUtils.countGrenadeTriple = 0;
+		GameViewUtils.facingRigth = facingRigth;
+		GameViewUtils.velocityVec = getVelocityVec(fireMultiplierBomb, firePowerOld);
+		GameViewUtils.waitGrenadeTripleInFPSTicking = 0;
+		GameViewUtils.onGrenadeTriple = true;
 	}
 
 	protected void fireGrenadeCapsuleThread() {
-		PhysicsActivity.countGrenadeCapsule = 0;
-		PhysicsActivity.facingRigth = facingRigth;
-		PhysicsActivity.angleGrenadeCapsule = ((FireArrowSprite) gameView.getFireArrowSprite()).getAngle() - 45;
-		PhysicsActivity.waitGrenadeCapsuleInFPSTicking = 0;
-		PhysicsActivity.onGrenadeCapsule = true;
+		GameViewUtils.countGrenadeCapsule = 0;
+		GameViewUtils.facingRigth = facingRigth;
+		GameViewUtils.angleGrenadeCapsule = ((FireArrowSprite) gameView.getFireArrowSprite()).getAngle() - 45;
+		GameViewUtils.waitGrenadeCapsuleInFPSTicking = 0;
+		GameViewUtils.onGrenadeCapsule = true;
 	}
 
 	public boolean isAlive() {

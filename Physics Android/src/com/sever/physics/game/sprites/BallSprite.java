@@ -4,14 +4,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jbox2d.collision.CircleDef;
 
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.WeaponTypes;
 import com.sever.physics.game.utils.WeaponsManager;
 
 public class BallSprite extends FreeSprite {
 
-	public BallSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt) {
+	public BallSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameViewImp gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt) {
 		this.spriteBmp = spriteBmp;
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();

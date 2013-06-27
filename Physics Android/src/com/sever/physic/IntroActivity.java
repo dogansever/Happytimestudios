@@ -30,10 +30,10 @@ import android.widget.Toast;
 
 import com.geosophic.service.Geosophic_Activity;
 import com.sever.physic.adapters.InfoAdapter;
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.IntroView;
+import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.DBWriteUtil;
-import com.sever.physics.game.utils.GeneralUtil;
 import com.sever.physics.game.utils.LeaderBoardUtil;
 import com.sever.physics.game.utils.LogUtil;
 import com.sever.physics.game.utils.SoundEffectsManager;
@@ -64,7 +64,7 @@ public class IntroActivity extends Geosophic_Activity {
 		tf = Typeface.createFromAsset(getAssets(), "FEASFBRG.TTF");
 		if (dbDBWriteUtil == null)
 			dbDBWriteUtil = new DBWriteUtil(this);
-		bmpIntro = GeneralUtil.createScaledBitmap(this, R.drawable.space, (int) PhysicsApplication.deviceWidth, (int) PhysicsApplication.deviceHeight);
+		bmpIntro = BitmapManager.createScaledBitmap(this, R.drawable.space, (int) PhysicsApplication.deviceWidth, (int) PhysicsApplication.deviceHeight);
 
 		setContentView(R.layout.intro);
 		SoundEffectsManager.startIntroAmbianceSound(IntroActivity.this);
@@ -98,7 +98,7 @@ public class IntroActivity extends Geosophic_Activity {
 
 			@Override
 			public void onClick(View v) {
-				SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
+				SoundEffectsManager.getManager().playSound(IntroActivity.this, SoundEffectsManager.BUTTON_CLICK);
 				EditText username = (EditText) findViewById(R.id.editText1);
 				if (username.getText().toString().trim().equals("")) {
 					Toast.makeText(IntroActivity.this, "Please enter your name...", Toast.LENGTH_SHORT);
@@ -133,8 +133,8 @@ public class IntroActivity extends Geosophic_Activity {
 				if (randomInt == -1) {
 					com.sever.physics.game.utils.AdUtil.getAdUtil().simClick();
 				} else {
-					SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
-					GameView.newGame = true;
+					SoundEffectsManager.getManager().playSound(IntroActivity.this, SoundEffectsManager.BUTTON_CLICK);
+					GameViewImp.newGame = true;
 					soundStopFlag = false;
 					SoundEffectsManager.stopSound();
 					introView.finishIntro();
@@ -159,8 +159,8 @@ public class IntroActivity extends Geosophic_Activity {
 				if (randomInt == -1) {
 					com.sever.physics.game.utils.AdUtil.getAdUtil().simClick();
 				} else {
-					SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
-					GameView.newGame = false;
+					SoundEffectsManager.getManager().playSound(IntroActivity.this, SoundEffectsManager.BUTTON_CLICK);
+					GameViewImp.newGame = false;
 					soundStopFlag = false;
 					SoundEffectsManager.stopSound();
 					introView.finishIntro();
@@ -175,7 +175,7 @@ public class IntroActivity extends Geosophic_Activity {
 
 			@Override
 			public void onClick(View v) {
-				SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
+				SoundEffectsManager.getManager().playSound(IntroActivity.this, SoundEffectsManager.BUTTON_CLICK);
 				String scorebest = (String) dbDBWriteUtil.getBestScore(0);
 				new LeaderBoardUtil().leaderboardSave(scorebest, true);
 			}
@@ -185,7 +185,7 @@ public class IntroActivity extends Geosophic_Activity {
 
 			@Override
 			public void onClick(View v) {
-				SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
+				SoundEffectsManager.getManager().playSound(IntroActivity.this, SoundEffectsManager.BUTTON_CLICK);
 				prepareInfo();
 
 			}
@@ -195,7 +195,7 @@ public class IntroActivity extends Geosophic_Activity {
 
 			@Override
 			public void onClick(View v) {
-				SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
+				SoundEffectsManager.getManager().playSound(IntroActivity.this, SoundEffectsManager.BUTTON_CLICK);
 				if (new LeaderBoardUtil().hasConnection()) {
 					showMenuRename();
 				}
@@ -239,7 +239,7 @@ public class IntroActivity extends Geosophic_Activity {
 
 			@Override
 			public void onClick(View v) {
-				SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
+				SoundEffectsManager.getManager().playSound(IntroActivity.this, SoundEffectsManager.BUTTON_CLICK);
 				prepareMain();
 			}
 
@@ -283,7 +283,7 @@ public class IntroActivity extends Geosophic_Activity {
 
 	@Override
 	public void onBackPressed() {
-		SoundEffectsManager.getManager().playPAUSE_MENU(IntroActivity.this);
+		SoundEffectsManager.getManager().playSound(IntroActivity.this, SoundEffectsManager.PAUSE_MENU);
 		showMenu();
 	}
 
@@ -297,7 +297,7 @@ public class IntroActivity extends Geosophic_Activity {
 		yes.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
+				SoundEffectsManager.getManager().playSound(IntroActivity.this, SoundEffectsManager.BUTTON_CLICK);
 				dialog.cancel();
 				Intent intent = new Intent(Intent.ACTION_MAIN);
 				intent.addCategory(Intent.CATEGORY_HOME);
@@ -310,7 +310,7 @@ public class IntroActivity extends Geosophic_Activity {
 		no.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
+				SoundEffectsManager.getManager().playSound(IntroActivity.this, SoundEffectsManager.BUTTON_CLICK);
 				dialog.cancel();
 			}
 		});
@@ -334,7 +334,7 @@ public class IntroActivity extends Geosophic_Activity {
 		cont.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				SoundEffectsManager.getManager().playBUTTON_CLICK(IntroActivity.this);
+				SoundEffectsManager.getManager().playSound(IntroActivity.this, SoundEffectsManager.BUTTON_CLICK);
 				if (username.getText().toString().trim().equals("")) {
 					Toast.makeText(IntroActivity.this, "Please enter your name...", Toast.LENGTH_SHORT);
 				} else {

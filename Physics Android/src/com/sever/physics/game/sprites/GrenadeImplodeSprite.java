@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jbox2d.collision.PolygonDef;
 
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.WeaponTypes;
 
@@ -13,7 +13,7 @@ public class GrenadeImplodeSprite extends GrenadeSprite {
 	public boolean powerOn;
 	public boolean scatter;
 
-	public GrenadeImplodeSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt) {
+	public GrenadeImplodeSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameViewImp gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt) {
 		super(spriteList, gameView, spriteBmp, x, y, wt);
 		implodes = true;
 		spriteBmp.BMP_FPS = FADE_LIFE / 3;

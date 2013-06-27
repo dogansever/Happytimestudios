@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import com.sever.physic.PhysicsActivity;
 import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.Constants;
+import com.sever.physics.game.utils.GameViewUtils;
 import com.sever.physics.game.utils.SoundEffectsManager;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.WeaponTypes;
@@ -72,7 +73,7 @@ public class ActiveSprite extends FreeSprite {
 			spriteBmp.setBmpIndex(3);
 			this.width = spriteBmp.getWidth();
 			this.height = spriteBmp.getHeight();
-			SoundEffectsManager.getManager().playEXPLODE_ROBOT(PhysicsActivity.context);
+			SoundEffectsManager.getManager().playSound(PhysicsActivity.context, SoundEffectsManager.EXPLODE_ROBOT);
 		}
 
 		if (FADE_LIFE-- <= 0) {
@@ -139,7 +140,7 @@ public class ActiveSprite extends FreeSprite {
 	public void lifeGain(int lost) {
 		life += lost;
 		life = life > life_MAX ? life_MAX : life;
-		SoundEffectsManager.getManager().playPOWER_UP(PhysicsActivity.context);
+		SoundEffectsManager.getManager().playSound(PhysicsActivity.context, SoundEffectsManager.POWER_UP);
 	}
 
 	public void checkVelocity() {
@@ -300,7 +301,7 @@ public class ActiveSprite extends FreeSprite {
 		force.normalize();
 
 		firePower = WeaponsManager.getManager().getWeaponByType(getWt()).fireAtMaxSpeed ? firePower_MAX : firePower;
-		float xt = (PhysicsActivity.facingRigth ? 1 : -1) * (firePower * fireMultiplier / firePower_MAX) * force.x;
+		float xt = (GameViewUtils.facingRigth ? 1 : -1) * (firePower * fireMultiplier / firePower_MAX) * force.x;
 		float yt = (firePower * fireMultiplier / firePower_MAX) * force.y;
 		Vec2 v = new Vec2(xt, yt);
 

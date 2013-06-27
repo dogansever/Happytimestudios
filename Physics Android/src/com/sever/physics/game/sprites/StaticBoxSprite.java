@@ -2,12 +2,12 @@ package com.sever.physics.game.sprites;
 
 import org.jbox2d.collision.PolygonDef;
 
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.utils.SpriteBmp;
 
 public class StaticBoxSprite extends FreeSprite {
 
-	public StaticBoxSprite(GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+	public StaticBoxSprite(GameViewImp gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();

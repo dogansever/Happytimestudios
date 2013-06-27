@@ -1,11 +1,11 @@
 package com.sever.physics.game.sprites;
 
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.utils.SpriteBmp;
 
 public class StaticSpriteNoShape extends StaticBoxSprite {
 
-	public StaticSpriteNoShape(GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+	public StaticSpriteNoShape(GameViewImp gameView, SpriteBmp spriteBmp, float x, float y) {
 		super(gameView, spriteBmp, x, y);
 	}
 

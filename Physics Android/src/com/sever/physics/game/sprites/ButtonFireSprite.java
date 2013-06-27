@@ -10,7 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 
 import com.sever.physic.PhysicsApplication;
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.WeaponTypes;
 import com.sever.physics.game.utils.WeaponsManager;
@@ -21,7 +21,7 @@ public class ButtonFireSprite extends FreeSprite {
 	public float ystick = 0;
 	public boolean active;
 
-	public ButtonFireSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+	public ButtonFireSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameViewImp gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();

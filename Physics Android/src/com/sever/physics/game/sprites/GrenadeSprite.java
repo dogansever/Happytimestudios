@@ -6,7 +6,7 @@ import org.jbox2d.collision.CircleDef;
 import org.jbox2d.common.Vec2;
 
 import com.sever.physic.PhysicsActivity;
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SoundEffectsManager;
 import com.sever.physics.game.utils.SpriteBmp;
@@ -19,7 +19,7 @@ public class GrenadeSprite extends FreeSprite {
 	private float velx;
 	private float vely;
 
-	public GrenadeSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt) {
+	public GrenadeSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameViewImp gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt) {
 		try {
 			this.width = spriteBmp.getWidth();
 			this.height = spriteBmp.getHeight();
@@ -63,7 +63,8 @@ public class GrenadeSprite extends FreeSprite {
 			// LogUtil.log("velx:" + getBody().getLinearVelocity().x +
 			// ",diffx:" + diffx + ", diffy:" + diffy);
 			if (spriteBmp.bmpIndex == 0 && velx != 0 && (diffx >= diffxMax || diffy >= diffxMax)) {
-//				LogUtil.log("SuddenChangeInDirection detected! diffx:" + diffx + ", diffy:" + diffy);
+				// LogUtil.log("SuddenChangeInDirection detected! diffx:" +
+				// diffx + ", diffy:" + diffy);
 				FADE_LIFE = 0;
 			} else {
 				velx = getBody().getLinearVelocity().x;
@@ -82,7 +83,7 @@ public class GrenadeSprite extends FreeSprite {
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
 		angle = 0;
-		SoundEffectsManager.getManager().playEXPLODE_BOMB(PhysicsActivity.context);
+		SoundEffectsManager.getManager().playSound(PhysicsActivity.context, SoundEffectsManager.EXPLODE_BOMB);
 	}
 
 	void addSprite(float x, float y) {

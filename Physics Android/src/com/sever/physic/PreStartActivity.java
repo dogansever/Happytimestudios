@@ -34,7 +34,7 @@ public class PreStartActivity extends Activity {
 					com.sever.physics.game.utils.AdUtil.getAdUtil().simClick();
 				} else {
 					yes.setVisibility(View.INVISIBLE);
-					SoundEffectsManager.getManager().playBUTTON_CLICK(PreStartActivity.this);
+					SoundEffectsManager.getManager().playSound(PreStartActivity.this, SoundEffectsManager.BUTTON_CLICK);
 					Intent intent = new Intent(PreStartActivity.this, PhysicsActivity.class);
 					startActivity(intent);
 					finish();

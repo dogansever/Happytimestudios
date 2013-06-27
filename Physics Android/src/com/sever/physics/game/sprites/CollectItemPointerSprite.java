@@ -3,7 +3,7 @@ package com.sever.physics.game.sprites;
 import android.graphics.Canvas;
 
 import com.sever.physic.PhysicsApplication;
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
 
@@ -11,7 +11,7 @@ public class CollectItemPointerSprite extends FreeSprite {
 
 	private FreeSprite collectItem;
 
-	public CollectItemPointerSprite(FreeSprite collectItem, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+	public CollectItemPointerSprite(FreeSprite collectItem, GameViewImp gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();

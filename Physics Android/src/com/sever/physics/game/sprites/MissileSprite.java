@@ -6,7 +6,7 @@ import org.jbox2d.collision.PolygonDef;
 
 import android.graphics.Canvas;
 
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.WeaponTypes;
@@ -16,7 +16,7 @@ public class MissileSprite extends GrenadeSprite {
 	public static int smokeTimeInFPS;
 	public static int smokeTimeInFPSMax = (int) (Constants.FPS * 0.1f);
 
-	public MissileSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt, boolean facingRigth) {
+	public MissileSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameViewImp gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt, boolean facingRigth) {
 		super(spriteList, gameView, spriteBmp, x, y, wt);
 		this.facingRigth = facingRigth;
 		noRotation = false;

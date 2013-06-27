@@ -6,7 +6,7 @@ import org.jbox2d.common.Vec2;
 
 import android.graphics.Canvas;
 
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.utils.SpriteBmp;
 import com.sever.physics.game.utils.WeaponTypes;
 
@@ -14,7 +14,7 @@ public class MissileLockingSprite extends MissileSprite {
 
 	public FreeSprite target;
 
-	public MissileLockingSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt, boolean facingRigth) {
+	public MissileLockingSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameViewImp gameView, SpriteBmp spriteBmp, float x, float y, WeaponTypes wt, boolean facingRigth) {
 		super(spriteList, gameView, spriteBmp, x, y, wt, facingRigth);
 	}
 

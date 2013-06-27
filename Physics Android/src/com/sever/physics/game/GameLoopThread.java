@@ -4,13 +4,17 @@ import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
 import com.sever.physics.game.utils.Constants;
+import com.sever.physics.game.utils.LogUtil;
 
 public class GameLoopThread extends Thread {
-	private GameView view;
 	private boolean running = false;
 	private boolean sleeping = false;
-
 	private SurfaceHolder holder;
+	private GameView view;
+	private long now;
+	private int framesCount = 0;
+	public static int framesCountAvg = 0;
+	private long framesTimer = 0;
 
 	public GameLoopThread(GameView view, SurfaceHolder holder) {
 		this.holder = holder;
@@ -24,11 +28,6 @@ public class GameLoopThread extends Thread {
 	public boolean isRunning() {
 		return running;
 	}
-
-	private long now;
-	private int framesCount = 0;
-	public static int framesCountAvg = 0;
-	private long framesTimer = 0;
 
 	@Override
 	public void run() {
@@ -75,7 +74,7 @@ public class GameLoopThread extends Thread {
 		if (now - framesTimer > 1000) {
 			framesTimer = now;
 			framesCountAvg = framesCount;
-//			LogUtil.log("framesCountAvg:" + framesCountAvg);
+			LogUtil.log("framesCountAvg:" + framesCountAvg);
 			framesCount = 0;
 		}
 	}

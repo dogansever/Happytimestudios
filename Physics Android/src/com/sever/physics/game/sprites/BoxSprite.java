@@ -8,7 +8,7 @@ import org.jbox2d.collision.PolygonDef;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
@@ -17,7 +17,7 @@ public class BoxSprite extends FreeSprite {
 
 	public CollectItemPointerSprite pointer = null;
 
-	public BoxSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+	public BoxSprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameViewImp gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();

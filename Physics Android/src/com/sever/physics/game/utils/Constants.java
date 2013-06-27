@@ -12,7 +12,7 @@ public class Constants {
 	public static int quakePowerMax = 10;
 	public static boolean quakePending = false;
 	public static final int FPS_Intro = 24;
-	public static final int FPS = 17;
+	public static final int FPS = 20;
 	public static float timeStep = 1.0f / (1000 / Constants.FPS);
 	public static int iterations = 20;
 

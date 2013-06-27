@@ -1,7 +1,5 @@
 package com.sever.physics.game.utils;
 
-import java.util.logging.Logger;
-
 import org.json.JSONArray;
 
 import android.content.Context;
@@ -15,7 +13,6 @@ import com.geosophic.service.Geosophic_ServiceController;
 import com.sever.physic.IntroActivity;
 
 public class LeaderBoardUtil {
-	private static final Logger log = Logger.getLogger(LeaderBoardUtil.class.getName());
 	public static JSONArray scoreList;
 	public static String INFO = "INFO";
 	public static String SCORE = "SCORE";

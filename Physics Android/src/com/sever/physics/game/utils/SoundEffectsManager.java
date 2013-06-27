@@ -13,19 +13,20 @@ import com.sever.physic.R;
 public class SoundEffectsManager {
 
 	static SoundEffectsManager self = null;
-	private static final Integer EXPLODE_BOMB = 1;
-	private static final Integer EXPLODE_ROBOT = 2;
-	private static final Integer LAUNCH_ROCKET = 3;
-	private static final Integer THROW_BOMB = 4;
-	private static final Integer PLAYER_THROW_BOMB = 5;
-	private static final Integer ROBOT_THROTTLE = 6;
-	private static final Integer POWER_UP = 7;
-	private static final Integer STAGE_UP = 8;
-	private static final Integer PAUSE_MENU = 9;
-	private static final Integer BUTTON_CLICK = 10;
-	private static final Integer STAGE_START = 11;
-	private static final Integer GAME_OVER = 12;
-	private static final Integer NEW_WEAPON = 13;
+	
+	public static final Integer EXPLODE_BOMB = 1;
+	public static final Integer EXPLODE_ROBOT = 2;
+	public static final Integer LAUNCH_ROCKET = 3;
+	public static final Integer THROW_BOMB = 4;
+	public static final Integer PLAYER_THROW_BOMB = 5;
+	public static final Integer ROBOT_THROTTLE = 6;
+	public static final Integer POWER_UP = 7;
+	public static final Integer STAGE_UP = 8;
+	public static final Integer PAUSE_MENU = 9;
+	public static final Integer BUTTON_CLICK = 10;
+	public static final Integer STAGE_START = 11;
+	public static final Integer GAME_OVER = 12;
+	public static final Integer NEW_WEAPON = 13;
 
 	private SoundPool soundPool;
 	private HashMap<Integer, Integer> soundPoolMap;
@@ -46,9 +47,6 @@ public class SoundEffectsManager {
 		soundPool = new SoundPool(20, AudioManager.STREAM_MUSIC, 0);
 		soundPoolMap = new HashMap<Integer, Integer>();
 
-		// soundPoolMap.put(INTRO, soundPool.load(context,
-		// R.raw.crickets_at_night, 1));
-		// soundPoolMap.put(MENU, soundPool.load(context, R.raw.nightime, 1));
 		soundPoolMap.put(EXPLODE_BOMB, soundPool.load(PhysicsActivity.context, R.raw.balloonpopping, 1));
 		soundPoolMap.put(EXPLODE_ROBOT, soundPool.load(PhysicsActivity.context, R.raw.hithurt, 1));
 		soundPoolMap.put(LAUNCH_ROCKET, soundPool.load(PhysicsActivity.context, R.raw.spinjump, 1));
@@ -68,7 +66,7 @@ public class SoundEffectsManager {
 		soundPool.stop(soundPoolMap.get(sound));
 	}
 
-	public void playSound(Context context, int sound, boolean... b) {
+	public void playSound(Context context, int sound, boolean... loop) {
 		try {
 			AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 			float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -76,77 +74,54 @@ public class SoundEffectsManager {
 			float volume = 0.25f * streamVolumeCurrent / streamVolumeMax;
 
 			/* Play the sound with the correct volume */
-			if (b.length == 0) {
+			if (loop.length == 0) {
 				soundPool.play(soundPoolMap.get(sound), volume, volume, 1, 0, 1f);
-			} else if (b[0]) {
+			} else if (loop[0]) {
 				soundPool.play(soundPoolMap.get(sound), volume, volume, 1, 1, 1f);
 			}
 		} catch (Exception e) {
 		}
 	}
 
-	public static void startGameEndAmbianceSound(Context context) {
-		LogUtil.log("startIngameAmbianceSound");
+	public static void startGeneralAmbianceSound(Context context, int resId) {
+		LogUtil.log("startGeneralAmbianceSound:" + resId);
 		if (mp1 == null) {
-			mp1 = MediaPlayer.create(context, R.raw.meditatewithchoir);
+			mp1 = MediaPlayer.create(context, resId);
 			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mp1.setVolume(0.2f, 0.2f);
 			mp1.setLooping(true);
 		}
 		if (!mp1.isPlaying())
 			mp1.start();
+	}
+
+	public static void startGameEndAmbianceSound(Context context) {
+		LogUtil.log("startIngameAmbianceSound");
+		startGeneralAmbianceSound(context, R.raw.meditatewithchoir);
 	}
 
 	public static void startBossTimeAmbianceSound(Context context) {
-		LogUtil.log( "startBossTimeAmbianceSound");
-		if (mp1 == null) {
-			mp1 = MediaPlayer.create(context, R.raw.toppriority);
-			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
-			mp1.setVolume(0.2f, 0.2f);
-			mp1.setLooping(true);
-		}
-		if (!mp1.isPlaying())
-			mp1.start();
+		LogUtil.log("startBossTimeAmbianceSound");
+		startGeneralAmbianceSound(context, R.raw.toppriority);
 	}
 
 	public static void startGameOverAmbianceSound(Context context) {
-		LogUtil.log( "startGameOverAmbianceSound");
-		if (mp1 == null) {
-			mp1 = MediaPlayer.create(context, R.raw.peopleinexile);
-			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
-			mp1.setVolume(0.2f, 0.2f);
-			mp1.setLooping(true);
-		}
-		if (!mp1.isPlaying())
-			mp1.start();
+		LogUtil.log("startGameOverAmbianceSound");
+		startGeneralAmbianceSound(context, R.raw.peopleinexile);
 	}
 
 	public static void startIngameAmbianceSound(Context context) {
-		LogUtil.log( "startIngameAmbianceSound");
-		if (mp1 == null) {
-			mp1 = MediaPlayer.create(context, R.raw.accelerator);
-			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
-			mp1.setVolume(0.2f, 0.2f);
-			mp1.setLooping(true);
-		}
-		if (!mp1.isPlaying())
-			mp1.start();
+		LogUtil.log("startIngameAmbianceSound");
+		startGeneralAmbianceSound(context, R.raw.accelerator);
 	}
 
 	public static void startIntroAmbianceSound(Context context) {
-		LogUtil.log( "startIntroAmbianceSound");
-		if (mp1 == null) {
-			mp1 = MediaPlayer.create(context, R.raw.acoustica);
-			mp1.setAudioStreamType(AudioManager.STREAM_MUSIC);
-			mp1.setVolume(0.2f, 0.2f);
-			mp1.setLooping(true);
-		}
-		if (!mp1.isPlaying())
-			mp1.start();
+		LogUtil.log("startIntroAmbianceSound");
+		startGeneralAmbianceSound(context, R.raw.acoustica);
 	}
 
 	public static void stopSound() {
-		LogUtil.log( "stopSound");
+		LogUtil.log("stopSound");
 		if (mp1 != null) {
 			mp1.pause();
 			mp1.stop();
@@ -155,55 +130,4 @@ public class SoundEffectsManager {
 		}
 	}
 
-	public void playNEW_WEAPON(Context context) {
-		playSound(context, NEW_WEAPON);
-	}
-
-	public void playSTAGE_START(Context context) {
-		playSound(context, STAGE_START);
-	}
-
-	public void playGAME_OVER(Context context) {
-		playSound(context, GAME_OVER);
-	}
-
-	public void playBUTTON_CLICK(Context context) {
-		playSound(context, BUTTON_CLICK);
-	}
-
-	public void playPAUSE_MENU(Context context) {
-		playSound(context, PAUSE_MENU);
-	}
-
-	public void playPOWER_UP(Context context) {
-		playSound(context, POWER_UP);
-	}
-
-	public void playSTAGE_UP(Context context) {
-		playSound(context, STAGE_UP);
-	}
-
-	public void playEXPLODE_BOMB(Context context) {
-		playSound(context, EXPLODE_BOMB);
-	}
-
-	public void playEXPLODE_ROBOT(Context context) {
-		playSound(context, EXPLODE_ROBOT);
-	}
-
-	public void playLAUNCH_ROCKET(Context context) {
-		playSound(context, this.LAUNCH_ROCKET);
-	}
-
-	public void playTHROW_BOMB(Context context) {
-		playSound(context, this.THROW_BOMB);
-	}
-
-	public void playROBOT_THROTTLE(Context context) {
-		playSound(context, this.ROBOT_THROTTLE);
-	}
-
-	public void playPLAYER_THROW_BOMB(Context context) {
-		playSound(context, this.PLAYER_THROW_BOMB);
-	}
 }

@@ -12,6 +12,7 @@ import com.sever.physic.Test;
 
 public class AdUtil {
 
+	private static final String adUnitId = "a151a46ea1cd8a4";
 	static AdUtil self = null;
 
 	public static AdUtil getAdUtil() {
@@ -24,7 +25,7 @@ public class AdUtil {
 
 	public void createAd(Activity a) {
 		LogUtil.log("createAd");
-		adView = new AdView(a, AdSize.BANNER, "a151a46ea1cd8a4");
+		adView = new AdView(a, AdSize.BANNER, adUnitId);
 		LinearLayout layout = (LinearLayout) a.findViewById(R.id.linearLayoutAdview);
 		layout.removeAllViews();
 		layout.addView(adView);

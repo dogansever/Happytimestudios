@@ -13,7 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import com.sever.physic.PhysicsActivity;
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.pojo.TextDrawingPojo;
 import com.sever.physics.game.utils.BitmapManager;
 import com.sever.physics.game.utils.Constants;
@@ -39,7 +39,7 @@ public class EnemySprite extends ActiveSprite {
 	private float killpointx = 0;
 	private float killpointy = 0;
 
-	public EnemySprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+	public EnemySprite(ConcurrentLinkedQueue<FreeSprite> spriteList, GameViewImp gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
@@ -201,7 +201,7 @@ public class EnemySprite extends ActiveSprite {
 					FreeSprite fak = gameView.addFirstAidKit(x, y);
 					fak.getBody().setAngularVelocity((float) (Math.random() * 45));
 
-					SoundEffectsManager.getManager().playPOWER_UP(PhysicsActivity.context);
+					SoundEffectsManager.getManager().playSound(PhysicsActivity.context, SoundEffectsManager.POWER_UP);
 				}
 
 			}

@@ -39,7 +39,6 @@ public class PreIntroActivity extends Geosophic_Activity {
 
 	@Override
 	public void onBackPressed() {
-		// TODO Auto-generated method stub
 		// super.onBackPressed();
 	}
 
@@ -128,7 +127,7 @@ public class PreIntroActivity extends Geosophic_Activity {
 		LogUtil.log("onPause:" + this);
 		super.onPause();
 		clearBackground();
-//		SoundEffectsManager.stopSound();
+		// SoundEffectsManager.stopSound();
 	}
 
 }

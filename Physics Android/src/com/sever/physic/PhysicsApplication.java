@@ -32,14 +32,12 @@ public class PhysicsApplication extends Application {
 	@Override
 	public void onLowMemory() {
 		LogUtil.log("onLowMemory:" + this);
-		// TODO Auto-generated method stub
 		super.onLowMemory();
 	}
 
 	@Override
 	public void onTerminate() {
 		LogUtil.log("onTerminate:" + this);
-		// TODO Auto-generated method stub
 		super.onTerminate();
 	}
 

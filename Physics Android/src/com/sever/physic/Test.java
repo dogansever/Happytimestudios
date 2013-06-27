@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import com.sever.physics.game.utils.LogUtil;
 
 
+@SuppressWarnings("rawtypes")
 public class Test extends ActivityInstrumentationTestCase2 {
 
 	private Instrumentation inst;

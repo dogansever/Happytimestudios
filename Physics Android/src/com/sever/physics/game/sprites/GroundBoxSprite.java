@@ -2,13 +2,13 @@ package com.sever.physics.game.sprites;
 
 import org.jbox2d.collision.PolygonDef;
 
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.utils.Constants;
 import com.sever.physics.game.utils.SpriteBmp;
 
 public class GroundBoxSprite extends FreeSprite {
 
-	public GroundBoxSprite(GameView gameView, SpriteBmp spriteBmp, float x, float y, float hx, float hy) {
+	public GroundBoxSprite(GameViewImp gameView, SpriteBmp spriteBmp, float x, float y, float hx, float hy) {
 		this.width = hx * 2;
 		this.height = hy * 2;
 		this.spriteBmp = spriteBmp;

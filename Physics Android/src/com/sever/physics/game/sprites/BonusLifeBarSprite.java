@@ -13,7 +13,7 @@ import android.graphics.Paint.Style;
 import android.graphics.Rect;
 
 import com.sever.physic.IntroActivity;
-import com.sever.physics.game.GameView;
+import com.sever.physics.game.GameViewImp;
 import com.sever.physics.game.utils.SpriteBmp;
 
 public class BonusLifeBarSprite extends FreeSprite {
@@ -22,7 +22,7 @@ public class BonusLifeBarSprite extends FreeSprite {
 	private long timeStart;
 	private long time_MAX = 10 * 60 * 1000;
 
-	public BonusLifeBarSprite(GameView gameView, SpriteBmp spriteBmp, float x, float y) {
+	public BonusLifeBarSprite(GameViewImp gameView, SpriteBmp spriteBmp, float x, float y) {
 		this.spriteBmp = spriteBmp;
 		this.width = spriteBmp.getWidth();
 		this.height = spriteBmp.getHeight();
